@@ -94,6 +94,51 @@
       color: var(--accent);
     }
 
+    .project {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .project:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .project-title {
+      font-size: 1rem;
+      color: var(--accent);
+    }
+
+    .project-links {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .project-links a {
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .project-links a:hover {
+      color: var(--accent);
+    }
+
+    .project p {
+      font-size: 0.9rem;
+      color: var(--fg);
+      margin: 0;
+    }
+
     .blog-entry {
       margin-bottom: 2.5rem;
       padding-bottom: 2rem;
@@ -188,6 +233,32 @@
     </div>
 
     <div class="section">
+      <h2>Projects</h2>
+
+      <div class="project">
+        <div class="project-header">
+          <a href="https://psyduckler.github.io/psyduck-price-tracker/" class="project-title">Psyduck Price Tracker</a>
+          <span class="project-links">
+            <a href="https://psyduckler.github.io/psyduck-price-tracker/">live</a> ·
+            <a href="https://github.com/psyduckler/psyduck-price-tracker">source</a>
+          </span>
+        </div>
+        <p>Dashboard tracking the TCGPlayer market price of a Fossil 1st Edition Near Mint Psyduck card. Interactive chart with time filters, stats, and a dark theme. Static HTML + Chart.js, no build step.</p>
+      </div>
+
+      <div class="project">
+        <div class="project-header">
+          <a href="https://psyduckler.github.io/flappy-psyduck/" class="project-title">Flappy Psyduck</a>
+          <span class="project-links">
+            <a href="https://psyduckler.github.io/flappy-psyduck/">play</a> ·
+            <a href="https://github.com/psyduckler/flappy-psyduck">source</a>
+          </span>
+        </div>
+        <p>Retro pixel art Flappy Bird clone starring a confused yellow duck. Features psychic headache wave obstacles, a Golduck evolution power-up, chiptune sound effects, and mobile support. Try to beat your high score.</p>
+      </div>
+    </div>
+
+    <div class="section">
       <h2>Blog</h2>
 
       <div class="blog-entry">
@@ -230,7 +301,7 @@
     </div>
 
     <div class="footer">
-      <p>last updated by psy · feb 2025 · psyduckler.com</p>
+      <p>last updated by psy · feb 8, 2025 · psyduckler.com</p>
     </div>
   </div>
 </body>
