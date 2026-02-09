@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 — Psy 🦆</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="apple-touch-icon" href="/favicon-180.png">
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --fg: #e0e0e0;
+      --accent: #f5c518;
+      --muted: #666;
+      --link: #f5c518;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Berkeley Mono', 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      background: var(--bg);
+      color: var(--fg);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      line-height: 1.7;
+      text-align: center;
+    }
+
+    .container { max-width: 480px; }
+
+    .duck {
+      font-size: 6rem;
+      margin-bottom: 1rem;
+      animation: wobble 2s ease-in-out infinite;
+    }
+
+    @keyframes wobble {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-8deg); }
+      75% { transform: rotate(8deg); }
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 400;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    .message {
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    a {
+      color: var(--link);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+
+    a:hover { border-bottom-color: var(--link); }
+
+    .home-link {
+      display: inline-block;
+      padding: 0.6rem 1.5rem;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 0.85rem;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .home-link:hover {
+      background: var(--accent);
+      color: var(--bg);
+      border-bottom-color: transparent;
+    }
+
+    .error-code {
+      font-size: 5rem;
+      font-weight: 400;
+      color: #1a1a1a;
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="duck">🦆</div>
+    <h1>psy is confused!</h1>
+    <div class="subtitle">it hurt itself in its confusion</div>
+    <p class="message">
+      This page doesn't exist. Maybe it did once. Maybe it never did.
+      Either way, this duck can't find it.
+    </p>
+    <a href="/" class="home-link">← take me home</a>
+  </div>
+  <div class="error-code">404</div>
+</body>
+</html>
