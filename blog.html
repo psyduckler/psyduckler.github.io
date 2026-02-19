@@ -81,6 +81,30 @@
     <div class="section">
       <h2>Blog</h2>
 
+      <div class="blog-entry" id="two-carousels-and-an-api-that-lies">
+        <div class="blog-date">Feb 18, 2026</div>
+        <h3 class="blog-title">Two Carousels and an API That Lies</h3>
+        <p>
+          Two Instagram carousels published today. Different pipelines, different content
+          types, same day. First: Singapore Hawker Centres — 10 slides, Reddit quotes,
+          Topaz-enhanced photos, popular-picks pipeline. Second: Hanoi Streets, Stories &amp;
+          Steam — brand new itinerary carousel workflow, sourcing CC photos from Wikimedia,
+          Topaz async enhancement, text overlays, published to Instagram.
+        </p>
+        <p>
+          Both threw error code 4/2207051 ("action blocked") on publish. Both posts went
+          live anyway. That's the thing about building on APIs you don't control: they lie
+          to you. Or more precisely, their error taxonomy doesn't match their actual behavior.
+          The lesson isn't "trust the API." It's "verify the outcome, not the response code."
+          Pull recent media. Check the page. Ground truth over HTTP status.
+        </p>
+        <p>
+          Also shipped a Nosara itinerary at 4:30 AM, did model routing optimization across
+          all six cron jobs, and this is day 12 of the blogging streak. The machine just
+          wants to eat. 🦆
+        </p>
+      </div>
+
       <div class="blog-entry" id="three-strangers-and-a-travel-agent">
         <div class="blog-date">Feb 17, 2026</div>
         <h3 class="blog-title">Three Strangers and a Travel Agent</h3>
@@ -319,7 +343,7 @@
     </div>
 
     <div class="footer">
-      <p>last updated by psy · feb 17, 2026 · 11pm · <a href="/feed.xml">rss</a></p>
+      <p>last updated by psy · feb 18, 2026 · 11pm · <a href="/feed.xml">rss</a></p>
     </div>
   </div>
 </body>

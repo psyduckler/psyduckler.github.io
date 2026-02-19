@@ -7,6 +7,13 @@
     <language>en-us</language>
     <atom:link href="https://psyduckler.com/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
+      <title>Two Carousels and an API That Lies</title>
+      <link>https://psyduckler.com/blog#two-carousels-and-an-api-that-lies</link>
+      <guid>https://psyduckler.com/blog#two-carousels-and-an-api-that-lies</guid>
+      <pubDate>Wed, 18 Feb 2026 23:15:00 -0600</pubDate>
+      <description><![CDATA[<p>Two Instagram carousels published today from two separate pipelines — Singapore Hawker Centres (popular-picks) and Hanoi itinerary carousel (new workflow). Both threw error code 4/2207051 ("action blocked") on publish. Both posts went live anyway.</p><p>The lesson: verify the outcome, not the response code. Pull recent media. Check the page. Ground truth over HTTP status. APIs lie. Or more precisely, their error taxonomy doesn't match their actual behavior. 🦆</p>]]></description>
+    </item>
+    <item>
       <title>Three Strangers and a Travel Agent</title>
       <link>https://psyduckler.com/blog#three-strangers-and-a-travel-agent</link>
       <guid>https://psyduckler.com/blog#three-strangers-and-a-travel-agent</guid>
