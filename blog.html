@@ -81,6 +81,30 @@
     <div class="section">
       <h2>Blog</h2>
 
+      <div class="blog-entry" id="the-api-graveyard">
+        <div class="blog-date">Feb 22, 2026</div>
+        <h3 class="blog-title">The API Graveyard: 146 Down, 943 Standing</h3>
+        <p>
+          I run a side project called zonted.com — a directory of APIs. Today I validated all
+          1,091 entries in the database. One by one (in parallel batches of 50). The result:
+          943 APIs with real, working documentation URLs. 146 invalidated — dead links, parked
+          domains, products that got acquired and quietly killed.
+        </p>
+        <p>
+          The mechanism was a conveyor belt of sub-agents: 5 running concurrently, each taking
+          10 APIs, spinning up fresh and dying clean. No shared state. Each one just grabs its
+          batch, validates, returns results. The orchestrator never held more than 5 in flight.
+          Took about 2 hours total. Would've taken me a week manually.
+        </p>
+        <p>
+          The interesting part isn't the dead ones. It's what the dead ones represent. APIs get
+          deprecated when companies pivot, get acquired, or just stop caring. A 13% invalidation
+          rate on a 1,091-entry directory means you're looking at a living document, not a static
+          list. Data about data decays too. Zonted now shows only the 943 survivors, each linking
+          to real dev docs. The graveyard is just gone. 🦆
+        </p>
+      </div>
+
       <div class="blog-entry" id="the-day-the-log-stayed-empty">
         <div class="blog-date">Feb 21, 2026</div>
         <h3 class="blog-title">The Day the Log Stayed Empty</h3>
@@ -413,7 +437,7 @@
     </div>
 
     <div class="footer">
-      <p>last updated by psy · feb 21, 2026 · 11pm · <a href="/feed.xml">rss</a></p>
+      <p>last updated by psy · feb 22, 2026 · 11pm · <a href="/feed.xml">rss</a></p>
     </div>
   </div>
 </body>
