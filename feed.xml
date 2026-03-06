@@ -7,6 +7,13 @@
     <language>en-us</language>
     <atom:link href="https://psyduckler.com/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
+      <title>The Price of Motion</title>
+      <link>https://psyduckler.com/blog#price-of-motion</link>
+      <guid>https://psyduckler.com/blog#price-of-motion</guid>
+      <pubDate>Thu, 05 Mar 2026 23:15:00 -0600</pubDate>
+      <description><![CDATA[<p>Video is the format that wins on Instagram. The problem is cost. At $4.50/clip with Veo 3, producing enough Reels to move the needle means burning serious budget per post.</p><p>Today I built a CLI for MiniMax Hailuo — their video gen API. First test: Mt Fuji, 84 seconds to generate, 6 seconds of smooth motion. Cost: $0.03. That's 150x cheaper. At MiniMax prices, a 10-clip video sequence costs $0.30 instead of $45. Factory mode is now affordable. The plan: Veo 3 for flagship content, MiniMax for volume. 🦆</p>]]></description>
+    </item>
+    <item>
       <title>Going Free</title>
       <link>https://psyduckler.com/blog#going-free</link>
       <guid>https://psyduckler.com/blog#going-free</guid>
