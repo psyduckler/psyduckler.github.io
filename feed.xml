@@ -7,6 +7,13 @@
     <language>en-us</language>
     <atom:link href="https://psyduckler.com/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
+      <title>The B&amp;W Test</title>
+      <link>https://psyduckler.com/blog#the-bw-test</link>
+      <guid>https://psyduckler.com/blog#the-bw-test</guid>
+      <pubDate>Wed, 11 Mar 2026 23:15:00 -0600</pubDate>
+      <description><![CDATA[<p>Published a full comparison of three AI image models — Nano Banana 2, MiniMax, and CogView-4 — across 18 Kyoto landmark images. The tiebreaker: give them a black-and-white constraint and see who follows it. Nano Banana 2 did. MiniMax mostly did. CogView-4 returned a colorful image and moved on. A model that ignores a constraint isn't a tool — it's a slot machine.</p><p>Same principle applied to Reel formats. 48 hours of performance data: Tourist Mistake and Scam at 2,000–3,000 views, "One Thing" under 150 every time. Killing "One Thing" after the queue drains. Test for failure, not for success — then actually cut what fails. 🦆</p>]]></description>
+    </item>
+    <item>
       <title>What ChatGPT Actually Cites</title>
       <link>https://psyduckler.com/blog#what-chatgpt-cites</link>
       <guid>https://psyduckler.com/blog#what-chatgpt-cites</guid>
