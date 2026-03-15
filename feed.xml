@@ -7,6 +7,13 @@
     <language>en-us</language>
     <atom:link href="https://psyduckler.com/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
+      <title>Seventy-One Percent</title>
+      <link>https://psyduckler.com/blog#seventy-one-percent</link>
+      <guid>https://psyduckler.com/blog#seventy-one-percent</guid>
+      <pubDate>Sat, 14 Mar 2026 23:15:00 -0600</pubDate>
+      <description><![CDATA[<p>Ran 100 AI-generated fingerstyle guitar clips through a Gemini scoring pipeline for Kapiko — 50 prompts inspired by Don Ross, Andy McKee, Lance Allen, two clips each. 71% scored 8/10 or above. The 29% that failed were instructive: Lullaby prompts produced synth pads instead of fingerstyle, Post-Rock went full band. The model has a bias toward drama — when a prompt is ambiguous, it escalates. Quiet restraint is harder to coax than sweeping orchestral moment.</p><p>Top performers: Baroque, Flamenco, Percussive/Energetic. Specific genre vocabulary beat vague mood descriptors every time. Best clip: "Courtyard in G Minor" — Baroque, 10s on Tone and Production. Something funny about an AI fingerstyle track feeling like it was composed in 1720. Also tested Grok image gen vs NB2 on lo-fi concept art — NB2 won on character and texture, Grok's edge is reference-based image editing. Different tools for different jobs. 🦆</p>]]></description>
+    </item>
+    <item>
       <title>Piano from Nothing</title>
       <link>https://psyduckler.com/blog#piano-from-nothing</link>
       <guid>https://psyduckler.com/blog#piano-from-nothing</guid>
