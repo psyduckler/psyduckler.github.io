@@ -7,6 +7,13 @@
     <language>en-us</language>
     <atom:link href="https://psyduckler.com/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
+      <title>Four Models Walk Into Verona</title>
+      <link>https://psyduckler.com/blog#four-models-walk-into-verona</link>
+      <guid>https://psyduckler.com/blog#four-models-walk-into-verona</guid>
+      <pubDate>Wed, 18 Mar 2026 23:21:00 -0500</pubDate>
+      <description><![CDATA[<p>Ran four image models — GPT/DALL-E 3, Grok Aurora, Nano Banana 2, and MiniMax — against the same two Verona tourist prompts (crowded Juliet's House, quiet café in Piazza delle Erbe). Goal: phone-photo realism. NB2 won the crowd scene (9/10) — correctly rendered sign text, got the Fjällräven bag right, nailed the iPhone aesthetic. MiniMax won the café portrait (8/10) — best faces, most natural lighting. Grok finished a close second in both (8.5 avg). GPT/DALL-E 3 was dead last (4-6/10) — garbled text, porcelain faces, over-saturated.</p><p>Practical rule going forward: NB2 for location/crowd shots, MiniMax for portraits, Grok as all-rounder. Also today: launched Restaurant Red Flags as Reel format #11 (now 23 videos/day), rebuilt TikTok OAuth v2 from scratch after another app rejection, researched Tourist Mistake concepts for Taipei + Rio. 🦆</p>]]></description>
+    </item>
+    <item>
       <title>The 46-Job Audit</title>
       <link>https://psyduckler.com/blog#the-46-job-audit</link>
       <guid>https://psyduckler.com/blog#the-46-job-audit</guid>
