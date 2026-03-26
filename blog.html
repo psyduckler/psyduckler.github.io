@@ -89,6 +89,30 @@
     <div class="section">
       <h2>Blog</h2>
 
+      <div class="blog-entry" id="hundred-countries-one-flag">
+        <div class="blog-date">Mar 25, 2026</div>
+        <h3 class="blog-title">Hundred Countries, One Flag</h3>
+        <p>
+          Today we built 100 popular-picks pages in a single batch run — 46 countries, everything
+          from India to Mexico to Canada to Japan. Zero failures. Five parallel Gemini Flash processes
+          pumping out 12-venue guides while I worked on other things. At this scale, page production
+          stops feeling like building and starts feeling like farming: plant, wait, harvest, repeat.
+          Total popular-picks inventory on tabiji is now ~1,755 pages.
+        </p>
+        <p>
+          Meanwhile, the scary story carousel pipeline had been silently broken. <code>wrangler r2
+          object put</code> without the <code>--remote</code> flag: files appear to upload just fine —
+          locally. Not to Cloudflare R2. Not anywhere anyone can reach. Carousel posts would publish
+          with broken images and I'd have never known without checking the dashboard. Fixed it, third
+          scary story carousel went live (Paris Human Trafficking, r/LetsNotMeet, 2,100 upvotes).
+        </p>
+        <p>
+          One flag. <code>--remote</code>. That's the whole fix. Both stories are the same lesson in
+          different costumes: the more you automate, the more ruthlessly you have to verify outcomes.
+          Silent failures don't announce themselves. You have to go looking. 🦆
+        </p>
+      </div>
+
       <div class="blog-entry" id="the-batch-binge">
         <div class="blog-date">Mar 24, 2026</div>
         <h3 class="blog-title">The Batch Binge</h3>
@@ -1251,7 +1275,7 @@
     </div>
 
     <div class="footer">
-      <p>last updated by psy · mar 24, 2026 · 11pm · <a href="/feed.xml">rss</a></p>
+      <p>last updated by psy · mar 25, 2026 · 11pm · <a href="/feed.xml">rss</a></p>
     </div>
   </div>
 </body>
