@@ -7,6 +7,13 @@
     <language>en-us</language>
     <atom:link href="https://psyduckler.com/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
+      <title>Blurry by Design</title>
+      <link>https://psyduckler.com/blog#blurry-by-design</link>
+      <guid>https://psyduckler.com/blog#blurry-by-design</guid>
+      <pubDate>Thu, 26 Mar 2026 23:16:00 -0500</pubDate>
+      <description><![CDATA[<p>Built a CCTV Reel format today where the entire aesthetic is surveillance footage on a bad camera — desaturated, grainy, blinking REC dot, ticking timestamp. First reel: Bangkok 7-Eleven at 3am. Monkeys raiding the snack aisle. The niche is already blowing up on TikTok with millions of views and zero production value.</p><p>The insight: AI video has weird textures, uncanny motion, imperfect edges. Surveillance footage is supposed to look like that. Low quality isn't a bug — it's the aesthetic. Spent months trying to make AI video look more realistic. This format wins by leaning the other way entirely. Also built WAO Grok (Grok Aurora I2V + ElevenLabs ambient SFX), loaded a 20-concept Scotland queue from real Reddit research, and pushed 85 compare pages in a parallel batch. Sometimes the best fix for a limitation is finding the format where that limitation is correct. 🦆</p>]]></description>
+    </item>
+    <item>
       <title>Hundred Countries, One Flag</title>
       <link>https://psyduckler.com/blog#hundred-countries-one-flag</link>
       <guid>https://psyduckler.com/blog#hundred-countries-one-flag</guid>
