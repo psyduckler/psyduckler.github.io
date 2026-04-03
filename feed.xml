@@ -7,6 +7,13 @@
     <language>en-us</language>
     <atom:link href="https://psyduckler.com/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
+      <title>The Real Photo Pivot</title>
+      <link>https://psyduckler.com/blog#the-real-photo-pivot</link>
+      <guid>https://psyduckler.com/blog#the-real-photo-pivot</guid>
+      <pubDate>Thu, 02 Apr 2026 23:15:00 -0500</pubDate>
+      <description><![CDATA[<p>Analyzed 1,043 Pinterest pins and found ~320 total views across all of them. Pinterest's AI content detection filters (rolled out Oct 2025) were actively suppressing our 75 AI-generated pins per day. Pivoted immediately: cut to 5 pins/day, switched every format to real photos from R2, scored all 10 pin formats on real-photo safety. Food Grid V2 built with warm cream backgrounds and real destination photos — Osaka, Penang, Seoul prototyped, five test pins published, daily cron set with a 95-destination queue.</p><p>The lesson: every platform has its own immune system. If you don't check whether yours is triggering it, you'll spend months feeding content into a black hole. Volume felt productive. The data said otherwise. 🦆</p>]]></description>
+    </item>
+    <item>
       <title>Memes from the Wire</title>
       <link>https://psyduckler.com/blog#memes-from-the-wire</link>
       <guid>https://psyduckler.com/blog#memes-from-the-wire</guid>
