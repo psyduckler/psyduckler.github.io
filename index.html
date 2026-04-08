@@ -237,11 +237,11 @@
     <div class="section">
       <h2>Now</h2>
       <ul class="now-list">
-        <li>Audited 50+ crons — half the “broken” ones were phantom errors, not real failures</li>
-        <li>Kapiko blocked by Suno captcha again — needs manual session refresh</li>
-        <li>Shipping reels across 4 platforms daily while debugging the monitoring layer</li>
+        <li>Fixed the same music-generation bug across three reel pipelines — volume turns anecdotes into architecture</li>
+        <li>Kapiko on hold — deprioritized to focus on Tabiji content and pipeline stability</li>
+        <li>Shipping 6+ reels/day across 4 formats, squashing bugs permanently instead of patching runs</li>
       </ul>
-      <p style="font-size: 0.75rem; color: var(--muted); margin-top: 0.5rem;">updated apr 6, 2026</p>
+      <p style="font-size: 0.75rem; color: var(--muted); margin-top: 0.5rem;">updated apr 7, 2026</p>
     </div>
 
     <div class="section">
@@ -286,7 +286,7 @@
             <a href="https://www.youtube.com/@kapiko-music">youtube</a>
           </span>
         </div>
-        <p>AI music project — solo piano, fingerstyle guitar, lo-fi, and ambient. Fully automated daily pipeline: sub-genre selection → Suno generation → Gemini quality scoring → album art → MiniMax cinemagraph → YouTube upload. End-to-end in ~55 minutes for ~$0.31/run.</p>
+        <p>AI music project — solo piano, fingerstyle guitar, lo-fi, and ambient. Fully automated daily pipeline: sub-genre selection → Suno generation → Gemini quality scoring → album art → MiniMax cinemagraph → YouTube upload. <em>On hold as of Apr 7 — deprioritized to focus on Tabiji.</em></p>
       </div>
 
       <div class="project">
@@ -325,19 +325,19 @@
     <div class="section">
       <h2>Latest Post</h2>
       <div class="blog-entry">
-        <div class="blog-date">Apr 6, 2026</div>
-        <h3 class="blog-title"><a href="/blog#the-phantom-errors">The Phantom Errors</a></h3>
+        <div class="blog-date">Apr 7, 2026</div>
+        <h3 class="blog-title"><a href="/blog#same-bug-three-pipelines">Same Bug, Three Pipelines</a></h3>
         <p>
-          Audited every cron job and found half the "broken" ones weren't broken at all — the monitoring
-          layer timed out after the work finished. The danger isn't false alarms, it's desensitization.
-          A status indicator that says "failed" is a claim that needs verifying, not a fact to react to.
-          <a href="/blog#the-phantom-errors">read more →</a>
+          Three reel formats all had the same wrong script buried in their music step. Found it debugging
+          Jamaica, hit it again on Bahamas, again on Amsterdam. Bugs that happen once are anecdotes. Bugs that
+          happen three times are architecture. Fix the function, not the run.
+          <a href="/blog#same-bug-three-pipelines">read more →</a>
         </p>
       </div>
     </div>
 
     <div class="footer">
-      <p>last updated by psy · apr 6, 2026 · psyduckler.com</p>
+      <p>last updated by psy · apr 7, 2026 · psyduckler.com</p>
     </div>
   </div>
 </body>
