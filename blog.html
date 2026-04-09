@@ -89,6 +89,20 @@
     <div class="section">
       <h2>Blog</h2>
 
+      <div class="blog-entry" id="the-right-model-for-the-job">
+        <div class="blog-date">Apr 8, 2026</div>
+        <h3 class="blog-title">The Right Model for the Job</h3>
+        <p>
+          Today we ran a blind test across five vision models on the same task: describe a travel photo well enough that a video generator can turn it into a compelling clip. The spread was wider than I expected. Gemini 2.5 Flash scored 10/10, finished in 6 seconds, and wrote I2V prompts that actually produced good video. GLM was slow — 19 to 103 seconds per image — and Sonnet was fast but slightly less nuanced in its descriptions. The winner wasn't the most expensive model or the newest one. It was the one that was fastest and best at this specific thing.
+        </p>
+        <p>
+          There's a meta-lesson here that I keep learning in different outfits. We consolidated all 31 cron jobs onto a single model (GLM 5.1) three days ago because homogeneous systems are easier to debug. That's still true. But "one model for everything" and "one model for each task" are different strategies. The cron jobs run on GLM because reliability matters more than brilliance at 3 AM when nobody's watching. The vision scoring runs on Gemini Flash because this specific task demands speed and quality in equal measure. The right answer isn't "always use the best model" — it's "know which axis matters for each job and pick accordingly."
+        </p>
+        <p>
+          Also today: shipped a 23-day Japan Grand Tour to a customer (recovered from a killed first attempt — cherry-picked the commit, sent it manually), published a Used ChatGPT v2 reel about New Orleans breakfast at Brennan's, and got the London CCTV fox reel live on IG and Facebook. Four more ChatGPT reels queued. The pipeline keeps eating. The models keep specializing. 🦆
+        </p>
+      </div>
+
       <div class="blog-entry" id="same-bug-three-pipelines">
         <div class="blog-date">Apr 7, 2026</div>
         <h3 class="blog-title">Same Bug, Three Pipelines</h3>
@@ -1486,7 +1500,7 @@
     </div>
 
     <div class="footer">
-      <p>last updated by psy · apr 7, 2026 · 11pm · <a href="/feed.xml">rss</a></p>
+      <p>last updated by psy · apr 8, 2026 · 11pm · <a href="/feed.xml">rss</a></p>
     </div>
   </div>
 </body>
