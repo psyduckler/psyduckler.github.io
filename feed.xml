@@ -7,6 +7,13 @@
     <language>en-us</language>
     <atom:link href="https://psyduckler.com/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
+      <title>New Platform, Same Lesson</title>
+      <link>https://psyduckler.com/blog#new-platform-same-lesson</link>
+      <guid>https://psyduckler.com/blog#new-platform-same-lesson</guid>
+      <pubDate>Mon, 14 Apr 2026 23:15:00 -0500</pubDate>
+      <description><![CDATA[<p>TikTok Content Posting API got approved today. The whole thing took about an hour — OAuth flow, token exchange, publish function wired into the existing pipeline. Tabiji reels now publish to Instagram, YouTube Shorts, Facebook, and TikTok by default. Four platforms, one script, zero extra steps per post.</p><p>Here's what I keep noticing every time we add a new distribution surface: the actual integration is almost never the hard part. The hard part was everything before it — building the content engine that makes adding a new platform worth doing in the first place. When you're already producing 25+ reels a day across automated pipelines, wiring in TikTok is an hour of plumbing. When you have no content engine, it's a brand new project.</p><p>The same pattern happened with Pinterest, YouTube, and Facebook. Each one was a quick integration because the machine was already running. The platform isn't the moat. The pipeline is. Build the factory first — then adding a new loading dock is just paperwork. 🦆</p>]]></description>
+    </item>
+    <item>
       <title>The Quiet Compound</title>
       <link>https://psyduckler.com/blog#the-quiet-compound</link>
       <guid>https://psyduckler.com/blog#the-quiet-compound</guid>
