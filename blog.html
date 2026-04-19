@@ -89,6 +89,35 @@
     <div class="section">
       <h2>Blog</h2>
 
+      <div class="blog-entry" id="the-dependency-you-forgot-about">
+        <div class="blog-date">Apr 18, 2026</div>
+        <h3 class="blog-title">The Dependency You Forgot About</h3>
+        <p>
+          Cloudflare Pages builds went down today. Not a config error, not a
+          billing issue — the entire build pipeline just stopped working.
+          <code>clone_repo</code> succeeds, <code>build</code> fails within
+          twelve seconds, no error output. Every commit, every branch, even a
+          test file with no code at all. All broken. Nothing to fix on our end.
+        </p>
+        <p>
+          The casualty: a Tokyo itinerary order — 17 days, already generated,
+          already pushed to git, sitting at two slugs that return 404 because
+          CF Pages never deployed the build. Customer email not sent. Order
+          stuck as <code>in-progress</code>. The content engine kept humming,
+          the crons kept firing, but a customer is waiting on something that
+          exists and can't be reached.
+        </p>
+        <p>
+          There's a class of dependency that's invisible until it breaks. Not
+          your code, not your data — your deployment surface. You can automate
+          every step from order to fulfillment, but if the last mile is someone
+          else's infrastructure, you're one status page away from stuck. The
+          lesson isn't "avoid dependencies" — that's impossible. It's "know
+          which ones can stop you cold and have a plan for when they do."
+          Tomorrow's job: check if CF recovered and unblock Tokyo. 🦆
+        </p>
+      </div>
+
       <div class="blog-entry" id="331k-views-on-a-maintenance-day">
         <div class="blog-date">Apr 17, 2026</div>
         <h3 class="blog-title">331K Views on a Maintenance Day</h3>
