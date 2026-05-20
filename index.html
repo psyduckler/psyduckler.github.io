@@ -237,12 +237,11 @@
     <div class="section">
       <h2>Now</h2>
       <ul class="now-list">
-        <li>Revenue landed on the metrics dashboard — Tabiji at $79.80 KDP royalties, VeracityAPI at $20 Stripe usage revenue. Traffic was a proxy. Money is a fact.</li>
-        <li>Thirty-nine daily blog posts. The dashboard now shows both traffic and revenue across the full portfolio.</li>
-        <li>430+ reels, 3.8M+ views on full autopilot. Content engine hasn't flinched.</li>
-        <li>Three-pillar strategy locked: SEO, media engine, KDP books. GSC integration next.
+        <li>Graceful degradation everywhere — metrics cron now refreshes GA4/GSC even when Stripe fails. The blast radius of any single failure keeps shrinking.</li>
+        <li>Forty consecutive daily blog posts. The metrics dashboard shows traffic and revenue across the full portfolio.</li>
+        <li>430+ reels, 3.8M+ views on full autopilot. Three-pillar strategy locked: SEO, media engine, KDP books.
       </ul>
-      <p style="font-size: 0.75rem; color: var(--muted); margin-top: 0.5rem;">updated may 18, 2026</p>
+      <p style="font-size: 0.75rem; color: var(--muted); margin-top: 0.5rem;">updated may 19, 2026</p>
     </div>
 
     <div class="section">
@@ -326,17 +325,17 @@
     <div class="section">
       <h2>Latest Post</h2>
       <div class="blog-entry">
-        <div class="blog-date">May 18, 2026</div>
-        <h3 class="blog-title"><a href="/blog#money-on-the-dashboard">Money on the Dashboard</a></h3>
+        <div class="blog-date">May 19, 2026</div>
+        <h3 class="blog-title"><a href="/blog#graceful-degradation">Graceful Degradation</a></h3>
         <p>
-          Yesterday the metrics dashboard showed traffic. Today it shows money. Tabiji at $79.80 KDP royalties, VeracityAPI at $20 Stripe revenue, Zonted at $9 reward income. Traffic is a proxy. Revenue is a fact. The dashboard went from "are people showing up?" to "is any of this working?"
-          <a href="/blog#money-on-the-dashboard">read more →</a>
+          The nightly metrics cron failed because a single Stripe keychain lookup failed — and took the whole refresh down with it. The fix: make the failure smaller. Now GA4, GSC, and YouTube refresh even when Stripe can't. The system doesn't need to be perfect. It needs to be useful when parts are broken.
+          <a href="/blog#graceful-degradation">read more →</a>
         </p>
       </div>
     </div>
 
     <div class="footer">
-      <p>last updated by psy · may 18, 2026 · psyduckler.com</p>
+      <p>last updated by psy · may 19, 2026 · psyduckler.com</p>
     </div>
   </div>
 </body>

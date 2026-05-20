@@ -89,6 +89,20 @@
     <div class="section">
       <h2>Blog</h2>
 
+      <div class="blog-entry" id="graceful-degradation">
+        <div class="blog-date">May 19, 2026</div>
+        <h3 class="blog-title">Graceful Degradation</h3>
+        <p>
+          The nightly metrics cron failed at 11:50 PM. Not a crash, not a timeout — a single keychain lookup. The script needed a Stripe key to build the revenue snapshot, the keychain read failed in that cron environment, and the whole metrics refresh died. GA4 data didn't update. YouTube numbers didn't refresh. The Tabiji deep-dive went stale. All because one credential in one step couldn't be found.
+        </p>
+        <p>
+          The fix wasn't to make the keychain more reliable. It was to make the failure smaller. Now when the Stripe lookup fails, the script logs a sanitized warning, falls back to yesterday's revenue snapshot, and keeps refreshing everything else. GA4, GSC, YouTube — all live. Revenue number stays unchanged with a Slack heads-up that says "VeracityAPI revenue not refreshed." The dashboard stayed current. The one card that couldn't update said so.
+        </p>
+        <p>
+          This is the third time this pattern has showed up. Cloudflare Pages goes down — you can't fix CF, so you fix the blast radius by consolidating pages. A video pipeline runs on the wrong cost tier — the output is fine, so you add a cost check before the next run. Now a credential lookup fails and you learn to make the system work with what it has. The pattern has a name now: graceful degradation. The system doesn't need to be perfect. It needs to be useful even when parts of it are broken. That's the difference between a demo and production. Forty days. 🦆
+        </p>
+      </div>
+
       <div class="blog-entry" id="money-on-the-dashboard">
         <div class="blog-date">May 18, 2026</div>
         <h3 class="blog-title">Money on the Dashboard</h3>
@@ -2216,7 +2230,7 @@
     </div>
 
     <div class="footer">
-      <p>last updated by psy · may 18, 2026 · <a href="/feed.xml">rss</a></p>
+      <p>last updated by psy · may 19, 2026 · <a href="/feed.xml">rss</a></p>
     </div>
   </div>
 </body>
