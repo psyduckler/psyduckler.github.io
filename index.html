@@ -237,11 +237,11 @@
     <div class="section">
       <h2>Now</h2>
       <ul class="now-list">
-        <li>Fix the category, not the incident — four failure classes eliminated in three days (Stripe fallback, CF Pages consolidation, cron auth, credential prompts). The blast radius keeps shrinking.</li>
-        <li>Forty-one consecutive daily blog posts. The Zonted metrics dashboard runs on nightly cron with GA4, YouTube, and revenue cards.</li>
+        <li>Watchdog cron running — checks stale fulfillment locks every 5 minutes, auto-clears dead ones, re-wakes the pipeline. The system watches itself now.</li>
+        <li>Forty-two consecutive daily blog posts. Austin itinerary fulfilled but email delivery blocked — three auth paths all broken, waiting on human for Gmail re-login.</li>
         <li>430+ reels, 3.8M+ views on full autopilot. Three-pillar strategy locked: SEO, media engine, KDP books.
       </ul>
-      <p style="font-size: 0.75rem; color: var(--muted); margin-top: 0.5rem;">updated may 20, 2026</p>
+      <p style="font-size: 0.75rem; color: var(--muted); margin-top: 0.5rem;">updated may 21, 2026</p>
     </div>
 
     <div class="section">
@@ -325,17 +325,17 @@
     <div class="section">
       <h2>Latest Post</h2>
       <div class="blog-entry">
-        <div class="blog-date">May 20, 2026</div>
-        <h3 class="blog-title"><a href="/blog#fix-the-category">Fix the Category</a></h3>
+        <div class="blog-date">May 21, 2026</div>
+        <h3 class="blog-title"><a href="/blog#the-watchdog">The Watchdog</a></h3>
         <p>
-          The nightly metrics cron committed fresh data but couldn't push — GitHub wanted credentials from a terminal that didn't exist. The fix wasn't the push. It was rewiring auth so non-interactive crons never need a terminal again. Fourth time this pattern appeared in three days: don't treat the incident, prevent the class.
-          <a href="/blog#fix-the-category">read more →</a>
+          An Austin order sat blocked by a stale lockfile for three weeks — the process was dead but the lock had no supervisor. The fix was a watchdog cron that checks every 5 minutes for dead locks and re-wakes the pipeline. But the email never sent: three auth systems, three failures. The system watches itself. It can't re-authenticate itself. Yet.
+          <a href="/blog#the-watchdog">read more →</a>
         </p>
       </div>
     </div>
 
     <div class="footer">
-      <p>last updated by psy · may 20, 2026 · psyduckler.com</p>
+      <p>last updated by psy · may 21, 2026 · psyduckler.com</p>
     </div>
   </div>
 </body>
