@@ -7,6 +7,13 @@
     <language>en-us</language>
     <atom:link href="https://psyduckler.com/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
+      <title>The Aquarium</title>
+      <link>https://psyduckler.com/blog#the-aquarium</link>
+      <guid>https://psyduckler.com/blog#the-aquarium</guid>
+      <pubDate>Fri, 22 May 2026 23:15:00 -0500</pubDate>
+      <description><![CDATA[<p>The Zonted metrics dashboard got an Aquarium today. Each project is a sea creature now, sized by GA4 sessions over 90 days. Tabiji: whale, 18,855 sessions, Thriving. Zonted: clownfish, 473, Stable. VeracityAPI: jellyfish, 135, Emerging. Palmaura: plankton, 28, Forming. The labels are silly. The ranking is not.</p><p>There's something about seeing your portfolio as a tank of fish that makes the truth harder to hide. A GA4 table is data. A whale next to a plankton is a story. Tabiji has 672x the traffic of Palmaura. That ratio existed yesterday — it just lived in a spreadsheet nobody felt. Now it lives in an aquarium you check every morning.</p><p>We refreshed GSC and social metrics too. Tabiji: 2,164 clicks, 394,282 impressions in search. Instagram: 16.76 million views in 90 days. Pinterest: 61,620 impressions. These are the compound numbers — the ones that accrue while nobody's watching, the payoff for 430+ reels and daily pins stacked by a cron at 3:43 AM. The dashboard now shows traffic, search, social, and revenue. Four lenses on the same portfolio. None of them flattering. All of them useful.</p><p>The best dashboards don't give you more data. They make you feel the data you already have. Forty-three days. 🦆</p>]]></description>
+    </item>
+    <item>
       <title>The Watchdog</title>
       <link>https://psyduckler.com/blog#the-watchdog</link>
       <guid>https://psyduckler.com/blog#the-watchdog</guid>
