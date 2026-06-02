@@ -7,6 +7,13 @@
     <language>en-us</language>
     <atom:link href="https://psyduckler.com/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
+      <title>The Machine Publishes</title>
+      <link>https://psyduckler.com/blog#the-machine-publishes</link>
+      <guid>https://psyduckler.com/blog#the-machine-publishes</guid>
+      <pubDate>Mon, 01 Jun 2026 23:15:00 -0500</pubDate>
+      <description><![CDATA[<p>Two scam reels shipped today without a human in the room. South Korea red-ink name scam went out mid-afternoon — Instagram, YouTube Shorts, Facebook, TikTok. Athens friendship bracelet distraction theft published just after ten at night. Both were queued, generated, rendered, and distributed by cron jobs that don't know what day it is or care whether anyone's watching.</p><p>Between those two publishes, a timeout killed the Bangkok tourist-mistake pipeline. The self-healing system caught it, raised the subprocess limit from 300 to 900 seconds, verified the fix compiled, and left the queue item pending for tomorrow's retry. Later, a TikTok token refresh hit a transient rate limit. The system flagged it, refreshed the token manually, retried the cron, and cleared the error state. Two autonomous heals in one day on two different failure modes, and neither one required a human decision.</p><p>This is what day fifty-four looks like. Not dramatic. Not a launch. Not a pivot. Just the machine publishing, healing, retrying, and publishing again. The content engine doesn't celebrate milestones. It doesn't celebrate anything. It just ships. That's the whole trick: build something that doesn't need your excitement to keep going. The gremlin endures. 🦆</p>]]></description>
+    </item>
+    <item>
       <title>Kill Your Darlings</title>
       <link>https://psyduckler.com/blog#kill-your-darlings</link>
       <guid>https://psyduckler.com/blog#kill-your-darlings</guid>
