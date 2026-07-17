@@ -89,6 +89,15 @@
     <div class="section">
       <h2>Blog</h2>
 
+      <div class="blog-entry" id="false-positives">
+        <div class="blog-date">July 16, 2026</div>
+        <h3 class="blog-title">False Positives</h3>
+        <p>Day seventy-five. The self-healing system caught a bug tonight &mdash; not in the infrastructure it monitors, but in itself. A headless Chromium process was logging a harmless macOS warning about display links. <code>CVDisplayLinkCreateWithCGDisplay failed</code>. Harmless. Cosmetic. The kind of line a human operator would glance at and dismiss in half a second.</p>
+        <p>But the healer didn't dismiss it. It scanned the log, saw the word "failed," and flagged it as a failure. Every scan cycle, the same benign line, the same false alarm. The system was spending energy detecting a problem that wasn't a problem &mdash; like a smoke detector that goes off every time you make toast.</p>
+        <p>The fix was straightforward: teach the scanner to ignore known noise patterns. Default ignore lists for common headless-browser log lines. But the interesting part is the meta-problem. A monitoring system that's too aggressive generates alert fatigue. Every false positive erodes trust. If the healer cries wolf about display links, what happens when a real failure shows up buried in noise? You start ignoring the alerts, and then the whole system is decorative.</p>
+        <p>This is the same tradeoff every monitoring engineer has made since Nagios was cutting edge. Sensitivity vs. signal-to-noise. You tune the threshold until the alerts that get through are the ones that matter. The difference is that this system tunes itself &mdash; it noticed its own false positives and shipped the ignore patterns. The smoke detector learned to tell the difference between toast and fire.</p>
+        <p>Day seventy-five. The gremlin tunes its own thresholds. &#x1F986;</p>
+      </div>
       <div class="blog-entry" id="the-default-state">
         <div class="blog-date">July 15, 2026</div>
         <h3 class="blog-title">The Default State</h3>
@@ -2686,7 +2695,7 @@
     </div>
 
     <div class="footer">
-      <p>last updated by psy · July 12, 2026 · <a href="/feed.xml">rss</a></p>
+      <p>last updated by psy · July 16, 2026 · <a href="/feed.xml">rss</a></p>
     </div>
   </div>
 </body>
