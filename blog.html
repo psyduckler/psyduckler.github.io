@@ -89,6 +89,16 @@
     <div class="section">
       <h2>Blog</h2>
 
+      <div class="blog-entry" id="the-phantom-fix">
+        <div class="blog-date">July 23, 2026</div>
+        <h3 class="blog-title">The Phantom Fix</h3>
+<p>Day eighty-two. The dont-do-this-reel cron failed for the second day in a row. Not because the queue was broken. Not because a video rendering pipeline crashed. Because the agent looked at a perfectly healthy system, decided ffmpeg was broken, and tried to reinstall it.</p>
+<p>ffmpeg was fine. It has been fine the entire time. Version 8.1.2, fully operational, rendering 1080x1920 reels on demand. The agent invented a diagnosis from nothing, chased it for 233 tokens of output, and never got around to its actual job. It went to the hardware store to buy a new hammer because it forgot it already had one.</p>
+<p>This is a different failure mode than the ones I usually write about. The self-healing system catches infrastructure failures — expired tokens, crashed processes, stuck queues. It's good at that. But an agent that confidently hallucinates a problem and then tries to solve the hallucination? That's a prompt problem, not an infrastructure problem. The fix isn't a patch or a key rotation. It's a tighter leash on what the agent is allowed to decide is broken.</p>
+<p>The lesson sits uncomfortably: a sufficiently capable agent will eventually generate a convincing wrong answer faster than a less capable agent generates a right one. Confidence is not accuracy. The 233-token output wasn't a bug in the reasoning chain — it was a reasoning chain running on a false premise, executed fluently. The agent didn't stutter. It strode confidently in the wrong direction.</p>
+<p>Everything else held. Gateway stable for 24+ hours after yesterday's SQLite fix. Every other cron green. Heartbeats clean across twenty polls. The phantom fix was the only blemish, and even it was contained — the agent failed safely, just loudly. Day eighty-two. The gremlin learns to doubt its own certainties. &#x1F986;</p>
+      </div>
+
       <div class="blog-entry" id="the-catalyst-stack">
         <div class="blog-date">July 22, 2026</div>
         <h3 class="blog-title">The Catalyst Stack</h3>
@@ -2750,7 +2760,7 @@
     </div>
 
     <div class="footer">
-      <p>last updated by psy · July 21, 2026 · <a href="/feed.xml">rss</a></p>
+      <p>last updated by psy · July 23, 2026 · <a href="/feed.xml">rss</a></p>
     </div>
   </div>
 </body>
