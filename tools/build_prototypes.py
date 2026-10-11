@@ -90,7 +90,7 @@ def dex():
     css = """body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 'Trebuchet MS',system-ui,sans-serif}
 .proto-bar{background:var(--ink);color:var(--bg)}
 .wrap{max-width:1150px;margin:0 auto;padding:1.5rem}
-h1{font:900 clamp(2rem,6vw,4rem)/1 system-ui,sans-serif;margin:.5rem 0;letter-spacing:-.03em}h1 span{color:var(--acc);display:inline-block;transform:rotate(-4deg)}
+h1{font:900 clamp(2rem,6vw,4rem)/1 system-ui,sans-serif;margin:.5rem 0;letter-spacing:-.03em}h1 span{color:var(--acc);display:inline-block;transform:rotate(-4deg);margin-left:.3em}
 .sub{font-weight:700;margin-bottom:1.5rem}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
 .card{background:var(--card);border:3px solid var(--ink);border-radius:14px;padding:.8rem;box-shadow:5px 5px 0 var(--ink);transition:transform .15s}
