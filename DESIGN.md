@@ -265,3 +265,15 @@ There is no collapsing. The single-column layout at 600px max-width works at eve
 8. Line-height 1.7 globally — generous, uniform vertical rhythm
 9. Gold (`#f5c518`) is the only accent — it marks what matters: your name, your work, your links
 10. The constraint IS the design — don't add, subtract
+
+## Light & dark mode (added Oct 11, 2026)
+
+All colors are CSS custom properties defined once in `tools/theme.py` and emitted on every page:
+`--bg --fg --accent --link --muted --border --border-soft --card --code-bg --pos --neg`.
+
+- **Dark:** bg `#0d0d0d`, fg `#e0e0e0`, accent/link `#f5c518`, muted `#8a8a8a` (raised from `#666` for contrast), border `#262626`, card `#121212`, pos `#7ccf6a`, neg `#ef7b7b`.
+- **Light:** bg `#fbfaf6` (warm paper), fg `#1c1c1c`, accent/link `#8a6a00` (deep gold, AA on paper), muted `#5f5f5f`, border `#dedbd2`, card `#ffffff`, pos `#1d7a34`, neg `#b42318`.
+- Default follows the system via `prefers-color-scheme`. A nav toggle cycles **system → light → dark** and stores the choice in `localStorage["theme"]` (system = key removed). A tiny inline `<head>` script sets `html[data-theme]` before paint, so there is no flash. Every page has `<meta name="color-scheme" content="light dark">`.
+- Generated pages get this from `tools/build.py`; hand-written pages (`blog.html`, `404.html`) via `python3 tools/theme.py`; `tools/add_post.py` re-applies it to `blog.html` on every new post.
+- Never hardcode a hex color in page CSS; add a variable to `tools/theme.py`.
+- Agent cards are separate bordered cards with a gap (no filled grid background), so short rows leave empty space, not a filled block.

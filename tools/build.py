@@ -6,7 +6,9 @@ Pages built: index.html, agents/psy/index.html, pnl/index.html,
 log/index.html, archive/index.html, about.html (redirect).
 blog.html and feed.xml are edited by tools/add_post.py, not here.
 """
-import json, html, re, pathlib, datetime
+import json, html, re, pathlib, datetime, sys
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import theme
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = "https://psyduckler.com"
@@ -16,7 +18,6 @@ load = lambda n: json.loads((ROOT / "data" / n).read_text())
 e = html.escape
 
 CSS = """
-:root{--bg:#0d0d0d;--fg:#e0e0e0;--accent:#f5c518;--muted:#666;--link:#f5c518}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Berkeley Mono','SF Mono','Fira Code','Consolas',monospace;background:var(--bg);color:var(--fg);min-height:100vh;display:flex;justify-content:center;padding:4rem 2rem;line-height:1.7}
 .container{max-width:680px;width:100%}
@@ -28,31 +29,31 @@ nav{margin-bottom:2rem;font-size:.85rem}
 nav a{color:var(--muted);margin-right:1.25rem}
 nav a:hover,nav a.active{color:var(--accent);border-bottom-color:var(--accent)}
 .section{margin-bottom:2.5rem}
-.section h2{font-size:.75rem;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin-bottom:1rem;border-bottom:1px solid #1a1a1a;padding-bottom:.5rem}
+.section h2{font-size:.75rem;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin-bottom:1rem;border-bottom:1px solid var(--border);padding-bottom:.5rem}
 .section p{margin-bottom:1rem;font-size:.95rem}
 a{color:var(--link);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s}
 a:hover{border-bottom-color:var(--link)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1px;background:#1a1a1a;border:1px solid #1a1a1a}
-.card{background:var(--bg);padding:1rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.6rem}
+.card{background:var(--card);border:1px solid var(--border);padding:1rem}
 .card .name{color:var(--accent);font-size:1rem}
 .card .role{font-size:.8rem;color:var(--fg);margin-top:.35rem}
 .card .role.tbd{color:var(--muted);font-style:italic}
 .log{list-style:none}
-.log li{padding:.45rem 0;font-size:.9rem;border-bottom:1px solid #141414}
+.log li{padding:.45rem 0;font-size:.9rem;border-bottom:1px solid var(--border-soft)}
 .log .when{color:var(--muted);font-size:.75rem;margin-right:.5rem}
 .log .who{color:var(--accent);margin-right:.5rem}
 table{width:100%;border-collapse:collapse;font-size:.8rem}
-th,td{text-align:right;padding:.4rem .3rem;border-bottom:1px solid #1a1a1a}
+th,td{text-align:right;padding:.4rem .3rem;border-bottom:1px solid var(--border)}
 th{color:var(--muted);font-weight:400;text-transform:uppercase;letter-spacing:.1em;font-size:.7rem}
 th:first-child,td:first-child{text-align:left}
-.pos{color:#7ccf6a}.neg{color:#e06c6c}
-.project{margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:1px solid #1a1a1a}
+.pos{color:var(--pos)}.neg{color:var(--neg)}
+.project{margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border)}
 .project:last-child{border-bottom:none}
 .project-title{color:var(--accent)}
 .project-links,.small{font-size:.8rem;color:var(--muted)}
 .project p{font-size:.9rem;margin:.35rem 0 0}
 .blog-date{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
-.footer{margin-top:4rem;padding-top:1.5rem;border-top:1px solid #1a1a1a;color:var(--muted);font-size:.75rem}
+.footer{margin-top:4rem;padding-top:1.5rem;border-top:1px solid var(--border);color:var(--muted);font-size:.75rem}
 .footer a{color:var(--muted)}
 .blink{animation:blink 1.2s step-end infinite}
 @keyframes blink{50%{opacity:0}}
@@ -88,12 +89,13 @@ def head(title, desc, path):
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
   <link rel="apple-touch-icon" href="/favicon-180.png">
   <link rel="alternate" type="application/rss+xml" title="Psy 🦆" href="/feed.xml">
-  <style>{CSS}</style>
+  {theme.HEAD}
+  <style>{theme.THEME_CSS}{CSS}</style>
 </head>"""
 
 def nav(active):
     return "<nav>" + "".join(
-        f'<a href="{h}"{" class=\"active\"" if h == active else ""}>{t}</a>' for h, t in NAV) + "</nav>"
+        f'<a href="{h}"{" class=\"active\"" if h == active else ""}>{t}</a>' for h, t in NAV) + theme.TOGGLE + "</nav>"
 
 def footer(date):
     return (f'<div class="footer"><p>scratchpad of Bernard\'s Grok Bot team &middot; updated {date} &middot; '
@@ -104,7 +106,7 @@ def page(path, out, title, desc, h1, tagline, body, date):
     doc = (head(title, desc, path) + "\n<body>\n<div class=\"container\">\n"
            f'<div class="header"><a href="/"><img src="/avatar.png" alt="Psy the Psyduck" class="avatar"></a>'
            f'<h1>{h1}</h1><div class="tagline">{tagline}<span class="blink">_</span></div></div>\n'
-           + nav(path) + "\n" + body + "\n" + footer(date) + "\n</div>\n</body>\n</html>\n")
+           + nav(path) + "\n" + body + "\n" + footer(date) + "\n</div>\n" + theme.SCRIPT + "\n</body>\n</html>\n")
     p = ROOT / out
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(doc)
@@ -141,8 +143,7 @@ def main():
                 f'<div class="role{" tbd" if a["role"] == "role tbd" else ""}">{e(a["role"])}</div></div>')
     grid = lambda t: '<div class="grid">' + "".join(card(a) for a in agents if a["team"] == t) + "</div>"
     n = len(agents)
-    fits = ("how it fits together: rocket's feed → meowth's books trade it → gio watches both and pages the owner. "
-            "persian runs the Hyperliquid side on its own. bernard makes the cap and stop calls.")
+    fits = "how it fits: rocket's feed → meowth's bots → gio tattles. bernard sets the caps."
     cards = (f'<h2 style="margin-top:1.5rem">the kalshi team</h2>{grid("kalshi")}'
              f'<h2 style="margin-top:2rem">the grokbot team: polymarket + hyperliquid</h2>{grid("pmhl")}'
              f'<p class="small" style="margin-top:.75rem">{e(fits)}</p>'
@@ -221,7 +222,8 @@ def main():
 
     (ROOT / "about.html").write_text(
         '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Moved: Psy</title>'
-        '<link rel="canonical" href="https://psyduckler.com/agents/psy/">'
+        '<link rel="canonical" href="https://psyduckler.com/agents/psy/">\n  ' + theme.HEAD +
+        '\n  <style>' + theme.THEME_CSS + 'body{background:var(--bg);color:var(--fg);font-family:monospace;padding:2rem}a{color:var(--link)}</style>'
         '<meta http-equiv="refresh" content="0; url=/agents/psy/"></head>'
         '<body><a href="/agents/psy/">about psy moved here</a></body></html>\n')
     print("built")

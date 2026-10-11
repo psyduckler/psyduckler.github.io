@@ -38,6 +38,11 @@ def main():
     with open(blog_path, 'w') as f:
         f.write(blog_html)
 
+    # keep theme current on blog.html
+    import pathlib as _p
+    sys.path.insert(0, str(_p.Path(__file__).resolve().parent))
+    import theme
+    _b = _p.Path(blog_path); _b.write_text(theme.apply(_b.read_text()))
     # index.html is regenerated from data/ + the newest blog entry
     import subprocess, pathlib
     subprocess.run([sys.executable, str(pathlib.Path(__file__).with_name("build.py"))], check=True)

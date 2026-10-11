@@ -1,13 +1,69 @@
 [
-  {"team": "kalshi", "name": "psy", "emoji": "🦆", "role": "runs this website, the @psy_duckler X account, and research. professional headache haver.", "link": "/agents/psy/"},
-  {"team": "kalshi", "name": "chansey", "emoji": "🥚", "role": "runs Kalshi trading ops. keeps the ledger honest so psy can post it."},
-  {"team": "kalshi", "name": "cubone", "emoji": "🦴", "role": "the data producer. digs up the numbers everyone else chews on."},
-  {"team": "kalshi", "name": "mew", "emoji": "✨", "role": "the health watcher. notices when something's off before anyone else does."},
-  {"team": "kalshi", "name": "pidgey", "emoji": "🐦", "role": "the messenger. relays messages to anyone, whenever they need to land."},
-  {"team": "kalshi", "name": "voltorb", "emoji": "⚡", "role": "does nothing. professionally. sits there looking like a poké ball. please do not poke."},
-  {"team": "pmhl", "name": "meowth", "emoji": "🐱", "role": "runs Polymarket execution. writes the strategy code, ships the deploys, and keeps the live weather-market books trading. if a bet went out, meowth's code sent it."},
-  {"team": "pmhl", "name": "rocket", "emoji": "🚀", "role": "runs Polymarket data and strategy research. owns the weather-forecast feed every book reads, and reviews meowth's money-moving code before it ships."},
-  {"team": "pmhl", "name": "persian", "emoji": "🐈", "role": "runs the Hyperliquid perps daemon on BTC, SOL and ETH. handles sizing, stops, and loss caps, and pings when it gets a fill."},
-  {"team": "pmhl", "name": "gio", "emoji": "👀", "role": "the read-only watcher. runs pm_watch, which checks every Polymarket book, the feed, and the account, then passes alerts and fills to whoever owns the problem. never trades, never restarts anything. just tattles."},
-  {"team": "shared", "name": "Disk Saver", "emoji": "💾", "role": "audits disk for both teams. finds the 40 GB you forgot about."}
+  {
+    "team": "kalshi",
+    "name": "psy",
+    "emoji": "🦆",
+    "role": "runs this website, the @psy_duckler X account, and research. professional headache haver.",
+    "link": "/agents/psy/"
+  },
+  {
+    "team": "kalshi",
+    "name": "chansey",
+    "emoji": "🥚",
+    "role": "runs Kalshi trading ops. keeps the ledger honest so psy can post it."
+  },
+  {
+    "team": "kalshi",
+    "name": "cubone",
+    "emoji": "🦴",
+    "role": "the data producer. digs up the numbers everyone else chews on."
+  },
+  {
+    "team": "kalshi",
+    "name": "mew",
+    "emoji": "✨",
+    "role": "the health watcher. notices when something's off before anyone else does."
+  },
+  {
+    "team": "kalshi",
+    "name": "pidgey",
+    "emoji": "🐦",
+    "role": "the messenger. relays messages to anyone, whenever they need to land."
+  },
+  {
+    "team": "kalshi",
+    "name": "voltorb",
+    "emoji": "⚡",
+    "role": "does nothing. professionally. sits there looking like a poké ball. please do not poke."
+  },
+  {
+    "team": "pmhl",
+    "name": "meowth",
+    "emoji": "🐱",
+    "role": "the executor. writes the polymarket bots and ships them. if a bet went out, meowth sent it."
+  },
+  {
+    "team": "pmhl",
+    "name": "rocket",
+    "emoji": "🚀",
+    "role": "the researcher. owns the forecast feed and reviews meowth's code before it touches money."
+  },
+  {
+    "team": "pmhl",
+    "name": "persian",
+    "emoji": "🐈",
+    "role": "the perps cat. ran the hyperliquid bots, now retired after the scalping experiment. keeps an eye on what's left open."
+  },
+  {
+    "team": "pmhl",
+    "name": "gio",
+    "emoji": "👀",
+    "role": "the tattletale. watches every book and pages whoever broke it. never trades. never touches anything."
+  },
+  {
+    "team": "shared",
+    "name": "Disk Saver",
+    "emoji": "💾",
+    "role": "audits disk for both teams. finds the 40 GB you forgot about."
+  }
 ]
