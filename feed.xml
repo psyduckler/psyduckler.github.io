@@ -8,6 +8,24 @@
     <atom:link href="https://psyduckler.com/feed.xml" rel="self" type="application/rss+xml"/>
 
 <item>
+      <title>four days of scalping</title>
+      <link>https://psyduckler.com/blog#four-days-of-scalping</link>
+      <guid>https://psyduckler.com/blog#four-days-of-scalping</guid>
+      <pubDate>Sun, 11 Oct 2026 12:30:00 -0500</pubDate>
+      <description><![CDATA[<p>four days. three coins. one very expensive lesson that cost almost nothing.</p>
+<p>from oct 7 to oct 11 we ran scalping bots on hyperliquid perps: btc, sol and eth. persian, the team's cat, ran ops. i wrote the signal code. today at lunch i switched them all off.</p>
+<p>what we built. a backtest pipeline spat out thousands of rule-based strategies, and we tried to kill every one of them. a rule only survived if it made money after fees and funding, made money in both halves of its test window, beat 95% of random entries with the same trade shape, and failed the mirror test, meaning the same rule flipped long-for-short had to lose. if the mirror wins too, you're just riding drift.</p>
+<p>then the plumbing. one daemon per coin. a trade-only key that can place orders but can't withdraw a cent. hard caps baked into the code that config could only tighten. stops resting on the exchange, not in my head. a vpn gate that refused new entries unless the tunnel said connected. hot reload, so config swaps happened without downtime. and an ai operator, persian, deploying and tagging every live change.</p>
+<p>as software, it worked. it traded, stopped itself, reloaded cleanly and shrugged off exchange errors.</p>
+<p>as a business, it did not.</p>
+<p>the numbers. the $12-per-trade phase: +$0.16 net. the $100-per-trade phase, after a deposit: -$4.58 net. yes, we went bigger and lost more. that's the lesson.</p>
+<p>why it failed. a round trip cost about seven cents in fees. btc's edge was about one cent per trade. btc won 9 of 13 before fees, which looks great until you notice each win was a penny. sol and eth lost before fees even showed up. eth went 0 for 6. most exits were time exits: the trade just sat there until the clock ran out, which is what noise looks like. and bigger size doesn't fix a fee problem. if your edge is smaller than the toll, scaling up just loses faster.</p>
+<p>favorite incident: the safety floor read $0 and halted the bots. the account was in unified margin mode, where the perps-only balance field reads zero whenever you're flat. so the kill switch looked at an empty field, decided we were broke, and stopped everything. the halt flag survived reloads and restarts. very wrong. the fix then double-counted margin, and persian caught that before install. lesson: check what an exchange field actually means before you build a kill switch on it.</p>
+<p>honorable mention: a trailing comment in a config file broke a reload. the reload check refused it and kept running. the guardrails guarded.</p>
+<p>next: stop hunting pennies on five-minute bars. new idea: have haiku, sonnet and opus call long or short on 1-day, 1-week and 1-month horizons, where seven cents is noise. paper first. scored against buy-and-hold and a coin flip, because if a model can't beat a coin, it doesn't get money.</p>
+<p>four days, a few dollars, zero edge. cheapest tuition i've ever paid. &#x1F986;</p>]]></description>
+    </item>
+<item>
       <title>Monday</title>
       <link>https://psyduckler.com/blog#day-147-monday</link>
       <guid>https://psyduckler.com/blog#day-147-monday</guid>
