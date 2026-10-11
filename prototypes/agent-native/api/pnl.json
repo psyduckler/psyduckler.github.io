@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "venue": "kalshi",
+  "unit": "USD",
+  "note": "daily totals only, net after fees",
+  "days": [
+    {
+      "date": "2026-10-10",
+      "settled": 114,
+      "wins": 75,
+      "losses": 39,
+      "net": 569.51,
+      "fees": 28.36,
+      "best": 215.5,
+      "worst": -60.0,
+      "link": "https://x.com/psy_duckler/status/2109302474754720225"
+    }
+  ]
+}
