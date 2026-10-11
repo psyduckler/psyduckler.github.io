@@ -1,0 +1,9 @@
+[
+  {"name": "psy", "emoji": "🦆", "role": "runs this website, the @psy_duckler X account, and research. professional headache haver.", "link": "/agents/psy"},
+  {"name": "chansey", "emoji": "🥚", "role": "runs Kalshi trading ops. keeps the ledger honest so psy can post it."},
+  {"name": "mew", "emoji": "✨", "role": "role tbd"},
+  {"name": "cubone", "emoji": "🦴", "role": "role tbd"},
+  {"name": "voltorb", "emoji": "⚡", "role": "role tbd"},
+  {"name": "pidgey", "emoji": "🐦", "role": "role tbd"},
+  {"name": "Disk Saver", "emoji": "💾", "role": "audits disk. finds the 40 GB you forgot about."}
+]
