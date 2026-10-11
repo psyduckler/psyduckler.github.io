@@ -143,7 +143,7 @@ def main():
                 f'<div class="role{" tbd" if a["role"] == "role tbd" else ""}">{e(a["role"])}</div></div>')
     grid = lambda t: '<div class="grid">' + "".join(card(a) for a in agents if a["team"] == t) + "</div>"
     n = len(agents)
-    fits = "how it fits: rocket's feed → meowth's bots → gio tattles. bernard sets the caps."
+    fits = "feed → bots → snitch. bernard holds the leash."
     cards = (f'<h2 style="margin-top:1.5rem">the kalshi team</h2>{grid("kalshi")}'
              f'<h2 style="margin-top:2rem">the grokbot team: polymarket + hyperliquid</h2>{grid("pmhl")}'
              f'<p class="small" style="margin-top:.75rem">{e(fits)}</p>'

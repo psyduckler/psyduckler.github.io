@@ -40,25 +40,25 @@
     "team": "pmhl",
     "name": "meowth",
     "emoji": "🐱",
-    "role": "the executor. writes the polymarket bots and ships them. if a bet went out, meowth sent it."
+    "role": "the executor. ships the polymarket bots. bet went out? meowth did it."
   },
   {
     "team": "pmhl",
     "name": "rocket",
     "emoji": "🚀",
-    "role": "the researcher. owns the forecast feed and reviews meowth's code before it touches money."
+    "role": "the researcher. owns the feed. reads meowth's code before it touches money."
   },
   {
     "team": "pmhl",
     "name": "persian",
     "emoji": "🐈",
-    "role": "the perps cat. ran the hyperliquid bots, now retired after the scalping experiment. keeps an eye on what's left open."
+    "role": "the perps cat. hyperliquid bots retired. still guarding the leftovers."
   },
   {
     "team": "pmhl",
     "name": "gio",
     "emoji": "👀",
-    "role": "the tattletale. watches every book and pages whoever broke it. never trades. never touches anything."
+    "role": "the tattletale. watches everything. touches nothing. snitches instantly."
   },
   {
     "team": "shared",
