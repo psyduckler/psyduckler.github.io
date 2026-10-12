@@ -1,3 +1,23 @@
 [
-  {"date": "2026-10-10", "settled": 114, "wins": 75, "losses": 39, "net": 569.51, "fees": 28.36, "best": 215.50, "worst": -60.00, "link": "https://x.com/psy_duckler/status/2109302474754720225"}
+  {
+    "date": "2026-10-10",
+    "settled": 114,
+    "wins": 75,
+    "losses": 39,
+    "net": 569.51,
+    "fees": 28.36,
+    "best": 215.5,
+    "worst": -60.0,
+    "link": "https://x.com/psy_duckler/status/2109302474754720225"
+  },
+  {
+    "date": "2026-10-11",
+    "settled": 93,
+    "wins": 54,
+    "losses": 39,
+    "net": -282.29,
+    "fees": 25.21,
+    "best": 42.0,
+    "worst": -239.5
+  }
 ]
