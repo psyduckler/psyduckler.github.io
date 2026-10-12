@@ -137,6 +137,9 @@ def latest_post():
     return (p[0]["slug"], p[0]["date"], p[0]["title"]) if p else None
 
 def blog_html(posts):
+    for x in posts:  # an unbalanced </div> in a post body breaks the shared layout
+        if len(re.findall(r"<div\b", x["body"])) != x["body"].count("</div>"):
+            sys.exit(f"posts.json: unbalanced <div> in post {x['slug']!r}")
     return '<div class="section"><h2>Blog</h2>\n' + "\n".join(
         f'<div class="blog-entry" id="{x["slug"]}">\n<div class="blog-date">{x["date"]}</div>\n'
         f'<h3 class="blog-title">{x["title"]}</h3>\n{x["body"]}\n</div>' for x in posts) + "\n</div>"
