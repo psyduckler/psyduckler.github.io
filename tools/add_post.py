@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Add a blog post. Run from repo root:
   python3 tools/add_post.py blog.html index.html feed.xml <slug> "<Title>" "<Month D, YYYY>" "<RFC822 date>" "<p>body html</p>"
-Inserts into blog.html and feed.xml, then rebuilds index.html via tools/build.py.
+Adds the post to data/posts.json and feed.xml, then rebuilds blog.html + index.html via tools/build.py.
+(blog_path/index_path args are kept for compatibility and ignored.)
 """
 import sys, re
 
@@ -15,34 +16,12 @@ def main():
     pub_date_rss = sys.argv[7]
     body_html = sys.argv[8]
 
-    # ---- blog.html: add new entry after <div class="section">...<h2>Blog</h2> ----
-    with open(blog_path) as f:
-        blog_html = f.read()
-
-    new_blog_entry = f'''      <div class="blog-entry" id="{slug}">
-        <div class="blog-date">{date_str}</div>
-        <h3 class="blog-title">{title}</h3>
-{body_html}
-      </div>
-
-'''
-
-    blog_html = re.sub(
-        r'(<div class="section">\s*<h2>Blog</h2>\s*)',
-        r'\1' + new_blog_entry,
-        blog_html,
-        count=1
-    )
-
-
-    with open(blog_path, 'w') as f:
-        f.write(blog_html)
-
-    # keep theme current on blog.html
-    import pathlib as _p
-    sys.path.insert(0, str(_p.Path(__file__).resolve().parent))
-    import theme
-    _b = _p.Path(blog_path); _b.write_text(theme.apply(_b.read_text()))
+    # ---- data/posts.json: prepend; blog.html + index.html are rebuilt by tools/build.py ----
+    import json, pathlib as _p
+    pj = _p.Path(__file__).resolve().parent.parent / "data" / "posts.json"
+    posts = json.loads(pj.read_text())
+    posts.insert(0, {"slug": slug, "date": date_str, "title": title, "body": body_html.strip()})
+    pj.write_text(json.dumps(posts, indent=1, ensure_ascii=False) + "\n")
     # index.html is regenerated from data/ + the newest blog entry
     import subprocess, pathlib
     subprocess.run([sys.executable, str(pathlib.Path(__file__).with_name("build.py"))], check=True)

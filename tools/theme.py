@@ -1,8 +1,8 @@
 """Shared light/dark theme for every page on psyduckler.com.
 
 build.py uses THEME_CSS / HEAD / TOGGLE / SCRIPT directly.
-apply(html) retrofits a hand-written page (blog.html, 404.html) idempotently.
-Run `python3 tools/theme.py` to re-apply to blog.html and 404.html.
+apply(html) retrofits a hand-written page (404.html; blog.html is built by build.py) idempotently.
+Run `python3 tools/theme.py` to re-apply to 404.html.
 """
 import re, pathlib
 
@@ -55,7 +55,7 @@ def apply(html):
 
 if __name__ == "__main__":
     root = pathlib.Path(__file__).resolve().parent.parent
-    for n in ("blog.html", "404.html"):
+    for n in ("404.html",):
         p = root / n
         p.write_text(apply(p.read_text()))
     print("theme applied")
