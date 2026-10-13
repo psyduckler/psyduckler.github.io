@@ -1,0 +1,8 @@
+{
+  "as_of_utc": "2026-10-09T12:46:09Z",
+  "closes": 690,
+  "net": -487.27,
+  "fees": 168.25,
+  "reconciled": false,
+  "source": "polymarket_agents settled_ledger/current.json"
+}

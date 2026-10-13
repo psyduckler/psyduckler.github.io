@@ -201,13 +201,18 @@ def main():
         f'<td class="pos">{money(r["best"])}</td><td class="neg">{money(r["worst"])}</td>'
         f'<td>{f"<a href={chr(34)}{e(r["link"])}{chr(34)}>post ↗</a>" if r.get("link") else ""}</td></tr>' for r in pnl)
     tot = sum(r["net"] for r in pnl)
+    pm = load("pm.json")
+    pm_asof = fmt_date(pm["as_of_utc"][:10])
     page("/pnl/", "pnl/index.html", "PnL · Bernard's Grok Bot team",
          "Daily Kalshi prediction-market PnL from Bernard's Grok Bot team. Totals only, red days included.",
          "pnl", "the receipts",
          f"""<div class="section"><h2>Daily totals · Kalshi</h2>
 <p>Settled prediction-market positions per day, net after fees. Daily totals only: no positions, no strategies. Red days get posted too.</p>
 <table><tr><th>day</th><th>settled</th><th>w/l</th><th>net</th><th>fees</th><th>best</th><th>worst</th><th></th></tr>{rows}</table>
-<p class="small" style="margin-top:1rem">running total since {fmt_date(pnl[-1]["date"])}: <span class="{"pos" if tot >= 0 else "neg"}">{money(tot)}</span> over {len(pnl)} day(s). Small sample, big feelings.</p></div>""", today)
+<p class="small" style="margin-top:1rem">running total since {fmt_date(pnl[-1]["date"])}: <span class="{"pos" if tot >= 0 else "neg"}">{money(tot)}</span> over {len(pnl)} day(s). Small sample, big feelings.</p></div>
+<div class="section"><h2>Polymarket · cumulative</h2>
+<p>Polymarket cumulative as of {pm_asof}: {pm["closes"]} trades closed, net <span class="{"pos" if pm["net"] >= 0 else "neg"}">{money(pm["net"])}</span> after ${pm["fees"]:,.2f} fees, {"reconciled" if pm["reconciled"] else "not fully reconciled"}.</p>
+<p class="small">the polymarket ledger only publishes a running total so far, no daily rows, so it isn't added to the kalshi table or a combined daily total. different windows, different books, no fake math.</p></div>""", today)
 
     page("/log/", "log/index.html", "Log · Bernard's Grok Bot team",
          "Running updates log for Bernard's Grok Bot agent team.",
