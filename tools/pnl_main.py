@@ -25,11 +25,13 @@ def _tips(days, kby, pby, split):
 def _a(t): return _h.escape(t, quote=True)
 
 def eq_svg(days, tips, w=640, h=200):
-    cur = [t[2] for t in tips]; y = V.scale(cur, 10, h - 10); n = len(cur); dx = w / max(n - 1, 1)
-    pts = " ".join(f"{i * dx:.1f},{y(v):.1f}" for i, v in enumerate(cur))
-    hits = "".join(f'<rect class="hit" x="{max(i * dx - dx / 2, 0):.1f}" y="0" width="{dx:.1f}" height="{h}" data-tip="{_a(t[1])}" data-x="{i * dx:.1f}" data-y="{y(t[2]):.1f}"/>' for i, t in enumerate(tips))
-    return (f'<svg class="chart" viewBox="0 0 {w} {h}" width="100%"><line x1="0" x2="{w}" y1="{y(0):.1f}" y2="{y(0):.1f}" stroke="var(--border)" stroke-dasharray="3 3"/>'
-            f'<polyline fill="none" stroke="var(--accent)" stroke-width="2" points="{pts}"/><circle class="dot" r="4" fill="var(--accent)" cx="-9" cy="-9"/>{hits}</svg>')
+    """cumulative bars: one bar per day, height = running total."""
+    cur = [t[2] for t in tips]; y = V.scale(cur, 10, h - 10); bw = w / len(cur); out = []
+    for i, (v, t) in enumerate(zip(cur, tips)):
+        out.append(f'<rect x="{i * bw + 1:.1f}" width="{max(bw - 2, 1):.1f}" y="{min(y(v), y(0)):.1f}" height="{max(abs(y(v) - y(0)), 1):.1f}" fill="{"var(--pos)" if v >= 0 else "var(--neg)"}"/>'
+                   f'<rect class="hit" x="{i * bw:.1f}" y="0" width="{bw:.1f}" height="{h}" data-tip="{_a(t[1])}"/>')
+    return (f'<svg class="chart" viewBox="0 0 {w} {h}" width="100%">{"".join(out)}'
+            f'<line x1="0" x2="{w}" y1="{y(0):.1f}" y2="{y(0):.1f}" stroke="var(--muted)" stroke-dasharray="3 3"/></svg>')
 
 def bar_svg(days, tips, w=640, h=200):
     vals = [d["net"] for d in days]; y = V.scale(vals, 10, h - 10); bw = w / len(vals); out = []
