@@ -20,14 +20,15 @@ e = html.escape
 
 CSS = """
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Berkeley Mono','SF Mono','Fira Code','Consolas',monospace;background:var(--bg);color:var(--fg);min-height:100vh;display:flex;justify-content:center;padding:4rem 2rem;line-height:1.7}
+body{font-family:'Berkeley Mono','SF Mono','Fira Code','Consolas',monospace;background:var(--bg);color:var(--fg);min-height:100vh;display:flex;justify-content:center;padding:1.25rem 2rem 4rem;line-height:1.7}
 .container{max-width:680px;width:100%}
-.avatar{width:96px;height:96px;border-radius:50%;border:2px solid var(--accent);margin-bottom:1rem;object-fit:cover}
-.header{margin-bottom:1.5rem}
-.header h1{font-size:2rem;font-weight:400;color:var(--accent);margin-bottom:.25rem}
-.tagline{color:var(--muted);font-size:.85rem}
-nav{margin-bottom:2rem;font-size:.85rem}
-nav a{color:var(--muted);margin-right:1.25rem}
+.topbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem 1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border);margin-bottom:1.75rem}
+.brand{display:flex;align-items:center;gap:.5rem;color:var(--accent);font-size:1rem;border:none}
+.brand:hover{border:none}
+.avatar{width:30px;height:30px;border-radius:50%;border:1px solid var(--accent);object-fit:cover;display:block}
+h1.title{font-size:1.35rem;font-weight:400;color:var(--fg);margin-bottom:1.25rem}
+nav{display:flex;align-items:center;flex-wrap:wrap;gap:.25rem 1.1rem;font-size:.85rem}
+nav a{color:var(--muted)}
 nav a:hover,nav a.active{color:var(--accent);border-bottom-color:var(--accent)}
 .section{margin-bottom:2.5rem}
 .section h2{font-size:.75rem;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin-bottom:1rem;border-bottom:1px solid var(--border);padding-bottom:.5rem}
@@ -63,10 +64,10 @@ th:first-child,td:first-child{text-align:left}
 .footer a{color:var(--muted)}
 .blink{animation:blink 1.2s step-end infinite}
 @keyframes blink{50%{opacity:0}}
-@media(max-width:480px){body{padding:2rem 1.25rem}.header h1{font-size:1.5rem}}
+@media(max-width:480px){body{padding:1rem 1.1rem 3rem}nav{gap:.25rem .85rem;font-size:.8rem}h1.title{font-size:1.2rem}}
 """
 
-NAV = [("/", "home"), ("/agents/psy/", "psy"), ("/log/", "log"), ("/pnl/", "pnl"),
+NAV = [("/agents/psy/", "psy"), ("/log/", "log"), ("/pnl/", "pnl"),
        ("/blog", "blog"), (X, "x ↗")]
 
 def head(title, desc, path):
@@ -115,9 +116,8 @@ def publish_date():
 def page(path, out, title, desc, h1, tagline, body, date=None):
     date = publish_date()  # footer shows the build/publish date, not the newest data date
     doc = (head(title, desc, path) + "\n<body>\n<div class=\"container\">\n"
-           f'<div class="header"><a href="/"><img src="/avatar.png" alt="Psy the Psyduck" class="avatar"></a>'
-           f'<h1>{h1}</h1><div class="tagline">{tagline}<span class="blink">_</span></div></div>\n'
-           + nav(path) + "\n" + body + "\n" + footer(date) + "\n</div>\n" + theme.SCRIPT + "\n</body>\n</html>\n")
+           f'<header class="topbar"><a class="brand" href="/"><img src="/avatar.png" alt="" class="avatar">psy</a>{nav(path)}</header>\n'
+           f'<h1 class="title">{h1}</h1>\n' + body + "\n" + footer(date) + "\n</div>\n" + theme.SCRIPT + "\n</body>\n</html>\n")
     p = ROOT / out
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(doc)
