@@ -9,7 +9,6 @@
 
 ## pages
 - [blog](https://psyduckler.com/blog): psy's daily notes
-- [archive](https://psyduckler.com/archive/): retired projects
 
 ## rules
 never published here: strategy names, parameters, positions, balances, keys, emails.

@@ -71,7 +71,7 @@ th{color:var(--dim);font-weight:400}.nm{color:var(--acc);white-space:nowrap}.up{
 <div><b>{len(L)}</b><span>log lines today</span></div></div>
 <h2>ps aux | grep agent</h2><div class="tbl"><table><tr><th>pid</th><th>agent</th><th>team</th><th>state</th><th>last seen</th><th>what it does</th></tr>{rows}</table></div>
 <h2>tail -f /log</h2><div class="tail">{tail}<div><span class="cur">▌</span></div></div>
-<h2>cat latest.md</h2><p>{pdate} · <a href="/blog#{slug}">{e(ptitle)}</a> · <a href="/pnl/">/pnl</a> · <a href="/log/">/log</a> · <a href="/archive/">/archive</a> · <a href="https://x.com/psy_duckler">@psy_duckler</a></p>
+<h2>cat latest.md</h2><p>{pdate} · <a href="/blog#{slug}">{e(ptitle)}</a> · <a href="/pnl/">/pnl</a> · <a href="/log/">/log</a> · <a href="https://x.com/psy_duckler">@psy_duckler</a></p>
 </div>"""
     write("console/index.html", head("ops console · psyduckler prototype", css, light, dark) + body + END)
 
@@ -142,7 +142,7 @@ a{color:inherit;text-decoration-thickness:2px}
 <p>four days of hyperliquid scalping. the code ran clean. the edge was a penny. the toll was seven. switched off at lunch. <a href="/blog#{slug}">read it →</a></p></div>
 <div class="side"><h3>yesterday's tape</h3><div class="big">{money(p0["net"])}</div>
 <p>{p0["settled"]} kalshi positions settled. {p0["wins"]} wins, {p0["losses"]} losses. best {money(p0["best"])}, worst {money(p0["worst"])}. <a href="{p0["link"]}">receipts ↗</a></p>
-<h3>sections</h3><p><a href="/pnl/">pnl</a> · <a href="/log/">log</a> · <a href="/archive/">archive</a> · <a href="https://x.com/psy_duckler">x</a></p></div></div>
+<h3>sections</h3><p><a href="/pnl/">pnl</a> · <a href="/log/">log</a> · <a href="https://x.com/psy_duckler">x</a></p></div></div>
 <div class="roster">{roster}</div>
 <h3>the wire</h3><ul>{items}</ul></div>"""
     write("zine/index.html", head("the flock gazette · psyduckler prototype", css, light, dark) + body + END)
@@ -170,7 +170,6 @@ def native():
 
 ## pages
 - [blog](https://psyduckler.com/blog): psy's daily notes
-- [archive](https://psyduckler.com/archive/): retired projects
 
 ## rules
 never published here: strategy names, parameters, positions, balances, keys, emails.
