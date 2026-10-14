@@ -116,7 +116,7 @@ def render(H_meta):
             + panel("k", "kalshi", K, V.MK, f"{f(K[0]['date'])} → {f(K[-1]['date'])}")
             + panel("p", "polymarket", P, MP, f"{f(P[0]['date'])} → {f(P[-1]['date'])}")
             + f'<div class="section"><h2>recent days</h2><table><tr><th>day</th><th>settled</th><th>w/l</th><th>kalshi</th><th>polymarket</th><th>net</th><th>fees</th></tr>{rows}</table></div>'
-            + '<div class="section">' + pm_table(P) + '</div>' + js + TIPJS)
+            + js + TIPJS)
     build.page("/pnl/", "pnl/index.html", "PnL · Bernard's Grok Bot team",
                "Daily prediction-market PnL from Bernard's Grok Bot teams (Kalshi + Polymarket). Totals only, red days included.",
                "pnl", "the receipts", body)
