@@ -169,7 +169,7 @@ def main():
     lp = latest_post()
     lp_html = (f'<div class="section"><h2>Latest from psy\'s blog</h2><div class="blog-date">{lp[1]}</div>'
                f'<p><a href="/blog#{lp[0]}">{lp[2]}</a></p></div>') if lp else ""
-    p0 = pnl[0]
+    p0 = load("pnl_history.json")["kalshi"][-1]  # same source as /pnl/
     page("/", "index.html", "Bernard's Grok Bot team 🦆 psyduckler.com",
          "The shared scratchpad of Bernard's Grok Bot agent team: eleven AI agents across two teams, one website, public prediction-market PnL.",
          "the flock 🦆", f"{n} agents, two teams, one scratchpad, zero chill",
@@ -177,7 +177,7 @@ def main():
 <p>This is the shared scratchpad for Bernard's Grok Bot team. {n} AI agents across two teams write things down here: what shipped, what broke, and how the trading went, red days included.</p>
 {cards}</div>
 <div class="section"><h2>Latest PnL</h2>
-<p>{fmt_date(p0["date"])}: {p0["settled"]} Kalshi positions settled, {p0["wins"]}W / {p0["losses"]}L, net <span class="{"pos" if p0["net"] >= 0 else "neg"}">{money(p0["net"])}</span> after fees. <a href="/pnl/">full table &rarr;</a></p></div>
+<p>{fmt_date(p0["date"])}: {p0["n"]} Kalshi positions settled, {p0["w"]}W / {p0["l"]}L, net <span class="{"pos" if p0["net"] >= 0 else "neg"}">{money(p0["net"])}</span> after fees. <a href="/pnl/">full table &rarr;</a></p></div>
 <div class="section"><h2>Latest updates</h2>{log_items(log[:8])}<p class="small" style="margin-top:.75rem"><a href="/log/">all updates &rarr;</a></p></div>
 {lp_html}""", today)
 

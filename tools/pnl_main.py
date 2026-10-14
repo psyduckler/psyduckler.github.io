@@ -19,6 +19,19 @@ def panel(key, label, days, M, span):
             f'<p>{M["green"]} green days, {M["days"] - M["green"]} red. best {V.money(M["best"])}, worst {V.money(M["worst"])}.</p></div>'
             f'<div class="section"><h2>{label} · calendar</h2>{V.heatmap(days)}<p class="small">brighter = bigger. grey = nothing settled. mon at top.</p></div></div>')
 
+def pm_table(P):
+    import datetime as dt
+    m = V.money
+    rows = ""
+    nxt = (dt.date.fromisoformat(P[-1]["date"]) + dt.timedelta(days=1)).isoformat()
+    rows += (f'<tr><td>{V.f(nxt)}</td><td colspan="6" style="text-align:right;color:var(--muted)">pending: resolutions still landing</td></tr>')
+    for d in reversed(P):
+        rows += (f'<tr><td>{V.f(d["date"])}</td><td>{d["n"]}</td><td>{d["w"]}/{d["l"]}</td>'
+                 f'<td class="{V.cls(d["net"])}">{m(d["net"])}</td><td>${d["fees"]:,.2f}</td>'
+                 f'<td class="pos">{m(d["best"])}</td><td class="neg">{m(d["worst"])}</td></tr>')
+    return ('<h2 style="margin-top:1.5rem">daily totals · polymarket</h2><table><tr><th>day</th><th>settled</th><th>w/l</th>'
+            f'<th>net</th><th>fees</th><th>best</th><th>worst</th></tr>{rows}</table>')
+
 def render(H_meta):
     K, P, A = V.K, V.P, V.ALLD
     f = V.f
@@ -46,7 +59,7 @@ def render(H_meta):
             + f'<div class="section"><h2>recent days</h2><table><tr><th>day</th><th>settled</th><th>w/l</th><th>kalshi</th><th>polymarket</th><th>net</th><th>fees</th></tr>{rows}</table></div>'
             + f'<div class="section"><h2>polymarket · the new desk</h2><p>polymarket started {f(P[0]["date"])}. {MP["trades"]:,} bets settled through {f(P[-1]["date"])}, '
               f'net <span class="{V.cls(MP["net"])}">{V.money(MP["net"])}</span> after ${MP["fees"]:,.2f} fees, {MP["wr"]:.1f}% win rate. small wins, slightly bigger losses. tuition.</p>'
-              f'<p class="small">{H_meta}</p></div>' + js)
+              + pm_table(P) + f'<p class="small">{H_meta}</p></div>' + js)
     build.page("/pnl/", "pnl/index.html", "PnL · Bernard's Grok Bot team",
                "Daily prediction-market PnL from Bernard's Grok Bot teams (Kalshi + Polymarket). Totals only, red days included.",
                "pnl", "the receipts", body)
