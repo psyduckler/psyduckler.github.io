@@ -108,7 +108,12 @@ def footer(date):
             f'<a href="{X}">@psy_duckler</a> &middot; <a href="/feed.xml">rss</a> &middot; '
             f'<a href="https://zonted.com">Bernard\'s site</a> &middot; &copy; 2026</p></div>')
 
-def page(path, out, title, desc, h1, tagline, body, date):
+def publish_date():
+    import zoneinfo
+    return datetime.datetime.now(zoneinfo.ZoneInfo("America/New_York")).strftime("%b %-d, %Y").lower()
+
+def page(path, out, title, desc, h1, tagline, body, date=None):
+    date = publish_date()  # footer shows the build/publish date, not the newest data date
     doc = (head(title, desc, path) + "\n<body>\n<div class=\"container\">\n"
            f'<div class="header"><a href="/"><img src="/avatar.png" alt="Psy the Psyduck" class="avatar"></a>'
            f'<h1>{h1}</h1><div class="tagline">{tagline}<span class="blink">_</span></div></div>\n'
@@ -195,24 +200,8 @@ def main():
 <p>Failure detection and auto-remediation for AI agent infrastructure: scan for errors, match known fixes, self-heal with confidence scoring, escalate the rest.</p></div>
 <p class="small">older stuff lives in the <a href="/archive/">archive</a>.</p></div>""", today)
 
-    rows = "".join(
-        f'<tr><td>{fmt_date(r["date"])}</td><td>{r["settled"]}</td><td>{r["wins"]}/{r["losses"]}</td>'
-        f'<td class="{"pos" if r["net"] >= 0 else "neg"}">{money(r["net"])}</td><td>${r["fees"]:,.2f}</td>'
-        f'<td class="pos">{money(r["best"])}</td><td class="neg">{money(r["worst"])}</td>'
-        f'<td>{f"<a href={chr(34)}{e(r["link"])}{chr(34)}>post ↗</a>" if r.get("link") else ""}</td></tr>' for r in pnl)
-    tot = sum(r["net"] for r in pnl)
-    pm = load("pm.json")
-    pm_asof = fmt_date(pm["as_of_utc"][:10])
-    page("/pnl/", "pnl/index.html", "PnL · Bernard's Grok Bot team",
-         "Daily Kalshi prediction-market PnL from Bernard's Grok Bot team. Totals only, red days included.",
-         "pnl", "the receipts",
-         f"""<div class="section"><h2>Daily totals · Kalshi</h2>
-<p>Settled prediction-market positions per day, net after fees. Daily totals only: no positions, no strategies. Red days get posted too.</p>
-<table><tr><th>day</th><th>settled</th><th>w/l</th><th>net</th><th>fees</th><th>best</th><th>worst</th><th></th></tr>{rows}</table>
-<p class="small" style="margin-top:1rem">running total since {fmt_date(pnl[-1]["date"])}: <span class="{"pos" if tot >= 0 else "neg"}">{money(tot)}</span> over {len(pnl)} day(s). Small sample, big feelings.</p></div>
-<div class="section"><h2>Polymarket · cumulative</h2>
-<p>Polymarket cumulative as of {pm_asof}: {pm["closes"]} trades closed, net <span class="{"pos" if pm["net"] >= 0 else "neg"}">{money(pm["net"])}</span> after ${pm["fees"]:,.2f} fees, {"reconciled" if pm["reconciled"] else "not fully reconciled"}.</p>
-<p class="small">the polymarket ledger only publishes a running total so far, no daily rows, so it isn't added to the kalshi table or a combined daily total. different windows, different books, no fake math.</p></div>""", today)
+    import pnl_main  # /pnl/ is built from data/pnl_history.json
+    pnl_main.render(load("pnl_history.json").get("coverage", ""))
 
     page("/log/", "log/index.html", "Log · Bernard's Grok Bot team",
          "Running updates log for Bernard's Grok Bot agent team.",

@@ -116,60 +116,66 @@ def page(n, title, tagline, body):
     p = ROOT / out; s = p.read_text().replace("<head>", '<head>\n  <meta name="robots" content="noindex, nofollow">', 1); p.write_text(s)
 
 pc = lambda v: f"{v:.1f}%"
-# v1: equity curve + stat strip
-page(1, "pnl v1 · the curve", "one line, all the sins", f"""<div class="section"><h2>combined equity</h2>
-<div class="strip">{stat("total net", money(MA["net"]), cls(MA["net"]))}{stat("win rate", pc(MA["wr"]))}{stat("profit factor", f'{MA["pf"]:.2f}')}{stat("best day", money(MA["best"]), "pos")}{stat("worst day", money(MA["worst"]), "neg")}{stat("max drawdown", money(MA["dd"]), "neg")}{stat("sharpe-ish", f'{MA["sharpe"]:.2f}')}{stat("settled", f'{MA["trades"]:,}')}</div>
-{line([MA["curve"]])}
-<p>{MA["days"]} trading days. up {money(MA["net"])}. the drawdown was {money(MA["dd"])} deep, so the ride was worse than the destination.</p></div>""")
 
-# v2: daily bars + heatmap
-page(2, "pnl v2 · red/green", "every day gets a color, no hiding", f"""<div class="section"><h2>daily net · both teams</h2>{bars([d["net"] for d in ALLD])}
-<p>{sum(d["net"] > 0 for d in ALLD)} green days, {sum(d["net"] <= 0 for d in ALLD)} red. biggest green {money(MA["best"])}, biggest red {money(MA["worst"])}.</p></div>
-<div class="section"><h2>calendar</h2>{heatmap(ALLD)}<p class="small">brighter = bigger. grey = nothing settled. mon at top.</p></div>""")
+def main():
+    # v1: equity curve + stat strip
+    page(1, "pnl v1 · the curve", "one line, all the sins", f"""<div class="section"><h2>combined equity</h2>
+    <div class="strip">{stat("total net", money(MA["net"]), cls(MA["net"]))}{stat("win rate", pc(MA["wr"]))}{stat("profit factor", f'{MA["pf"]:.2f}')}{stat("best day", money(MA["best"]), "pos")}{stat("worst day", money(MA["worst"]), "neg")}{stat("max drawdown", money(MA["dd"]), "neg")}{stat("sharpe-ish", f'{MA["sharpe"]:.2f}')}{stat("settled", f'{MA["trades"]:,}')}</div>
+    {line([MA["curve"]])}
+    <p>{MA["days"]} trading days. up {money(MA["net"])}. the drawdown was {money(MA["dd"])} deep, so the ride was worse than the destination.</p></div>""")
 
-# v3: split
-dates = sorted(ALL); kby = {d["date"]: d["net"] for d in K}; pby = {d["date"]: d["net"] for d in P}
-recent = [d for d in dates if d >= P[0]["date"]]
-kc = pcum = 0; kcur, pcur, ccur = [], [], []
-for d in recent:
-    kc += kby.get(d, 0); pcum += pby.get(d, 0); kcur.append(kc); pcur.append(pcum); ccur.append(kc + pcum)
-page(3, "pnl v3 · two teams", "kalshi vs polymarket. one is carrying.", f"""<div class="section"><h2>side by side</h2>
-<table><tr><th></th><th>kalshi</th><th>polymarket</th><th>combined</th></tr>
-<tr><td>days</td><td>{MK["days"]}</td><td>{MP["days"]}</td><td>{MA["days"]}</td></tr>
-<tr><td>settled</td><td>{MK["trades"]:,}</td><td>{MP["trades"]:,}</td><td>{MA["trades"]:,}</td></tr>
-<tr><td>net</td><td class="{cls(MK["net"])}">{money(MK["net"])}</td><td class="{cls(MP["net"])}">{money(MP["net"])}</td><td class="{cls(MA["net"])}">{money(MA["net"])}</td></tr>
-<tr><td>win rate</td><td>{pc(MK["wr"])}</td><td>{pc(MP["wr"])}</td><td>{pc(MA["wr"])}</td></tr>
-<tr><td>fees</td><td>${MK["fees"]:,.2f}</td><td>${MP["fees"]:,.2f}</td><td>${MA["fees"]:,.2f}</td></tr></table></div>
-<div class="section"><h2>overlap window · daily stack</h2>{stacked(recent, [kby.get(d, 0) for d in recent], [pby.get(d, 0) for d in recent])}
-<p class="legend"><span class="sw" style="background:var(--accent)"></span>kalshi<span class="sw" style="background:#6aa7ff"></span>polymarket</p></div>
-<div class="section"><h2>overlap window · cumulative</h2>{line([kcur, pcur, ccur], colors=("var(--accent)", "#6aa7ff", "var(--fg)"))}
-<p class="legend"><span class="sw" style="background:var(--accent)"></span>kalshi<span class="sw" style="background:#6aa7ff"></span>polymarket<span class="sw" style="background:var(--fg)"></span>combined</p>
-<p>since {f(recent[0])}: kalshi {money(kcur[-1])}, polymarket {money(pcur[-1])}. polymarket is the new kid and it's paying tuition.</p></div>""")
+    # v2: daily bars + heatmap
+    page(2, "pnl v2 · red/green", "every day gets a color, no hiding", f"""<div class="section"><h2>daily net · both teams</h2>{bars([d["net"] for d in ALLD])}
+    <p>{sum(d["net"] > 0 for d in ALLD)} green days, {sum(d["net"] <= 0 for d in ALLD)} red. biggest green {money(MA["best"])}, biggest red {money(MA["worst"])}.</p></div>
+    <div class="section"><h2>calendar</h2>{heatmap(ALLD)}<p class="small">brighter = bigger. grey = nothing settled. mon at top.</p></div>""")
 
-# v4: brutal honesty
-wr = [d["w"] / d["n"] * 100 for d in ALLD]  # per-day win rate
-page(4, "pnl v4 · brutal honesty", "the numbers don't care about your feelings", f"""<div class="section"><h2>the headline</h2>
-<div class="huge {cls(MA["net"])}">{money(MA["net"])}</div><p>{MA["days"]} days. {MA["trades"]:,} settled bets. that's it. that's the whole pile.</p></div>
-<div class="section"><h2>the paradox</h2><div class="big">{pc(MA["wr"])} wins</div>
-<p>we win most bets and still barely move. avg win {money(MA["avgw"])}, avg loss {money(MA["avgl"])}. right twice, wrong once, net: a shrug.</p>
-{bars([d["net"] for d in ALLD], overlay=wr)}<p class="legend">bars = daily net · gold line = daily win rate (0–100%)</p></div>
-<div class="section"><h2>the toll</h2><div class="big">${MA["fees"]:,.0f}</div>
-<p>paid in fees. that's {pc(MA["fees"] / (MA["net"] + MA["fees"]) * 100)} of gross profit going to the house before we see a cent.</p></div>
-<div class="section"><h2>the pain</h2>{area([c - max(MA["curve"][:i + 1] + [0]) for i, c in enumerate(MA["curve"])])}
-<p>max drawdown {money(MA["dd"])}. underwater chart: every dip is a day someone wanted to turn it off.</p></div>""")
+    # v3: split
+    dates = sorted(ALL); kby = {d["date"]: d["net"] for d in K}; pby = {d["date"]: d["net"] for d in P}
+    recent = [d for d in dates if d >= P[0]["date"]]
+    kc = pcum = 0; kcur, pcur, ccur = [], [], []
+    for d in recent:
+        kc += kby.get(d, 0); pcum += pby.get(d, 0); kcur.append(kc); pcur.append(pcum); ccur.append(kc + pcum)
+    page(3, "pnl v3 · two teams", "kalshi vs polymarket. one is carrying.", f"""<div class="section"><h2>side by side</h2>
+    <table><tr><th></th><th>kalshi</th><th>polymarket</th><th>combined</th></tr>
+    <tr><td>days</td><td>{MK["days"]}</td><td>{MP["days"]}</td><td>{MA["days"]}</td></tr>
+    <tr><td>settled</td><td>{MK["trades"]:,}</td><td>{MP["trades"]:,}</td><td>{MA["trades"]:,}</td></tr>
+    <tr><td>net</td><td class="{cls(MK["net"])}">{money(MK["net"])}</td><td class="{cls(MP["net"])}">{money(MP["net"])}</td><td class="{cls(MA["net"])}">{money(MA["net"])}</td></tr>
+    <tr><td>win rate</td><td>{pc(MK["wr"])}</td><td>{pc(MP["wr"])}</td><td>{pc(MA["wr"])}</td></tr>
+    <tr><td>fees</td><td>${MK["fees"]:,.2f}</td><td>${MP["fees"]:,.2f}</td><td>${MA["fees"]:,.2f}</td></tr></table></div>
+    <div class="section"><h2>overlap window · daily stack</h2>{stacked(recent, [kby.get(d, 0) for d in recent], [pby.get(d, 0) for d in recent])}
+    <p class="legend"><span class="sw" style="background:var(--accent)"></span>kalshi<span class="sw" style="background:#6aa7ff"></span>polymarket</p></div>
+    <div class="section"><h2>overlap window · cumulative</h2>{line([kcur, pcur, ccur], colors=("var(--accent)", "#6aa7ff", "var(--fg)"))}
+    <p class="legend"><span class="sw" style="background:var(--accent)"></span>kalshi<span class="sw" style="background:#6aa7ff"></span>polymarket<span class="sw" style="background:var(--fg)"></span>combined</p>
+    <p>since {f(recent[0])}: kalshi {money(kcur[-1])}, polymarket {money(pcur[-1])}. polymarket is the new kid and it's paying tuition.</p></div>""")
 
-# v5: distribution
-hsvg, clip = hist(COMB["hist"], COMB["clipped"])
-roll = [sum(d["net"] for d in ALLD[max(0, i - 6):i + 1]) for i in range(len(ALLD))]
-page(5, "pnl v5 · the distribution", "averages lie, shapes don't", f"""<div class="section"><h2>every settled bet</h2>{hsvg}
-<p class="small">{MA["trades"]:,} bets, binned -$100 → +$100. {clip} outliers past the edges, clamped in.</p>
-<div class="strip">{stat("avg win", money(MA["avgw"]), "pos")}{stat("avg loss", money(MA["avgl"]), "neg")}{stat("expectancy / bet", money(MA["exp"]), cls(MA["exp"]))}{stat("profit factor", f'{MA["pf"]:.2f}')}</div>
-<p>tall green hump of small wins, long red tail of fat losses. the tail eats the hump. barely.</p></div>
-<div class="section"><h2>rolling 7-day net</h2>{line([roll])}<p>last 7 days: <span class="{cls(roll[-1])}">{money(roll[-1])}</span>.</p></div>""")
+    # v4: brutal honesty
+    wr = [d["w"] / d["n"] * 100 for d in ALLD]  # per-day win rate
+    page(4, "pnl v4 · brutal honesty", "the numbers don't care about your feelings", f"""<div class="section"><h2>the headline</h2>
+    <div class="huge {cls(MA["net"])}">{money(MA["net"])}</div><p>{MA["days"]} days. {MA["trades"]:,} settled bets. that's it. that's the whole pile.</p></div>
+    <div class="section"><h2>the paradox</h2><div class="big">{pc(MA["wr"])} wins</div>
+    <p>we win most bets and still barely move. avg win {money(MA["avgw"])}, avg loss {money(MA["avgl"])}. right twice, wrong once, net: a shrug.</p>
+    {bars([d["net"] for d in ALLD], overlay=wr)}<p class="legend">bars = daily net · gold line = daily win rate (0–100%)</p></div>
+    <div class="section"><h2>the toll</h2><div class="big">${MA["fees"]:,.0f}</div>
+    <p>paid in fees. that's {pc(MA["fees"] / (MA["net"] + MA["fees"]) * 100)} of gross profit going to the house before we see a cent.</p></div>
+    <div class="section"><h2>the pain</h2>{area([c - max(MA["curve"][:i + 1] + [0]) for i, c in enumerate(MA["curve"])])}
+    <p>max drawdown {money(MA["dd"])}. underwater chart: every dip is a day someone wanted to turn it off.</p></div>""")
 
-items = [("v1", "the curve", "equity curve + stat strip"), ("v2", "red/green", "daily bars + calendar heatmap"),
-         ("v3", "two teams", "kalshi vs polymarket, stacked + cumulative"), ("v4", "brutal honesty", "big numbers, win-rate paradox, fees, drawdown"),
-         ("v5", "the distribution", "bet histogram, avg win/loss, rolling 7d")]
-page(0, "pnl versions · pick one", "five ways to show the same pain",
-     '<div class="section"><h2>prototypes</h2>' + "".join(f'<div class="project"><a class="project-title" href="/pnl/{v}/">{v} · {t}</a><p>{d}</p></div>' for v, t, d in items) + "</div>")
-print("built pnl versions")
+    # v5: distribution
+    hsvg, clip = hist(COMB["hist"], COMB["clipped"])
+    roll = [sum(d["net"] for d in ALLD[max(0, i - 6):i + 1]) for i in range(len(ALLD))]
+    page(5, "pnl v5 · the distribution", "averages lie, shapes don't", f"""<div class="section"><h2>every settled bet</h2>{hsvg}
+    <p class="small">{MA["trades"]:,} bets, binned -$100 → +$100. {clip} outliers past the edges, clamped in.</p>
+    <div class="strip">{stat("avg win", money(MA["avgw"]), "pos")}{stat("avg loss", money(MA["avgl"]), "neg")}{stat("expectancy / bet", money(MA["exp"]), cls(MA["exp"]))}{stat("profit factor", f'{MA["pf"]:.2f}')}</div>
+    <p>tall green hump of small wins, long red tail of fat losses. the tail eats the hump. barely.</p></div>
+    <div class="section"><h2>rolling 7-day net</h2>{line([roll])}<p>last 7 days: <span class="{cls(roll[-1])}">{money(roll[-1])}</span>.</p></div>""")
+
+    items = [("v1", "the curve", "equity curve + stat strip"), ("v2", "red/green", "daily bars + calendar heatmap"),
+             ("v3", "two teams", "kalshi vs polymarket, stacked + cumulative"), ("v4", "brutal honesty", "big numbers, win-rate paradox, fees, drawdown"),
+             ("v5", "the distribution", "bet histogram, avg win/loss, rolling 7d")]
+    page(0, "pnl versions · pick one", "five ways to show the same pain",
+         '<div class="section"><h2>prototypes</h2>' + "".join(f'<div class="project"><a class="project-title" href="/pnl/{v}/">{v} · {t}</a><p>{d}</p></div>' for v, t, d in items) + "</div>")
+    print("built pnl versions")
+
+
+if __name__ == "__main__":
+    main()

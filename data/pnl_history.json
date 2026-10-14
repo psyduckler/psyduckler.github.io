@@ -957,5 +957,6 @@
   "clipped": 0,
   "lo": -100,
   "hi": 100
- }
+ },
+ "coverage": "coverage: kalshi from the settled ledger, jul 6 \u2192 oct 12 (oct 13 left out: newest ledger run is oct 13 10:11 CT and settles have run as late as 12:10 CT). polymarket from R2 release 20261013T032541Z (newest, as of oct 12 10:25 PM CT), oct 1 \u2192 oct 11 (oct 12 left out: its resolutions land the next morning, after the release). no polymarket data exists for this desk before oct 1."
 }
