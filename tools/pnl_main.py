@@ -134,6 +134,7 @@ def render(H_meta):
           "var m=location.hash.match(/r=(all|90|30|7)/);if(m){r=m[1];upd()}})()</script>")
     css = ('<style>' + V.EXTRA + '.vt{margin:0 0 1.5rem}.vbtn{font:inherit;font-size:.8rem;background:none;color:var(--muted);border:1px solid var(--border);padding:.25rem .7rem;margin-right:.4rem;cursor:pointer}'
            '.vbtn.on,.rbtn.on{color:var(--accent);border-color:var(--accent)}.ctl{display:flex;flex-wrap:wrap;gap:.5rem 1.25rem;margin:0 0 1.5rem}.ctl .vt{margin:0}.rbtn{font:inherit;font-size:.8rem;background:none;color:var(--muted);border:1px solid var(--border);padding:.25rem .6rem;margin-right:.3rem;cursor:pointer}'
+           '.strip{grid-template-columns:repeat(5,1fr);gap:.4rem}.strip .stat{padding:.55rem .5rem;min-width:0}.strip .stat b{font-size:.92rem;white-space:nowrap}.strip .stat span{font-size:.62rem;letter-spacing:.06em}@media(max-width:600px){.strip{grid-template-columns:repeat(2,1fr)}}'
            '.hit{fill:transparent;cursor:crosshair}.hit2{cursor:crosshair}.hit2:hover{stroke:var(--fg)}'
            '#tip{position:absolute;z-index:9;background:var(--card);color:var(--fg);border:1px solid var(--accent);padding:.45rem .6rem;font-size:.75rem;line-height:1.5;pointer-events:none;max-width:280px}</style>')
     import datetime as dt
