@@ -95,7 +95,7 @@ RANGES = (("all", "all", None), ("90", "90d", 90), ("30", "30d", 30), ("7", "7d"
 
 def panel(key, label, days, M, span, kby=None, pby=None, rng="all"):
     tips = _tips(days, kby or {}, pby or {}, key == "all")
-    return (f'<div class="view" data-view="{key}" data-range="{rng}"{"" if (key == "all" and rng == "all") else " hidden"}>'
+    return (f'<div class="view" data-view="{key}" data-range="{rng}"{"" if (key == "all" and rng == "90") else " hidden"}>'
             f'<div class="section"><h2>{label} · equity</h2>{strip(M)}{eq_svg(days, tips)}'
             f'<p class="small">{span}. net after fees. max drawdown is peak-to-trough on the running total.</p></div>'
             f'<div class="section"><h2>{label} · daily net</h2>{bar_svg(days, tips)}'
@@ -128,7 +128,7 @@ def render(H_meta):
     toggle = ('<div class="vt" role="tablist">' + "".join(
         f'<button type="button" class="vbtn{" on" if k == "all" else ""}" data-v="{k}">{t}</button>'
         for k, t in (("all", "combined"), ("k", "kalshi"), ("p", "polymarket"))) + "</div>")
-    js = ("<script>(function(){var v='all',r='all';function upd(){document.querySelectorAll('.view').forEach(function(p){p.hidden=!(p.dataset.view===v&&p.dataset.range===r)});"
+    js = ("<script>(function(){var v='all',r='90';function upd(){document.querySelectorAll('.view').forEach(function(p){p.hidden=!(p.dataset.view===v&&p.dataset.range===r)});"
           "document.querySelectorAll('.vbtn').forEach(function(b){b.classList.toggle('on',b.dataset.v===v)});document.querySelectorAll('.rbtn').forEach(function(b){b.classList.toggle('on',b.dataset.r===r)})}"
           "document.querySelectorAll('.vbtn').forEach(function(b){b.onclick=function(){v=b.dataset.v;upd()}});document.querySelectorAll('.rbtn').forEach(function(b){b.onclick=function(){r=b.dataset.r;upd()}});"
           "var m=location.hash.match(/r=(all|90|30|7)/);if(m){r=m[1];upd()}})()</script>")
@@ -151,7 +151,7 @@ def render(H_meta):
             span = f"{rl} · {f(r[0]['date'])} → {f(r[-1]['date'])}" + ("" if not n else f" (window counts back from {f(latest.isoformat())})")
             panels += panel(key, f"{label} · {rl}", r, dmetrics(r), span, kby=kby, pby=pby, rng=rk)
     rtoggle = ('<div class="vt rt">' + "".join(
-        f'<button type="button" class="rbtn vbtn2{" on" if k == "all" else ""}" data-r="{k}">{t}</button>' for k, t, _ in RANGES) + "</div>")
+        f'<button type="button" class="rbtn vbtn2{" on" if k == "90" else ""}" data-r="{k}">{t}</button>' for k, t, _ in RANGES) + "</div>")
     body = (css + '<p>receipts for both teams. settled bets only, net after fees, red days included. aggregates only: no positions, no strategies, no balances.</p>'
             + '<div class="ctl">' + toggle + rtoggle + '</div>' + panels
             + f'<div class="section"><h2>recent days</h2><table><tr><th>day</th><th>settled</th><th>w/l</th><th>kalshi</th><th>polymarket</th><th>net</th><th>fees</th></tr>{rows}</table></div>'
