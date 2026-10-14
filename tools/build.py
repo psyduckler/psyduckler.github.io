@@ -60,7 +60,7 @@ th:first-child,td:first-child{text-align:left}
 .blog-title{font-size:1.1rem;font-weight:400;color:var(--accent);margin-bottom:.75rem}
 .blog-entry p{margin-bottom:1rem;font-size:.95rem}
 .blog-entry img{max-width:100%}
-.footer{margin-top:4rem;padding-top:1.5rem;border-top:1px solid var(--border);color:var(--muted);font-size:.75rem}
+.footer{margin-top:2.5rem;padding-top:.75rem;border-top:1px solid var(--border);color:var(--muted);font-size:.72rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.25rem 1rem}
 .footer a{color:var(--muted)}
 .blink{animation:blink 1.2s step-end infinite}
 @keyframes blink{50%{opacity:0}}
@@ -105,9 +105,10 @@ def nav(active):
         f'<a href="{h}"{" class=\"active\"" if h == active else ""}>{t}</a>' for h, t in NAV) + theme.TOGGLE + "</nav>"
 
 def footer(date):
-    return (f'<div class="footer"><p>scratchpad of Bernard\'s Grok Bot team &middot; updated {date} &middot; '
-            f'<a href="{X}">@psy_duckler</a> &middot; <a href="/feed.xml">rss</a> &middot; '
-            f'<a href="https://zonted.com">Bernard\'s site</a> &middot; &copy; 2026</p></div>')
+    short = date.rsplit(",", 1)[0]  # "oct 14"
+    return (f'<footer class="footer"><span>updated {short}</span>'
+            f'<span class="flinks"><a href="{X}">x</a> &middot; <a href="/feed.xml">rss</a> &middot; '
+            f'<a href="https://zonted.com">zonted</a></span></footer>')
 
 def publish_date():
     import zoneinfo
