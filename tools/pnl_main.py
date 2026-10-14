@@ -69,9 +69,33 @@ def strip(M):
             f'{s("max drawdown", V.money(M["dd"]), "neg")}{s("sharpe-ish", f"{M["sharpe"]:.2f}")}{s("settled", f"{M["trades"]:,}")}'
             f'{s("fees", f"${M["fees"]:,.2f}")}{s("green days", f"{M["green"]}/{M["days"]}")}</div>')
 
-def panel(key, label, days, M, span, kby=None, pby=None):
+def dmetrics(days):
+    """metrics from daily rows only (each row carries w, l, gw, gl, fees, best, worst)."""
+    import statistics as st
+    nets = [d["net"] for d in days]; c = pk = dd = 0; curve = []
+    for n in nets:
+        c += n; pk = max(pk, c); dd = min(dd, c - pk); curve.append(c)
+    nw = sum(d["w"] for d in days); nl = sum(d["l"] for d in days)
+    gw = sum(d["gw"] for d in days); gl = sum(d["gl"] for d in days)
+    sd = st.pstdev(nets) if len(nets) > 1 else 0
+    return dict(days=len(days), net=sum(nets), trades=nw + nl, wr=nw / max(nw + nl, 1) * 100,
+                pf=gw / -gl if gl else float("inf"), best=max(nets), worst=min(nets), dd=dd,
+                sharpe=(st.mean(nets) / sd * 365 ** .5) if sd else 0.0, fees=sum(d["fees"] for d in days),
+                green=sum(n > 0 for n in nets), curve=curve)
+
+def combine(K, P):
+    out = {}
+    for d in K + P:
+        a = out.setdefault(d["date"], dict(date=d["date"], n=0, w=0, l=0, net=0.0, fees=0.0, gw=0.0, gl=0.0, best=-1e18, worst=1e18))
+        for k in ("n", "w", "l", "net", "fees", "gw", "gl"): a[k] += d[k]
+        a["best"] = max(a["best"], d["best"]); a["worst"] = min(a["worst"], d["worst"])
+    return [out[k] for k in sorted(out)]
+
+RANGES = (("all", "all", None), ("90", "90d", 90), ("30", "30d", 30), ("7", "7d", 7))
+
+def panel(key, label, days, M, span, kby=None, pby=None, rng="all"):
     tips = _tips(days, kby or {}, pby or {}, key == "all")
-    return (f'<div class="view" data-view="{key}"{"" if key == "all" else " hidden"}>'
+    return (f'<div class="view" data-view="{key}" data-range="{rng}"{"" if (key == "all" and rng == "all") else " hidden"}>'
             f'<div class="section"><h2>{label} · equity</h2>{strip(M)}{eq_svg(days, tips)}'
             f'<p class="small">{span}. net after fees. max drawdown is peak-to-trough on the running total.</p></div>'
             f'<div class="section"><h2>{label} · daily net</h2>{bar_svg(days, tips)}'
@@ -104,19 +128,31 @@ def render(H_meta):
     toggle = ('<div class="vt" role="tablist">' + "".join(
         f'<button type="button" class="vbtn{" on" if k == "all" else ""}" data-v="{k}">{t}</button>'
         for k, t in (("all", "combined"), ("k", "kalshi"), ("p", "polymarket"))) + "</div>")
-    js = ("<script>document.querySelectorAll('.vbtn').forEach(function(b){b.onclick=function(){"
-          "document.querySelectorAll('.vbtn').forEach(function(x){x.classList.toggle('on',x===b)});"
-          "document.querySelectorAll('.view').forEach(function(v){v.hidden=v.dataset.view!==b.dataset.v})}})</script>")
+    js = ("<script>(function(){var v='all',r='all';function upd(){document.querySelectorAll('.view').forEach(function(p){p.hidden=!(p.dataset.view===v&&p.dataset.range===r)});"
+          "document.querySelectorAll('.vbtn').forEach(function(b){b.classList.toggle('on',b.dataset.v===v)});document.querySelectorAll('.rbtn').forEach(function(b){b.classList.toggle('on',b.dataset.r===r)})}"
+          "document.querySelectorAll('.vbtn').forEach(function(b){b.onclick=function(){v=b.dataset.v;upd()}});document.querySelectorAll('.rbtn').forEach(function(b){b.onclick=function(){r=b.dataset.r;upd()}});"
+          "var m=location.hash.match(/r=(all|90|30|7)/);if(m){r=m[1];upd()}})()</script>")
     css = ('<style>' + V.EXTRA + '.vt{margin:0 0 1.5rem}.vbtn{font:inherit;font-size:.8rem;background:none;color:var(--muted);border:1px solid var(--border);padding:.25rem .7rem;margin-right:.4rem;cursor:pointer}'
-           '.vbtn.on{color:var(--accent);border-color:var(--accent)}'
+           '.vbtn.on,.rbtn.on{color:var(--accent);border-color:var(--accent)}.ctl{display:flex;flex-wrap:wrap;gap:.5rem 1.25rem;margin:0 0 1.5rem}.ctl .vt{margin:0}.rbtn{font:inherit;font-size:.8rem;background:none;color:var(--muted);border:1px solid var(--border);padding:.25rem .6rem;margin-right:.3rem;cursor:pointer}'
            '.hit{fill:transparent;cursor:crosshair}.hit2{cursor:crosshair}.hit2:hover{stroke:var(--fg)}'
            '#tip{position:absolute;z-index:9;background:var(--card);color:var(--fg);border:1px solid var(--accent);padding:.45rem .6rem;font-size:.75rem;line-height:1.5;pointer-events:none;max-width:280px}</style>')
-    MP = V.MP
+    import datetime as dt
+    latest = dt.date.fromisoformat(max(K[-1]["date"], P[-1]["date"]))
+    A = combine(K, P)
+    panels = ""
+    for rk, rl, n in RANGES:
+        cut = (latest - dt.timedelta(days=n - 1)).isoformat() if n else ""
+        sub = lambda ds: [d for d in ds if d["date"] >= cut]
+        for key, label, ds in (("all", "combined", A), ("k", "kalshi", K), ("p", "polymarket", P)):
+            r = sub(ds)
+            if not r:
+                panels += f'<div class="view" data-view="{key}" data-range="{rk}" hidden><p>nothing settled in this window.</p></div>'; continue
+            span = f"{rl} · {f(r[0]['date'])} → {f(r[-1]['date'])}" + ("" if not n else f" (window counts back from {f(latest.isoformat())})")
+            panels += panel(key, f"{label} · {rl}", r, dmetrics(r), span, kby=kby, pby=pby, rng=rk)
+    rtoggle = ('<div class="vt rt">' + "".join(
+        f'<button type="button" class="rbtn vbtn2{" on" if k == "all" else ""}" data-r="{k}">{t}</button>' for k, t, _ in RANGES) + "</div>")
     body = (css + '<p>receipts for both teams. settled bets only, net after fees, red days included. aggregates only: no positions, no strategies, no balances.</p>'
-            + toggle
-            + panel("all", "combined", A, V.MA, kby=kby, pby=pby, span= f"kalshi {f(K[0]['date'])} → {f(K[-1]['date'])}, polymarket {f(P[0]['date'])} → {f(P[-1]['date'])}")
-            + panel("k", "kalshi", K, V.MK, f"{f(K[0]['date'])} → {f(K[-1]['date'])}")
-            + panel("p", "polymarket", P, MP, f"{f(P[0]['date'])} → {f(P[-1]['date'])}")
+            + '<div class="ctl">' + toggle + rtoggle + '</div>' + panels
             + f'<div class="section"><h2>recent days</h2><table><tr><th>day</th><th>settled</th><th>w/l</th><th>kalshi</th><th>polymarket</th><th>net</th><th>fees</th></tr>{rows}</table></div>'
             + js + TIPJS)
     build.page("/pnl/", "pnl/index.html", "PnL · Bernard's Grok Bot team",
