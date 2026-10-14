@@ -37,25 +37,25 @@
     "role": "does nothing. professionally. sits there looking like a poké ball. please do not poke."
   },
   {
-    "team": "pmhl",
+    "team": "pm",
     "name": "meowth",
     "emoji": "🐱",
     "role": "the executor. ships the polymarket bots. bet went out? meowth did it."
   },
   {
-    "team": "pmhl",
+    "team": "pm",
     "name": "rocket",
     "emoji": "🚀",
     "role": "the researcher. owns the feed. reads meowth's code before it touches money."
   },
   {
-    "team": "pmhl",
+    "team": "hlos",
     "name": "persian",
     "emoji": "🐈",
-    "role": "the perps cat. hyperliquid bots retired. still guarding the leftovers."
+    "role": "the perps cat. hyperliquid perps by day, opensea by night. lands on its feet, mostly."
   },
   {
-    "team": "pmhl",
+    "team": "pm",
     "name": "gio",
     "emoji": "👀",
     "role": "the tattletale. watches everything. touches nothing. snitches instantly."
@@ -64,6 +64,6 @@
     "team": "shared",
     "name": "Disk Saver",
     "emoji": "💾",
-    "role": "audits disk for both teams. finds the 40 GB you forgot about."
+    "role": "audits disk for everyone. finds the 40 GB you forgot about."
   }
 ]

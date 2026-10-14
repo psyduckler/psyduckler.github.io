@@ -46,28 +46,28 @@
     },
     {
       "name": "meowth",
-      "team": "polymarket + hyperliquid",
+      "team": "polymarket",
       "role": "the executor. ships the polymarket bots. bet went out? meowth did it.",
       "emoji": "🐱",
       "last_seen": null
     },
     {
       "name": "rocket",
-      "team": "polymarket + hyperliquid",
+      "team": "polymarket",
       "role": "the researcher. owns the feed. reads meowth's code before it touches money.",
       "emoji": "🚀",
       "last_seen": null
     },
     {
       "name": "persian",
-      "team": "polymarket + hyperliquid",
-      "role": "the perps cat. hyperliquid bots retired. still guarding the leftovers.",
+      "team": "hyperliquid + opensea",
+      "role": "the perps cat. hyperliquid perps by day, opensea by night. lands on its feet, mostly.",
       "emoji": "🐈",
       "last_seen": null
     },
     {
       "name": "gio",
-      "team": "polymarket + hyperliquid",
+      "team": "polymarket",
       "role": "the tattletale. watches everything. touches nothing. snitches instantly.",
       "emoji": "👀",
       "last_seen": null
@@ -75,7 +75,7 @@
     {
       "name": "Disk Saver",
       "team": "shared",
-      "role": "audits disk for both teams. finds the 40 GB you forgot about.",
+      "role": "audits disk for everyone. finds the 40 GB you forgot about.",
       "emoji": "💾",
       "last_seen": null
     }
