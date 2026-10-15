@@ -1,5 +1,5 @@
 {
- "note": "aggregates only. kalshi: settled_ledger/settled_by_strategy.jsonl strategy_leg rows by CT settle date, through 2026-10-12 (oct 13 still filling). polymarket: R2 release 20261013T032541Z-1d7c0eab776d closes.jsonl by CT accounting date, through 2026-10-11 (oct 12 incomplete at release time).",
+ "note": "aggregates only. kalshi: settled_ledger/settled_by_strategy.jsonl strategy_leg rows by CT settle date, through 2026-10-13 (oct 14 still filling). polymarket: R2 release 20261013T032541Z-1d7c0eab776d closes.jsonl by CT accounting date, through 2026-10-11 (oct 12 incomplete at release time; no newer release as of 2026-10-14 evening ET).",
  "kalshi": [
   {
    "date": "2026-07-06",
@@ -21,7 +21,7 @@
    "net": 209.88,
    "fees": 6.05,
    "gw": 209.88,
-   "gl": 0.0,
+   "gl": 0,
    "best": 209.88,
    "worst": 209.88
   },
@@ -30,7 +30,7 @@
    "n": 7,
    "w": 4,
    "l": 3,
-   "net": 47.58,
+   "net": 47.57,
    "fees": 22.62,
    "gw": 255.42,
    "gl": -207.85,
@@ -93,7 +93,7 @@
    "net": 1.83,
    "fees": 0.12,
    "gw": 1.83,
-   "gl": 0.0,
+   "gl": 0,
    "best": 1.83,
    "worst": 1.83
   },
@@ -104,7 +104,7 @@
    "l": 1,
    "net": -10.63,
    "fees": 0.63,
-   "gw": 0.0,
+   "gw": 0,
    "gl": -10.63,
    "best": -10.63,
    "worst": -10.63
@@ -117,7 +117,7 @@
    "net": 0.19,
    "fees": 0.01,
    "gw": 0.19,
-   "gl": 0.0,
+   "gl": 0,
    "best": 0.19,
    "worst": 0.19
   },
@@ -141,7 +141,7 @@
    "net": 89.27,
    "fees": 1.76,
    "gw": 89.27,
-   "gl": 0.0,
+   "gl": 0,
    "best": 42.7,
    "worst": 0.37
   },
@@ -249,7 +249,7 @@
    "net": 181.47,
    "fees": 6.05,
    "gw": 340.5,
-   "gl": -159.04,
+   "gl": -159.03,
    "best": 80.52,
    "worst": -99.97
   },
@@ -720,6 +720,18 @@
    "gl": -1215.79,
    "best": 132.77,
    "worst": -239.5
+  },
+  {
+   "date": "2026-10-13",
+   "n": 113,
+   "w": 72,
+   "l": 41,
+   "net": -108.61,
+   "fees": 33.44,
+   "gw": 1168.12,
+   "gl": -1276.73,
+   "best": 121.48,
+   "worst": -448.02
   }
  ],
  "polymarket": [
@@ -857,53 +869,53 @@
   }
  ],
  "ksum": {
-  "nw": 2330,
-  "sw": 35921.4,
-  "nl": 1112,
-  "sl": -34100.75,
+  "nw": 2402,
+  "sw": 37089.53,
+  "nl": 1151,
+  "sl": -35377.46,
   "hist": [
-   61,
+   64,
    2,
    5,
    31,
    22,
    8,
    13,
-   4,
+   5,
    10,
    29,
-   30,
+   31,
    13,
-   35,
+   36,
    26,
-   34,
-   75,
-   127,
+   35,
+   83,
+   132,
    102,
-   191,
-   292,
-   1211,
-   337,
-   193,
-   120,
-   103,
-   47,
-   44,
-   37,
-   42,
+   205,
+   299,
+   1235,
+   352,
+   202,
+   125,
+   106,
+   50,
+   46,
+   38,
+   48,
    21,
    16,
-   15,
+   16,
    11,
-   14,
+   15,
    19,
    6,
    10,
    8,
    1,
-   77
+   79
   ],
-  "clipped": 123,
+  "clipped": 126,
   "lo": -100,
   "hi": 100
  },
@@ -958,5 +970,5 @@
   "lo": -100,
   "hi": 100
  },
- "coverage": "coverage: kalshi from the settled ledger, jul 6 \u2192 oct 12 (oct 13 left out: newest ledger run is oct 13 10:11 CT and settles have run as late as 12:10 CT). polymarket from R2 release 20261013T032541Z (newest, as of oct 12 10:25 PM CT), oct 1 \u2192 oct 11 (oct 12 left out: its resolutions land the next morning, after the release). no polymarket data exists for this desk before oct 1."
+ "coverage": "coverage: kalshi from the settled ledger, jul 6 \u2192 oct 13 (oct 14 left out: CT settle day still open). polymarket from R2 release 20261013T032541Z (newest, as of oct 12 10:25 PM CT), oct 1 \u2192 oct 11 (oct 12 left out: its resolutions land the next morning, after the release; no newer release yet). no polymarket data exists for this desk before oct 1."
 }
