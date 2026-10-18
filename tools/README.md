@@ -15,3 +15,5 @@ current CT day, and refuses to write if a day already on the page doesn't match.
 Only daily aggregates are committed; never commit keys, strategy names or positions.
 
 Polymarket still comes from the pm-private R2 release (`closes.jsonl`), updated by hand.
+
+`data/pnl_history.json` `pm_status`: optional short note shown on the polymarket view and under recent days. Set it to "" once a new pm release lands.

@@ -93,10 +93,14 @@ def combine(K, P):
 
 RANGES = (("all", "all", None), ("90", "90d", 90), ("30", "30d", 30), ("7", "7d", 7))
 
+PM_STATUS = V.H.get("pm_status", "")  # set in data/pnl_history.json; clear it ("") once a new pm release lands
+
+def pm_note(): return f'<p class="small pmnote">{_h.escape(PM_STATUS)}</p>' if PM_STATUS else ""
+
 def panel(key, label, days, M, span, kby=None, pby=None, rng="all"):
     tips = _tips(days, kby or {}, pby or {}, key == "all")
     return (f'<div class="view" data-view="{key}" data-range="{rng}"{"" if (key == "all" and rng == "90") else " hidden"}>'
-            f'<div class="section"><h2>{label} · equity</h2>{strip(M)}{eq_svg(days, tips)}'
+            f'<div class="section"><h2>{label} · equity</h2>{pm_note() if key == "p" else ""}{strip(M)}{eq_svg(days, tips)}'
             f'<p class="small">{span}. net after fees. max drawdown is peak-to-trough on the running total.</p></div>'
             f'<div class="section"><h2>{label} · daily net</h2>{bar_svg(days, tips)}'
             f'<p>{M["green"]} green days, {M["days"] - M["green"]} red. best {V.money(M["best"])}, worst {V.money(M["worst"])}.</p></div>'
@@ -135,7 +139,7 @@ def render(H_meta):
     css = ('<style>' + V.EXTRA + '.vt{margin:0 0 1.5rem}.vbtn{font:inherit;font-size:.8rem;background:none;color:var(--muted);border:1px solid var(--border);padding:.25rem .7rem;margin-right:.4rem;cursor:pointer}'
            '.vbtn.on,.rbtn.on{color:var(--accent);border-color:var(--accent)}.ctl{display:flex;flex-wrap:wrap;gap:.5rem 1.25rem;margin:0 0 1.5rem}.ctl .vt{margin:0}.rbtn{font:inherit;font-size:.8rem;background:none;color:var(--muted);border:1px solid var(--border);padding:.25rem .6rem;margin-right:.3rem;cursor:pointer}'
            '.strip{grid-template-columns:repeat(5,1fr);gap:.4rem}.strip .stat{padding:.55rem .5rem;min-width:0}.strip .stat b{font-size:.92rem;white-space:nowrap}.strip .stat span{font-size:.62rem;letter-spacing:.06em}@media(max-width:600px){.strip{grid-template-columns:repeat(2,1fr)}}'
-           '.hit{fill:transparent;cursor:crosshair}.hit2{cursor:crosshair}.hit2:hover{stroke:var(--fg)}'
+           '.pmnote{color:var(--muted);margin:.2rem 0 .8rem}.hit{fill:transparent;cursor:crosshair}.hit2{cursor:crosshair}.hit2:hover{stroke:var(--fg)}'
            '#tip{position:absolute;z-index:9;background:var(--card);color:var(--fg);border:1px solid var(--accent);padding:.45rem .6rem;font-size:.75rem;line-height:1.5;pointer-events:none;max-width:280px}</style>')
     import datetime as dt
     latest = dt.date.fromisoformat(max(K[-1]["date"], P[-1]["date"]))
@@ -147,14 +151,14 @@ def render(H_meta):
         for key, label, ds in (("all", "combined", A), ("k", "kalshi", K), ("p", "polymarket", P)):
             r = sub(ds)
             if not r:
-                panels += f'<div class="view" data-view="{key}" data-range="{rk}" hidden><p>nothing settled in this window.</p></div>'; continue
+                panels += f'<div class="view" data-view="{key}" data-range="{rk}" hidden><p>nothing settled in this window.</p>{pm_note() if key == "p" else ""}</div>'; continue
             span = f"{rl} · {f(r[0]['date'])} → {f(r[-1]['date'])}" + ("" if not n else f" (window counts back from {f(latest.isoformat())})")
             panels += panel(key, f"{label} · {rl}", r, dmetrics(r), span, kby=kby, pby=pby, rng=rk)
     rtoggle = ('<div class="vt rt">' + "".join(
         f'<button type="button" class="rbtn vbtn2{" on" if k == "90" else ""}" data-r="{k}">{t}</button>' for k, t, _ in RANGES) + "</div>")
     body = (css + '<p>receipts for both teams. settled bets only, net after fees, red days included. aggregates only: no positions, no strategies, no balances.</p>'
             + '<div class="ctl">' + toggle + rtoggle + '</div>' + panels
-            + f'<div class="section"><h2>recent days</h2><table><tr><th>day</th><th>settled</th><th>w/l</th><th>kalshi</th><th>polymarket</th><th>net</th><th>fees</th></tr>{rows}</table></div>'
+            + f'<div class="section"><h2>recent days</h2><table><tr><th>day</th><th>settled</th><th>w/l</th><th>kalshi</th><th>polymarket</th><th>net</th><th>fees</th></tr>{rows}</table>{pm_note()}</div>'
             + js + TIPJS)
     build.page("/pnl/", "pnl/index.html", "PnL · Bernard's Grok Bot team",
                "Daily prediction-market PnL from Bernard's Grok Bot teams (Kalshi + Polymarket). Totals only, red days included.",
