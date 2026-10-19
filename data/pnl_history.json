@@ -1,5 +1,5 @@
 {
- "note": "aggregates only. kalshi: Tokay R2 kalshi-exec-reports 20261018T160738Z_tokay_ledger/settled_by_strategy.jsonl strategy_leg rows by CT settle date, through 2026-10-17. polymarket: R2 release 20261013T032541Z-1d7c0eab776d closes.jsonl by CT accounting date, through 2026-10-11 (oct 12 incomplete at release time; no newer release as of 2026-10-16 evening ET).",
+ "note": "aggregates only. kalshi: Tokay R2 kalshi-exec-reports 20261019T153000Z_tokay_ledger/settled_by_strategy.jsonl strategy_leg rows by CT settle date, through 2026-10-18. polymarket: R2 release 20261013T032541Z-1d7c0eab776d closes.jsonl by CT accounting date, through 2026-10-11 (oct 12 incomplete at release time; no newer release as of 2026-10-16 evening ET).",
  "kalshi": [
   {
    "date": "2026-07-06",
@@ -780,6 +780,18 @@
    "gl": -486.47,
    "best": 85.4,
    "worst": -119.71
+  },
+  {
+   "date": "2026-10-18",
+   "n": 70,
+   "w": 51,
+   "l": 19,
+   "net": 564.81,
+   "fees": 15.93,
+   "gw": 799.69,
+   "gl": -234.88,
+   "best": 408.97,
+   "worst": -49.84
   }
  ],
  "polymarket": [
@@ -917,10 +929,10 @@
   }
  ],
  "ksum": {
-  "nw": 2597,
-  "sw": 40299.08,
-  "nl": 1245,
-  "sl": -38266.03,
+  "nw": 2648,
+  "sw": 41098.74,
+  "nl": 1264,
+  "sl": -38500.9,
   "hist": [
    71,
    2,
@@ -932,24 +944,24 @@
    5,
    12,
    30,
-   34,
+   36,
    13,
    39,
    27,
-   36,
+   37,
    92,
-   143,
+   146,
    109,
-   222,
-   329,
-   1339,
-   380,
-   209,
-   135,
+   226,
+   338,
+   1373,
+   387,
+   211,
+   137,
    113,
-   56,
-   48,
-   41,
+   57,
+   50,
+   42,
    56,
    22,
    20,
@@ -959,11 +971,11 @@
    23,
    8,
    11,
-   10,
+   11,
    2,
-   82
+   83
   ],
-  "clipped": 135,
+  "clipped": 136,
   "lo": -100,
   "hi": 100
  },
@@ -1018,7 +1030,7 @@
   "lo": -100,
   "hi": 100
  },
- "coverage": "kalshi from the settled ledger, jul 6 \u2192 oct 17 (oct 18 left out: CT settle day still open). polymarket from R2 release 20261013T032541Z (newest, as of oct 12 10:25 PM CT), oct 1 \u2192 oct 11 (oct 12 left out: its resolutions land the next morning, after the release; no newer release yet). no polymarket data exists for this desk before oct 1.",
+ "coverage": "kalshi from the settled ledger, jul 6 \u2192 oct 18 (oct 19 left out: CT settle day still open). polymarket from R2 release 20261013T032541Z (newest, as of oct 12 10:25 PM CT), oct 1 \u2192 oct 11 (oct 12 left out: its resolutions land the next morning, after the release; no newer release yet). no polymarket data exists for this desk before oct 1.",
  "pm_status": "polymarket: last official release oct 12. newer closes pending a ledger fix. books still trading.",
  "opensea": [
   {
@@ -1026,23 +1038,23 @@
    "n": 10,
    "w": 5,
    "l": 5,
-   "net": 44.61,
-   "fees": 4.94,
-   "gw": 62.25,
-   "gl": -17.64,
-   "best": 19.71,
-   "worst": -6.2
+   "net": 44.67,
+   "fees": 4.88,
+   "gw": 62.28,
+   "gl": -17.61,
+   "best": 19.72,
+   "worst": -6.19
   },
   {
    "date": "2026-10-14",
    "n": 12,
    "w": 11,
    "l": 1,
-   "net": 49.34,
-   "fees": 7.1,
-   "gw": 51.1,
-   "gl": -1.76,
-   "best": 35.54,
+   "net": 49.43,
+   "fees": 7.02,
+   "gw": 51.17,
+   "gl": -1.74,
+   "best": 35.55,
    "worst": -0.68
   },
   {
@@ -1050,11 +1062,11 @@
    "n": 4,
    "w": 1,
    "l": 3,
-   "net": -0.83,
-   "fees": 3.74,
-   "gw": 0.39,
-   "gl": -1.22,
-   "best": 0.39,
+   "net": -0.81,
+   "fees": 3.72,
+   "gw": 0.4,
+   "gl": -1.21,
+   "best": 0.4,
    "worst": -0.64
   },
   {
@@ -1062,11 +1074,11 @@
    "n": 13,
    "w": 4,
    "l": 9,
-   "net": -3.51,
-   "fees": 11.32,
-   "gw": 5.14,
-   "gl": -8.65,
-   "best": 1.29,
+   "net": -3.45,
+   "fees": 11.25,
+   "gw": 5.16,
+   "gl": -8.61,
+   "best": 1.3,
    "worst": -1.54
   },
   {
@@ -1074,13 +1086,25 @@
    "n": 10,
    "w": 4,
    "l": 6,
-   "net": -3.25,
-   "fees": 11.08,
-   "gw": 1.21,
-   "gl": -4.46,
+   "net": -3.19,
+   "fees": 11.03,
+   "gw": 1.23,
+   "gl": -4.42,
    "best": 0.97,
-   "worst": -0.02
+   "worst": -0.01
+  },
+  {
+   "date": "2026-10-18",
+   "n": 12,
+   "w": 7,
+   "l": 5,
+   "net": 52.55,
+   "fees": 23.5,
+   "gw": 52.62,
+   "gl": -0.07,
+   "best": 42.45,
+   "worst": -0.01
   }
  ],
- "os_coverage": "opensea from the Tokay NFT ledger (pull.json.gz + gas), 2026-10-13 \u2192 2026-10-17, fully settled CT days, net after OpenSea fees and gas incl. overhead gas"
+ "os_coverage": "opensea from the Tokay NFT ledger (pull.json.gz + gas), 2026-10-13 \u2192 2026-10-18, fully settled CT days, net after OpenSea fees and gas incl. overhead gas"
 }
