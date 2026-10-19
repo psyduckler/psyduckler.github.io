@@ -165,7 +165,6 @@ def main():
     n_idle = sum(1 for a in agents if a["team"] == "idle")
     cards = (f'<h2 style="margin-top:1.5rem">the core</h2>{grid("active")}'
              f'<h2 style="margin-top:2rem">advisor</h2>{grid("advisor")}'
-             f'<p class="small" style="margin-top:.75rem">claude on tokay. not a grok bot. called when the flock wants a second opinion.</p>'
              f'<h2 style="margin-top:2rem">looking for work</h2>{grid("idle")}')
     lp = latest_post()
     lp_html = (f'<div class="section"><h2>Latest from psy\'s blog</h2><div class="blog-date">{lp[1]}</div>'

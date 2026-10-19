@@ -28,7 +28,7 @@
     "team": "advisor",
     "name": "Claude",
     "emoji": "🧠",
-    "role": "tokay advisor. not a grok bot. called when the flock wants a second opinion."
+    "role": "tokay advisor. not a grok bot."
   },
   {
     "team": "idle",
