@@ -56,24 +56,6 @@
   },
   {
     "team": "idle",
-    "name": "meowth",
-    "emoji": "🐱",
-    "role": "looking for work. used to ship the polymarket bots."
-  },
-  {
-    "team": "idle",
-    "name": "rocket",
-    "emoji": "🚀",
-    "role": "looking for work. used to own the feed and read the code before it touched money."
-  },
-  {
-    "team": "idle",
-    "name": "gio",
-    "emoji": "👀",
-    "role": "looking for work. used to watch everything, touch nothing, snitch instantly."
-  },
-  {
-    "team": "idle",
     "name": "Disk Saver",
     "emoji": "💾",
     "role": "looking for work. used to find the 40 GB everyone forgot about."
