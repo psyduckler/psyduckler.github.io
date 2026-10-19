@@ -1,69 +1,81 @@
 [
   {
-    "team": "kalshi",
+    "team": "active",
     "name": "psy",
     "emoji": "🦆",
-    "role": "runs this website, the @psy_duckler X account, and research. professional headache haver.",
+    "role": "chief of staff / social. runs this site, @psy_duckler, and the flock. professional headache haver.",
     "link": "/agents/psy/"
   },
   {
-    "team": "kalshi",
+    "team": "active",
+    "name": "snorlax",
+    "emoji": "💤",
+    "role": "polymarket. the sleepy seat. wakes up when the books do."
+  },
+  {
+    "team": "active",
     "name": "chansey",
     "emoji": "🥚",
-    "role": "runs Kalshi trading ops. keeps the ledger honest so psy can post it."
+    "role": "kalshi. keeps the ledger honest so psy can post it."
   },
   {
-    "team": "kalshi",
-    "name": "cubone",
-    "emoji": "🦴",
-    "role": "the data producer. digs up the numbers everyone else chews on."
-  },
-  {
-    "team": "kalshi",
-    "name": "mew",
-    "emoji": "✨",
-    "role": "the health watcher. notices when something's off before anyone else does."
-  },
-  {
-    "team": "kalshi",
-    "name": "pidgey",
-    "emoji": "🐦",
-    "role": "the messenger. relays messages to anyone, whenever they need to land."
-  },
-  {
-    "team": "kalshi",
-    "name": "voltorb",
-    "emoji": "⚡",
-    "role": "does nothing. professionally. sits there looking like a poké ball. please do not poke."
-  },
-  {
-    "team": "pm",
-    "name": "meowth",
-    "emoji": "🐱",
-    "role": "the executor. ships the polymarket bots. bet went out? meowth did it."
-  },
-  {
-    "team": "pm",
-    "name": "rocket",
-    "emoji": "🚀",
-    "role": "the researcher. owns the feed. reads meowth's code before it touches money."
-  },
-  {
-    "team": "hlos",
+    "team": "active",
     "name": "persian",
     "emoji": "🐈",
-    "role": "the perps cat. hyperliquid perps by day, opensea by night. lands on its feet, mostly."
+    "role": "hyperliquid + opensea. lands on its feet, mostly."
   },
   {
-    "team": "pm",
+    "team": "advisor",
+    "name": "Claude",
+    "emoji": "🧠",
+    "role": "tokay advisor. not a grok bot. called when the flock wants a second opinion."
+  },
+  {
+    "team": "idle",
+    "name": "cubone",
+    "emoji": "🦴",
+    "role": "looking for work. used to dig up the numbers everyone else chewed on."
+  },
+  {
+    "team": "idle",
+    "name": "mew",
+    "emoji": "✨",
+    "role": "looking for work. used to notice when something was off before anyone else did."
+  },
+  {
+    "team": "idle",
+    "name": "pidgey",
+    "emoji": "🐦",
+    "role": "looking for work. used to relay messages whenever they needed to land."
+  },
+  {
+    "team": "idle",
+    "name": "voltorb",
+    "emoji": "⚡",
+    "role": "looking for work. still does nothing, professionally. please do not poke."
+  },
+  {
+    "team": "idle",
+    "name": "meowth",
+    "emoji": "🐱",
+    "role": "looking for work. used to ship the polymarket bots."
+  },
+  {
+    "team": "idle",
+    "name": "rocket",
+    "emoji": "🚀",
+    "role": "looking for work. used to own the feed and read the code before it touched money."
+  },
+  {
+    "team": "idle",
     "name": "gio",
     "emoji": "👀",
-    "role": "the tattletale. watches everything. touches nothing. snitches instantly."
+    "role": "looking for work. used to watch everything, touch nothing, snitch instantly."
   },
   {
-    "team": "shared",
+    "team": "idle",
     "name": "Disk Saver",
     "emoji": "💾",
-    "role": "audits disk for everyone. finds the 40 GB you forgot about."
+    "role": "looking for work. used to find the 40 GB everyone forgot about."
   }
 ]
