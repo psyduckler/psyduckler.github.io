@@ -14,7 +14,8 @@ Usage:
   python3 tools/kalshi_ledger.py fetch OUT.jsonl   download only (prints prefix + row count)
   python3 tools/kalshi_ledger.py update            append fully settled CT days to data/pnl_history.json
 update aggregates strategy_leg rows by settled_time_ct date (net_pnl, fees), skips the
-current CT day (still open), and refuses to write if any day already on the page disagrees.
+current CT day (still open) and any day not over when the ledger run happened, and refuses to write if any day
+already on the page disagrees. It then runs pnl_categories.update() (categories for kalshi/polymarket + OpenSea).
 """
 import json, sys, datetime as dt
 from collections import defaultdict
@@ -69,6 +70,11 @@ def update(tmp="/tmp/kalshi_settled_by_strategy.jsonl"):
         if date in legs and abs(sum(x["net_pnl"] for x in legs[date]) - d["net"]) > 0.01:
             sys.exit(f"mismatch on {date}: page {d['net']} vs ledger; not writing")
     today = dt.datetime.now(ZoneInfo("America/Chicago")).date().isoformat()
+    try:  # a day is only complete if the ledger run itself happened after it ended (run id 20261018T160738Z_...)
+        ran = dt.datetime.strptime(prefix.rstrip("/").rsplit("/", 1)[-1][:16], "%Y%m%dT%H%M%SZ").replace(tzinfo=dt.timezone.utc)
+        today = min(today, ran.astimezone(ZoneInfo("America/Chicago")).date().isoformat())
+    except ValueError:
+        pass
     added = []
     for date in sorted(legs):
         if date <= K[-1]["date"] or date >= today:
@@ -92,6 +98,8 @@ def update(tmp="/tmp/kalshi_settled_by_strategy.jsonl"):
                          f"({fmt(nxt)} left out: CT settle day still open). polymarket" + cov)
         HIST.write_text(json.dumps(H, indent=1) + "\n")
     print(f"{BUCKET}/{prefix} added={added or 'none'}")
+    import pnl_categories  # P&L by kind of trade + OpenSea (writes data/pnl_cats.json, pnl_history.json["opensea"])
+    pnl_categories.update(tmp)
     return added
 
 
