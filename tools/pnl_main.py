@@ -332,6 +332,6 @@ def render(H_meta):
             + f'<div class="section"><h2>recent days</h2><div class="tw"><table class="rtab"><tr><th>day</th><th>settled</th><th>w/l</th><th>kalshi</th><th>polymarket</th><th>opensea</th><th>net</th><th>fees</th></tr>{rows}</table></div>'
             + f'<p class="small">pending = that venue\'s day isn\'t fully settled in its ledger yet.</p>{pm_note()}</div>'
             + js + TIPJS + LCJS + SORTJS)
-    build.page("/pnl/", "pnl/index.html", "PnL · Bernard's Grok Bot team",
-               "Daily PnL from Bernard's Grok Bot teams (Kalshi, Polymarket, OpenSea) by kind of trade. Totals only, red days included.",
+    build.page("/pnl/", "pnl/index.html", "PnL · psyduckler agent trading rig",
+               "Daily PnL from the psyduckler agent trading rig (Kalshi, Polymarket, OpenSea) by kind of trade. Totals only, red days included.",
                "pnl", "the receipts", body)
