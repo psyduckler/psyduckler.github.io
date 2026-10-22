@@ -4,7 +4,8 @@
 Source (since 2026-10-18; the old GitHub settled_ledger/settled_by_strategy.jsonl
 stopped updating 2026-10-16 when Kalshi moved to Tokay):
   bucket kalshi-exec-reports -> ledger/latest.json -> {prefix}settled_by_strategy.jsonl
-Same row schema as the old GitHub file. Tokay's ledger job runs daily ~10:30 CT.
+Same row schema as the old GitHub file. Tokay's ledger job publishes hourly 07:25–23:25 CT
+(the 07:25 CT run is the first with all of yesterday). OpenSea comes from Tokay's opensea-ledger job (opensea_published.py).
 
 Credentials: shared read-only R2 key in /home/box/agent-data/shared/r2-readonly/
 (access_key_id, secret_access_key), account from shared/cloudflare/account_id.

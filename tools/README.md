@@ -20,21 +20,23 @@ category with n, w, l, net, gw, gl. For every venue and day the categories' cent
 the update and `pnl_main.py` (every venue x window) both refuse to build otherwise. Kalshi days before the settled
 ledger (jul hand trades) are manual. Polymarket categories come from the same release rows as the page.
 
-## OpenSea source (since 2026-10-18)
+## OpenSea source (since 2026-10-22)
 
-`opensea_ledger.py` reads, through the Tokay MCP (token `/home/box/agent-data/shared/tokay/mcp_token`, read at runtime,
-never printed or committed): opensea-bots `/tokay/data/research/nft_ledger/pull.json.gz` (sales), opensea-advisor's
-cached gas / ETH-USD / attribution (`/tokay/data/advisor/ledger/`) and its `ledger.py` (the Tokay copy of nft_ledger),
-then runs that ledger locally in a temp dir. Flips count on their CT sale day; overhead gas on the CT day it was spent,
-so all days sum to the ledger's `totals.net_usd`. Only fully settled CT days (before the pull's CT date) are written to
-`data/pnl_history.json["opensea"]`.
+`opensea_published.py` reads, through the Tokay MCP (token `/home/box/agent-data/shared/tokay/mcp_token`, read at runtime,
+never printed or committed), THE OpenSea ledger as published by Tokay's `opensea-ledger` job (every 30 min, :23/:53 UTC):
+`/tokay/data/nft_ledger/published/{ledger.json, status.json}` on the `opensea-ledger` service. It checks `ledger.json`'s
+sha256 against `status.json` and refuses a pull more than 3 h old. Its trades/overhead rows go through
+`opensea_ledger.days()` unchanged: flips count on their CT sale day, overhead gas on the CT day it was spent, so all days
+sum to the ledger's `totals.net_usd`. Only fully settled CT days (before the pull's CT date) are written to
+`data/pnl_history.json["opensea"]`. The old source (opensea-bots `/tokay/data/research/nft_ledger/pull.json.gz`, read by
+`opensea_ledger.fetch()`) stopped updating 2026-10-19 19:11Z and is no longer used.
 
 ## Kalshi PnL source (since 2026-10-18)
 
 Kalshi moved to Tokay on 2026-10-16 and the GitHub `settled_ledger/settled_by_strategy.jsonl`
 stopped updating. The settled ledger now lives in Cloudflare R2, bucket `kalshi-exec-reports`:
 `ledger/latest.json` -> `prefix` (newest good run) -> `settled_by_strategy.jsonl` (same schema).
-Tokay's ledger job runs daily around 10:30 CT. `kalshi_ledger.py` reads it with the shared
+Tokay's ledger job publishes hourly 07:25–23:25 CT (the 07:25 CT run is the first with all of yesterday). `kalshi_ledger.py` reads it with the shared
 read-only R2 key on the box, sums `strategy_leg` rows by `settled_time_ct` date, leaves out the
 current CT day, and refuses to write if a day already on the page doesn't match.
 Only daily aggregates are committed; never commit keys, strategy names or positions. A day is only added once the

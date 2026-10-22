@@ -12,7 +12,7 @@ Sources:
   kalshi      R2 kalshi-exec-reports ledger (kalshi_ledger.py), strategy_leg rows, only for days already on the page.
               Days on the page from before the ledger (jul 6-19 hand trades) are manual.
   polymarket  R2 pm-private latest release closes.jsonl (same rows as the page), book = strategy_id, metric from slug.
-  opensea     Tokay (opensea_ledger.py): fully settled CT days only (before the pull's CT date). If Tokay can't be
+  opensea     Tokay opensea-ledger job, published ledger (opensea_published.py): fully settled CT days only (before the pull's CT date). If Tokay can't be
               reached, the last committed OpenSea days are kept and a warning is printed.
 
 Usage: python3 tools/pnl_categories.py update   (kalshi_ledger.py update calls this too)
@@ -140,9 +140,9 @@ def pm_rows(H, closes):
 
 def opensea():
     """-> (H['opensea'] day list, cat rows, info) for fully settled CT days before the pull's CT date."""
-    import opensea_ledger as O
-    pull, lg, cfg, cache = O.fetch()
-    led = O.build(pull, lg, cfg, cache)
+    import opensea_ledger as O, opensea_published as P
+    led, _ = P.fetch()                     # THE OpenSea ledger, published by Tokay's opensea-ledger job
+    pull = led                             # its pulledAt is the CT-day cutoff
     cut = dt.datetime.fromtimestamp(pull["pulledAt"], CT).date().isoformat()
     days, rows = [], []
     for d, a in O.days(led).items():
@@ -155,7 +155,7 @@ def opensea():
                      "worst": f(a["worst_c"]) if a["worst_c"] is not None else a["net_c"] / 100})
         rows.append(row(d, "o", "nft", a))
     info = dict(pulled=dt.datetime.fromtimestamp(pull["pulledAt"], CT).strftime("%Y-%m-%d %H:%M CT"),
-                lifetime=led["totals"]["lifetime"]["net_usd"], through=days[-1]["date"] if days else None,
+                lifetime=led["totals"]["net_usd"], through=days[-1]["date"] if days else None,
                 sum_days=round(sum(x["net"] for x in days), 2))
     return days, rows, info
 
@@ -194,7 +194,7 @@ def update(kalshi_jsonl=None):
     rows.sort(key=lambda r: (r["d"], "kpo".index(r["v"]), order[r["c"]]))
     if H.get("opensea"):
         o = H["opensea"]
-        H["os_coverage"] = (f"opensea from the Tokay NFT ledger (pull.json.gz + gas), {o[0]['date']} → {o[-1]['date']}, "
+        H["os_coverage"] = (f"opensea from the Tokay NFT ledger (opensea-ledger job, published), {o[0]['date']} → {o[-1]['date']}, "
                             "fully settled CT days, net after OpenSea fees and gas incl. overhead gas")
     HIST.write_text(json.dumps(H, indent=1) + "\n")
     note = ("aggregates only: daily net, settled count, wins/losses, gross win/loss per CT day, venue and kind of trade. "
