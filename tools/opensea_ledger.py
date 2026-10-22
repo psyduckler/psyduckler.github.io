@@ -81,7 +81,11 @@ def _get(url):
 def fetch(m=None):
     """-> (pull dict, ledger module, config dict, cache dict). Reads everything over the MCP; nothing is written to the repo."""
     m = m or MCP()
-    ctx = json.dumps(m.call("get_tokay_context", {}))
+    ctx0 = m.call("get_tokay_context", {})
+    ctx = json.dumps(ctx0)
+    if '"opensea-bots"' not in ctx:  # newer tokens: inventory only comes back for an explicit workspaceId
+        for w in (((ctx0.get("data") or {}).get("workspaces") or {}).get("nodes") or []):
+            ctx += json.dumps(m.call("get_tokay_context", {"workspaceId": w["id"]}))
     def node_id(kind, name):
         for x in re.finditer(r'\{"id":\s*"([^"]+)",\s*"name":\s*"' + re.escape(name) + '"', ctx):
             import base64
