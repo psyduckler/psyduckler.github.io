@@ -58,6 +58,12 @@ def strip(M):
             f'{s("max drawdown", V.money(M["dd"]), "neg")}{s("sharpe ratio", f"{M["sharpe"]:.2f}")}{s("settled", f"{M["trades"]:,}")}'
             f'{s("fees", f"${M["fees"]:,.2f}")}{s("green days", f"{M["green"]}/{M["days"]}")}</div>')
 
+def sharpe(nets):
+    """annualized daily sharpe: mean / population stdev of daily nets (settled days only) x sqrt(365). None if < 2 days or flat."""
+    import statistics as st
+    sd = st.pstdev(nets) if len(nets) > 1 else 0
+    return (st.mean(nets) / sd * 365 ** .5) if sd else None
+
 def dmetrics(days):
     """metrics from daily rows only (each row carries w, l, gw, gl, fees, best, worst)."""
     import statistics as st
@@ -66,10 +72,10 @@ def dmetrics(days):
         c += n; pk = max(pk, c); dd = min(dd, c - pk); curve.append(c)
     nw = sum(d["w"] for d in days); nl = sum(d["l"] for d in days)
     gw = sum(d["gw"] for d in days); gl = sum(d["gl"] for d in days)
-    sd = st.pstdev(nets) if len(nets) > 1 else 0
+    sh = sharpe(nets)
     return dict(days=len(days), net=sum(nets), trades=nw + nl, wr=nw / max(nw + nl, 1) * 100,
                 pf=gw / -gl if gl else float("inf"), best=max(nets), worst=min(nets), dd=dd,
-                sharpe=(st.mean(nets) / sd * 365 ** .5) if sd else 0.0, fees=sum(d["fees"] for d in days),
+                sharpe=0.0 if sh is None else sh, fees=sum(d["fees"] for d in days),
                 green=sum(n > 0 for n in nets), curve=curve)
 
 def combine(*venues):
@@ -130,10 +136,11 @@ def cat_view(vkey, start, end, days_net_c):
         cum, c = [], 0
         for x in daily: c += x; cum.append(c)
         n = sum(r["n"] for r in mine); w = sum(r["w"] for r in mine); l = sum(r["l"] for r in mine)
-        gw = sum(C(r["gw"]) for r in mine); gl = sum(C(r["gl"]) for r in mine)
+        bd = {}
+        for r in mine: bd[r["d"]] = bd.get(r["d"], 0) + C(r["net"])   # this category's daily nets (CT days with settled rows)
         out.append(dict(k=k, label=label, ven=[v for v in "kpo" if v in ven and (vkey == "all" or v == vkey)],
                         net=sum(daily), n=n, w=w, l=l, wr=(w / n * 100) if n else None,
-                        pf=(gw / -gl if gl else (float("inf") if gw else None)) if n else None, cum=cum))
+                        sharpe=sharpe([bd[d] for d in sorted(bd)]) if n else None, cum=cum))
     return dates, out
 
 def line_svg(dates, cats, w=640, h=260, L=46, R=122, cls="lcd", xt=4):
@@ -192,17 +199,17 @@ def cat_table(cats, rl):
     for i, c in enumerate(cats):
         empty = c["n"] == 0
         chips = "".join(f'<span class="chip">{CHIP[v]}</span>' for v in c["ven"])
-        pf = c["pf"]
+        sh = c["sharpe"]
         body += (f'<tr data-i="{i}"><td data-v="{_a(c["label"].lower())}">{dot(c["k"])}{_h.escape(c["label"].lower())}</td>'
                  f'<td data-v="{" ".join(CHIP[v] for v in c["ven"])}" class="chips">{chips}</td>'
                  + num(None if empty else c["net"] / 100, "—" if empty else V.money(c["net"] / 100), "" if empty else V.cls(c["net"]))
                  + num(None if empty else c["n"], "—" if empty else f'{c["n"]:,}')
                  + num(None if empty else round(c["wr"], 2), "—" if empty else f'{c["wr"]:.0f}%')
-                 + num(None if pf is None else (1e9 if pf == float("inf") else round(pf, 4)), "—" if pf is None else ("∞" if pf == float("inf") else f"{pf:.2f}"))
+                 + num(None if sh is None else round(sh, 4), "—" if sh is None else f"{sh:.2f}")
                  + num(None if empty else c["net"] / 100, spark(c["cum"], c["k"]) if not empty else "—") + "</tr>")
     th = lambda t, typ: f'<th scope="col" data-t="{typ}" tabindex="0" aria-sort="none">{t}</th>'
     return ('<div class="tw"><table class="ctab"><thead><tr>' + th("category", "txt") + th("venues", "txt") + th(f"net {rl}", "num")
-            + th("settled", "num") + th("win %", "num") + th("pf", "num") + th(f"trend {rl}", "num") + f'</tr></thead><tbody>{body}</tbody></table></div>')
+            + th("settled", "num") + th("win %", "num") + th("sharpe", "num") + th(f"trend {rl}", "num") + f'</tr></thead><tbody>{body}</tbody></table></div>')
 
 def cat_section(vkey, label, rl, start, end, days):
     dates, cats = cat_view(vkey, start, end, sum(C(d["net"]) for d in days))
@@ -214,7 +221,7 @@ def cat_section(vkey, label, rl, start, end, days):
     return (f'<div class="section"><h2>{label} · by kind of trade</h2>{charts}<p class="legend2">{legend}</p>'
             f'{cat_table(cats, rl)}<p class="small cnote">cumulative net per kind of trade inside the window, each line starting at $0. '
             'kalshi by market series (weather, mentions, golf, rotten tomatoes, cpi, youtube views, basketball); polymarket by book type (copy, crypto, and weather split by high / low / rain); opensea = nft flips. '
-            'win % = settled rows with net &gt; 0 (kalshi per leg, polymarket per ticket, opensea per flip). pf = gross wins / gross losses. '
+            'win % = settled rows with net &gt; 0 (kalshi per leg, polymarket per ticket, opensea per flip). sharpe = mean daily net / its standard deviation × √365, over the settled days of that kind of trade in the window (same as the stat strip; — under 2 days). '
             'click a column to sort.</p></div>')
 
 def panel(key, label, days, M, span, kby=None, pby=None, oby=None, rng="all", cats=""):
