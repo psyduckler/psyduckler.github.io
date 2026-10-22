@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""P&L by kind of trade: tag every settled row with one of 8 categories, commit daily aggregates only.
+"""P&L by kind of trade: tag every settled row with one of 14 categories, commit daily aggregates only.
 
 Writes data/pnl_cats.json: rows {d, v, c, n, w, l, net, gw, gl} = per CT day, per venue (k kalshi, p polymarket,
 o opensea), per category. Also writes data/pnl_history.json["opensea"] (daily venue totals, same shape as kalshi/polymarket).
@@ -36,8 +36,24 @@ CATEGORIES = [
     ("copy", "Copy trading", "p", "#e87ba4", "#d55181"),
     ("crypto", "Crypto", "p", "#008300", "#008300"),
     ("nft", "NFT flips", "o", "#6250d6", "#9085e9"),
+    ("golf", "Golf", "k", "#e34948", "#e66767"),
+    ("rt", "Rotten Tomatoes", "k", "#e34948", "#e66767"),
+    ("cpi", "CPI", "k", "#6250d6", "#9085e9"),
+    ("youtube", "YouTube views", "k", "#1baf7a", "#199e70"),
+    ("basketball", "Basketball", "k", "#eb6834", "#d95926"),
+    ("wx_snow", "Weather · snow", "k", "#2a78d6", "#3987e5"),
     ("manual", "Manual / other", "kp", "#898781", "#898781"),
 ]
+# past the 8 reference hues a category reuses one with a dashed line and a ring dot (never a 9th hue)
+DASH = {"rt", "cpi", "youtube", "basketball", "wx_snow"}
+
+GOLF = ("KXPGA", "KXLPGA", "KXGOLF")    # KXPGATOP20 / KXPGATOP5 / KXPGATOUR / KXPGAR1LEAD ...
+RT = ("KXRT",)                           # KXRT, KXRTTV
+CPI = ("KXCPI",)                         # KXCPI, KXCPIYOY ...
+YOUTUBE = ("KXYTVIEWS",)                 # KXYTVIEWSW ...
+BASKETBALL = ("KXNBA", "KXWNBA")         # KXNBAOT, KXWNBAOT ...
+SNOW = ("KXNYCSNOWM", "KXBOSSNOWM", "KXCHISNOWM", "KXDCSNOWM", "KXPHILSNOWM", "KXDETSNOWM", "KXSEASNOWM",
+        "KXDENSNOWM", "KXSLCSNOWM", "KXMKESNOWM", "KXMSPSNOWM", "KXPITSNOWM")   # monthly snowfall
 
 
 # ---- category rules: logic copied exactly from the handoff README (its example names left out of this public repo) ----
@@ -47,6 +63,12 @@ def kalshi_cat(ticker, strategy=""):
     if t.startswith("KXHIGH"): return "wx_high"
     if t.startswith("KXLOWT"): return "wx_low"
     if t.startswith("KXRAIN"): return "wx_rain"
+    if t.startswith(GOLF) or (strategy or "").startswith("golf_"): return "golf"
+    if t.startswith(RT) or (strategy or "").startswith("rt_"): return "rt"
+    if t.startswith(CPI) or (strategy or "").startswith("cpi_"): return "cpi"
+    if t.startswith(YOUTUBE) or (strategy or "").startswith("yt_"): return "youtube"
+    if t.startswith(BASKETBALL) or (strategy or "").startswith("bball_"): return "basketball"
+    if t.startswith(SNOW) or (strategy or "").startswith("snow_"): return "wx_snow"
     if "MENTION" in t or (strategy or "").startswith("mention"): return "mention"   # earnings-mention series and mention books
     return "manual"                                                               # old hand trades
 
@@ -172,6 +194,29 @@ def check(H, rows):
         raise SystemExit(f"category rows without a page day: {sorted(by)[:5]}")
 
 
+def tokay_check(rows):
+    """Warn (never block) when a Kalshi day x category differs from Tokay's published rollup by more than 2 cents:
+    the rules above have drifted from Bernard's dashboard (common/defs.py k_cat, which Tokay's leg_category mirrors)."""
+    import kalshi_ledger
+    try:
+        s3 = kalshi_ledger.client(); B = kalshi_ledger.BUCKET
+        pub = json.loads(s3.get_object(Bucket=B, Key="ledger/published/latest.json")["Body"].read())
+        tok = json.loads(s3.get_object(Bucket=B, Key=pub["prefix"].rstrip("/") + "/daily_by_category.json")["Body"].read())
+    except Exception as e:  # noqa: BLE001
+        print(f"WARNING category drift check skipped ({type(e).__name__}: {str(e)[:120]})", file=sys.stderr); return
+    mine = defaultdict(float)
+    for r in rows:
+        if r["v"] == "k": mine[(r["d"], r["c"])] += r["net"]
+    days = {d for d, _ in mine} & set(tok)
+    cells = {(d, c) for d in days for c in tok[d]} | {k for k in mine if k[0] in days}
+    bad = sorted(k for k in cells if abs(mine.get(k, 0.0) - tok[k[0]].get(k[1], 0.0)) > 0.02)
+    if bad:
+        print(f"WARNING category drift vs Tokay {pub['run_id']}: {len(bad)} day x category cell(s) differ, e.g. "
+              + ", ".join(f"{d} {c} {mine.get((d, c), 0.0):+.2f} vs {tok[d].get(c, 0.0):+.2f}" for d, c in bad[:4]), file=sys.stderr)
+    else:
+        print(f"categories: match Tokay's published rollup on {len(days)} kalshi days ({pub['run_id']})")
+
+
 def update(kalshi_jsonl=None):
     import kalshi_ledger
     if kalshi_jsonl is None:
@@ -190,6 +235,7 @@ def update(kalshi_jsonl=None):
         osr = [r for r in old if r["v"] == "o"]
     rows += osr
     check(H, rows)
+    tokay_check(rows)
     order = {k: i for i, (k, *_) in enumerate(CATEGORIES)}
     rows.sort(key=lambda r: (r["d"], "kpo".index(r["v"]), order[r["c"]]))
     if H.get("opensea"):

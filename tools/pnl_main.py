@@ -108,7 +108,12 @@ import json as _json, pnl_categories as PC
 CATS = PC.CATEGORIES
 CAT_ROWS = _json.loads((build.ROOT / "data/pnl_cats.json").read_text())["rows"]
 SHORT = {"wx_high": "Wx highs", "wx_low": "Wx lows", "wx_rain": "Wx rain", "mention": "Mentions", "copy": "Copy trading",
-         "crypto": "Crypto", "nft": "NFT flips", "manual": "Manual"}
+         "crypto": "Crypto", "nft": "NFT flips", "golf": "Golf", "rt": "RT", "cpi": "CPI", "youtube": "YouTube",
+         "basketball": "Basketball", "wx_snow": "Wx snow", "manual": "Manual"}
+DASH = PC.DASH
+dot = lambda k: (f'<span class="dot ring" style="border-color:var(--c-{k})"></span>' if k in DASH
+                 else f'<span class="dot" style="background:var(--c-{k})"></span>')
+dash = lambda k: ' stroke-dasharray="5 3"' if k in DASH else ""
 CHIP = {"k": "kalshi", "p": "pm", "o": "opensea"}
 C = PC.C
 
@@ -169,7 +174,7 @@ def line_svg(dates, cats, w=640, h=260, L=46, R=122, cls="lcd", xt=4):
     for c in cats:
         pts = " ".join(f"{x(i):.1f},{y(v):.1f}" for i, v in enumerate(c["cum"]))
         if n == 1: pts = f"{L},{y(0):.1f} " + pts
-        lines.append(f'<polyline points="{pts}" fill="none" stroke="var(--c-{c["k"]})" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>')
+        lines.append(f'<polyline points="{pts}" fill="none" stroke="var(--c-{c["k"]})" stroke-width="2"{dash(c["k"])} stroke-linejoin="round" stroke-linecap="round"/>')
         ends.append([y(c["cum"][-1]), c])
     ends.sort(key=lambda e: e[0])
     gap, top, bot = 13, T + 4, T + ph
@@ -192,7 +197,7 @@ def spark(cum, k, w=84, h=22):
     if n == 1: pts = f"2,{h - 2 - (0 - lo) / r * (h - 4):.1f} " + pts
     z = h - 2 - (0 - lo) / r * (h - 4)
     return (f'<svg class="spark" viewBox="0 0 {w} {h}" width="{w}" height="{h}" aria-hidden="true"><line x1="0" x2="{w}" y1="{z:.1f}" y2="{z:.1f}" class="g"/>'
-            f'<polyline points="{pts}" fill="none" stroke="var(--c-{k})" stroke-width="1.5" stroke-linejoin="round"/></svg>')
+            f'<polyline points="{pts}" fill="none" stroke="var(--c-{k})" stroke-width="1.5"{dash(k)} stroke-linejoin="round"/></svg>')
 
 def cat_table(cats, rl):
     def num(v, txt, c=""): return f'<td data-v="{"" if v is None else v}"{f" class={chr(34)}{c}{chr(34)}" if c else ""}>{txt}</td>'
@@ -201,7 +206,7 @@ def cat_table(cats, rl):
         empty = c["n"] == 0
         chips = "".join(f'<span class="chip">{CHIP[v]}</span>' for v in c["ven"])
         pf = c["pf"]
-        body += (f'<tr data-i="{i}"><td data-v="{_a(c["label"].lower())}"><span class="dot" style="background:var(--c-{c["k"]})"></span>{_h.escape(c["label"].lower())}</td>'
+        body += (f'<tr data-i="{i}"><td data-v="{_a(c["label"].lower())}">{dot(c["k"])}{_h.escape(c["label"].lower())}</td>'
                  f'<td data-v="{" ".join(CHIP[v] for v in c["ven"])}" class="chips">{chips}</td>'
                  + num(None if empty else c["net"] / 100, "—" if empty else V.money(c["net"] / 100), "" if empty else V.cls(c["net"]))
                  + num(None if empty else c["n"], "—" if empty else f'{c["n"]:,}')
@@ -214,13 +219,14 @@ def cat_table(cats, rl):
 
 def cat_section(vkey, label, rl, start, end, days):
     dates, cats = cat_view(vkey, start, end, sum(C(d["net"]) for d in days))
-    legend = "".join(f'<span class="lg"><span class="dot" style="background:var(--c-{c["k"]})"></span>{_h.escape(c["label"].lower())}</span>' for c in cats)
-    data = _a(_json.dumps({"d": dates, "s": [[c["label"], c["k"], c["cum"]] for c in cats]}, separators=(",", ":")))
-    charts = (f'<div class="lcw" data-lc="{data}">{line_svg(dates, cats)}'
-              f'{line_svg(dates, cats, w=360, h=300, L=40, R=104, cls="lcm", xt=2)}</div>')
+    live = [c for c in cats if c["n"]] or cats[:1]   # lines only for categories with settled rows (the Overview's rule)
+    legend = "".join(f'<span class="lg">{dot(c["k"])}{_h.escape(c["label"].lower())}</span>' for c in live)
+    data = _a(_json.dumps({"d": dates, "s": [[c["label"], c["k"], c["cum"]] for c in live]}, separators=(",", ":")))
+    charts = (f'<div class="lcw" data-lc="{data}">{line_svg(dates, live)}'
+              f'{line_svg(dates, live, w=360, h=300, L=40, R=104, cls="lcm", xt=2)}</div>')
     return (f'<div class="section"><h2>{label} · by kind of trade</h2>{charts}<p class="legend2">{legend}</p>'
             f'{cat_table(cats, rl)}<p class="small cnote">cumulative net per kind of trade inside the window, each line starting at $0. '
-            'kalshi by market series; polymarket by book type (copy, crypto, and weather split by high / low / rain); opensea = nft flips. '
+            'kalshi by market series (weather, mentions, golf, rotten tomatoes, cpi, youtube views, basketball); polymarket by book type (copy, crypto, and weather split by high / low / rain); opensea = nft flips. '
             'win % = settled rows with net &gt; 0 (kalshi per leg, polymarket per ticket, opensea per flip). pf = gross wins / gross losses. '
             'click a column to sort.</p></div>')
 
@@ -305,6 +311,7 @@ def render(H_meta):
            '.lc .g,.spark .g{stroke:var(--border);stroke-width:.5}.lc .g0{stroke:var(--muted);stroke-width:1}.lc .ax{fill:var(--muted);font-size:10px;font-family:inherit}'
            '.lc .el{fill:var(--fg);font-size:10.5px;font-family:inherit}.lc .xh{stroke:var(--muted);stroke-width:1;stroke-dasharray:2 2}.lchit{fill:transparent;cursor:crosshair}'
            '.dot{display:inline-block;width:.6em;height:.6em;border-radius:50%;margin-right:.45em;vertical-align:middle}'
+           '.dot.ring{background:transparent;border:2px solid;box-sizing:border-box}'
            '.lcm{display:none}@media(max-width:600px){.lcd{display:none}.lcm{display:block}}.section .legend2{font-size:.72rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:.1rem .9rem;margin:.4rem 0 .8rem!important}.lg{white-space:nowrap}'
            '.ctab{min-width:520px}.ctab th{cursor:pointer;user-select:none;white-space:nowrap}.ctab th:hover,.ctab th:focus{color:var(--accent);outline:none}'
            '.ctab th[aria-sort=ascending]::after{content:" ↑"}.ctab th[aria-sort=descending]::after{content:" ↓"}.ctab td{white-space:nowrap;vertical-align:middle}.ctab td:nth-child(2){text-align:left}.ctab th:nth-child(2){text-align:left}'
