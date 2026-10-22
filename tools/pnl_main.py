@@ -1,5 +1,5 @@
-"""The live /pnl/ page: stat strip (incl. sharpe), cumulative bars, daily bars + calendar heatmap, P&L by kind of
-trade (cumulative per-category lines + sortable category table) and recent days, with a
+"""The live /pnl/ page: stat strip (incl. sharpe), cumulative bars, daily bars, P&L by kind of
+trade (cumulative per-category lines + sortable category table), with a
 combined / kalshi / polymarket / opensea toggle and all / 90d / 30d / 7d windows.
 Data: data/pnl_history.json + data/pnl_cats.json (aggregates only; see pnl_categories.py). Called from tools/build.py."""
 import build_pnl_versions as V
@@ -41,19 +41,6 @@ def bar_svg(days, tips, w=640, h=200):
         out.append(f'<rect x="{i * bw + 1:.1f}" width="{max(bw - 2, 1):.1f}" y="{min(y(v), y(0)):.1f}" height="{max(abs(y(v) - y(0)), 1):.1f}" fill="{"var(--pos)" if v >= 0 else "var(--neg)"}"/>'
                    f'<rect class="hit" x="{i * bw:.1f}" y="0" width="{bw:.1f}" height="{h}" data-tip="{_a(t[0])}"/>')
     return f'<svg class="chart" viewBox="0 0 {w} {h}" width="100%">{"".join(out)}</svg>'
-
-def heat_svg(days, tips):
-    tip = {d["date"]: t[0] for d, t in zip(days, tips)}; by = {d["date"]: d["net"] for d in days}
-    d0 = _dt.date.fromisoformat(days[0]["date"]); d1 = _dt.date.fromisoformat(days[-1]["date"])
-    d0 -= _dt.timedelta(days=d0.weekday()); cs = 14; out = []; mx = max(abs(v) for v in by.values()) or 1; i = 0; d = d0
-    while d <= d1:
-        k = d.isoformat(); v = by.get(k); x = (i // 7) * (cs + 2); yy = d.weekday() * (cs + 2)
-        if v is None:
-            out.append(f'<rect x="{x}" y="{yy}" width="{cs}" height="{cs}" fill="var(--border-soft)" class="hit2" data-tip="{_a("<b>" + V.f(k) + "</b><br>nothing settled")}"/>')
-        else:
-            out.append(f'<rect x="{x}" y="{yy}" width="{cs}" height="{cs}" fill="{"var(--pos)" if v >= 0 else "var(--neg)"}" fill-opacity="{.25 + .75 * abs(v) / mx:.2f}" class="hit2" data-tip="{_a(tip[k])}"/>')
-        d += _dt.timedelta(days=1); i += 1
-    return f'<svg class="chart" viewBox="0 0 {(i // 7 + 1) * (cs + 2)} {7 * (cs + 2)}" width="100%">{"".join(out)}</svg>'
 
 TIPJS = """<div id="tip" hidden></div><script>(function(){var t=document.getElementById('tip'),pin=null;
 function show(el,ev){t.innerHTML=el.dataset.tip;t.hidden=false;var r=el.getBoundingClientRect(),x=(ev&&ev.clientX)||r.left+r.width/2,y=(ev&&ev.clientY)||r.top;
@@ -238,8 +225,7 @@ def panel(key, label, days, M, span, kby=None, pby=None, oby=None, rng="all", ca
             f'<p class="small">{span}. net after fees. max drawdown is peak-to-trough on the running total.</p></div>'
             + cats +
             f'<div class="section"><h2>{label} · daily net</h2>{bar_svg(days, tips)}'
-            f'<p>{M["green"]} green days, {M["days"] - M["green"]} red. best {V.money(M["best"])}, worst {V.money(M["worst"])}.</p></div>'
-            f'<div class="section"><h2>{label} · calendar</h2>{heat_svg(days, tips)}<p class="small">brighter = bigger. grey = nothing settled. mon at top.</p></div></div>')
+            f'<p>{M["green"]} green days, {M["days"] - M["green"]} red. best {V.money(M["best"])}, worst {V.money(M["worst"])}.</p></div></div>')
 
 def pm_table(P):
     import datetime as dt
@@ -288,14 +274,6 @@ def render(H_meta):
     kby = {d["date"]: d for d in K}; pby = {d["date"]: d for d in P}; oby = {d["date"]: d for d in O}
     A = combine(K, P, O)
     last = {"k": K[-1]["date"], "p": P[-1]["date"], "o": O[-1]["date"] if O else ""}
-    rows = ""
-    for d in reversed(A[-5:]):
-        def cell(by, v):
-            x = by.get(d["date"])
-            if x: return f'<td class="{V.cls(x["net"])}">{V.money(x["net"])}</td>'
-            return '<td class="muted">pending</td>' if d["date"] > last[v] else "<td>–</td>"
-        rows += (f'<tr><td>{f(d["date"])}</td><td>{d["n"]}</td><td>{d["w"]}/{d["l"]}</td>{cell(kby, "k")}{cell(pby, "p")}{cell(oby, "o")}'
-                 f'<td class="{V.cls(d["net"])}">{V.money(d["net"])}</td><td>${d["fees"]:,.2f}</td></tr>')
     toggle = ('<div class="vt" role="tablist">' + "".join(
         f'<button type="button" class="vbtn{" on" if k == "all" else ""}" data-v="{k}">{t}</button>' for k, t in VENUES) + "</div>")
     js = ("<script>(function(){var v='all',r='90';function upd(){document.querySelectorAll('.view').forEach(function(p){p.hidden=!(p.dataset.view===v&&p.dataset.range===r)});"
@@ -305,9 +283,9 @@ def render(H_meta):
     css = ('<style>' + V.EXTRA + cat_css() + '.vt{margin:0 0 1.5rem}.vbtn{font:inherit;font-size:.8rem;background:none;color:var(--muted);border:1px solid var(--border);padding:.25rem .7rem;margin:0 .4rem .3rem 0;cursor:pointer}'
            '.vbtn.on,.rbtn.on{color:var(--accent);border-color:var(--accent)}.ctl{display:flex;flex-wrap:wrap;gap:.5rem 1.25rem;margin:0 0 1.5rem}.ctl .vt{margin:0}.rbtn{font:inherit;font-size:.8rem;background:none;color:var(--muted);border:1px solid var(--border);padding:.25rem .6rem;margin-right:.3rem;cursor:pointer}'
            '.strip{grid-template-columns:repeat(5,1fr);gap:.4rem}.strip .stat{padding:.55rem .5rem;min-width:0}.strip .stat b{font-size:.92rem;white-space:nowrap}.strip .stat span{font-size:.62rem;letter-spacing:.06em}@media(max-width:600px){.strip{grid-template-columns:repeat(2,1fr)}.vbtn{padding:.25rem .5rem;margin-right:.25rem}}'
-           '.pmnote{color:var(--muted);margin:.2rem 0 .8rem}.hit{fill:transparent;cursor:crosshair}.hit2{cursor:crosshair}.hit2:hover{stroke:var(--fg)}'
+           '.pmnote{color:var(--muted);margin:.2rem 0 .8rem}.hit{fill:transparent;cursor:crosshair}'
            '#tip{position:absolute;z-index:9;background:var(--card);color:var(--fg);border:1px solid var(--accent);padding:.45rem .6rem;font-size:.75rem;line-height:1.5;pointer-events:none;max-width:280px}'
-           '.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;margin-bottom:.8rem}.muted{color:var(--muted)}'
+           '.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;margin-bottom:.8rem}'
            '.lc .g,.spark .g{stroke:var(--border);stroke-width:.5}.lc .g0{stroke:var(--muted);stroke-width:1}.lc .ax{fill:var(--muted);font-size:10px;font-family:inherit}'
            '.lc .el{fill:var(--fg);font-size:10.5px;font-family:inherit}.lc .xh{stroke:var(--muted);stroke-width:1;stroke-dasharray:2 2}.lchit{fill:transparent;cursor:crosshair}'
            '.dot{display:inline-block;width:.6em;height:.6em;border-radius:50%;margin-right:.45em;vertical-align:middle}'
@@ -316,7 +294,7 @@ def render(H_meta):
            '.ctab{min-width:520px}.ctab th{cursor:pointer;user-select:none;white-space:nowrap}.ctab th:hover,.ctab th:focus{color:var(--accent);outline:none}'
            '.ctab th[aria-sort=ascending]::after{content:" ↑"}.ctab th[aria-sort=descending]::after{content:" ↓"}.ctab td{white-space:nowrap;vertical-align:middle}.ctab td:nth-child(2){text-align:left}.ctab th:nth-child(2){text-align:left}'
            '.chip{display:inline-block;font-size:.6rem;letter-spacing:.05em;border:1px solid var(--border);color:var(--muted);padding:0 .3rem;margin-right:.2rem;line-height:1.5}'
-           '.section p.cnote{font-size:.75rem;line-height:1.6}.spark{display:inline-block;vertical-align:middle}.rtab{min-width:560px}</style>')
+           '.section p.cnote{font-size:.75rem;line-height:1.6}.spark{display:inline-block;vertical-align:middle}</style>')
     latest = _dt.date.fromisoformat(max(v for v in last.values() if v))
     panels = ""
     for rk, rl, n in RANGES:
@@ -336,8 +314,7 @@ def render(H_meta):
         f'<button type="button" class="rbtn vbtn2{" on" if k == "90" else ""}" data-r="{k}">{t}</button>' for k, t, _ in RANGES) + "</div>")
     body = (css + '<p>receipts for every desk. settled bets and flips only, net after fees, red days included. aggregates only: no positions, no strategies, no balances.</p>'
             + '<div class="ctl">' + toggle + rtoggle + '</div>' + panels
-            + f'<div class="section"><h2>recent days</h2><div class="tw"><table class="rtab"><tr><th>day</th><th>settled</th><th>w/l</th><th>kalshi</th><th>polymarket</th><th>opensea</th><th>net</th><th>fees</th></tr>{rows}</table></div>'
-            + f'<p class="small">pending = that venue\'s day isn\'t fully settled in its ledger yet.</p>{pm_note()}</div>'
+            + pm_note()
             + js + TIPJS + LCJS + SORTJS)
     build.page("/pnl/", "pnl/index.html", "PnL · psyduckler agent trading rig",
                "Daily PnL from the psyduckler agent trading rig (Kalshi, Polymarket, OpenSea) by kind of trade. Totals only, red days included.",
