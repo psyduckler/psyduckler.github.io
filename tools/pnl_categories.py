@@ -2,7 +2,7 @@
 """P&L by kind of trade: tag every settled row with one of 14 categories, commit daily aggregates only.
 
 Writes data/pnl_cats.json: rows {d, v, c, n, w, l, net, gw, gl} = per CT day, per venue (k kalshi, p polymarket,
-o opensea), per category. Also writes data/pnl_history.json["opensea"] (daily venue totals, same shape as kalshi/polymarket).
+o opensea), per category. Also writes data/pnl_history.json["opensea"] and ["polymarket"] (daily venue totals) and ["psum"].
 Nothing else is committed: no tickers, books, strategies, positions, balances or keys.
 
 Invariant (checked here and again in pnl_main.py): for every venue and day, the categories' cents sum to the venue's
@@ -11,7 +11,9 @@ day net on /pnl/ exactly. Every row lands in exactly one category; manual is the
 Sources:
   kalshi      R2 kalshi-exec-reports ledger (kalshi_ledger.py), strategy_leg rows, only for days already on the page.
               Days on the page from before the ledger (jul 6-19 hand trades) are manual.
-  polymarket  R2 pm-private latest release closes.jsonl (same rows as the page), book = strategy_id, metric from slug.
+  polymarket  Bernard's dashboard, pub/pm_ledger.json in its Tokay repo (pm_published.py): days, day x category rows and
+              the ticket histogram, already categorized with pm_cat's rule, fully settled CT days only. Replaces every PM
+              day each run (restatements included). If it can't be read, the last committed PM days are kept with a warning.
   opensea     Tokay opensea-ledger job, published ledger (opensea_published.py): fully settled CT days only (before the pull's CT date). If Tokay can't be
               reached, the last committed OpenSea days are kept and a warning is printed.
 
@@ -137,27 +139,16 @@ def kalshi_rows(H, jsonl, old):
     return out
 
 
-def pm_closes():
-    import kalshi_ledger
-    s3 = kalshi_ledger.client(); B = "pm-private"
-    latest = json.loads(s3.get_object(Bucket=B, Key="private/polymarket/psyslo/releases/latest.json")["Body"].read())
-    man = json.loads(s3.get_object(Bucket=B, Key=latest["manifest_key"])["Body"].read())
-    key = next(o["key"] for o in man["objects"] if o["key"].endswith("closes.jsonl"))
-    body = s3.get_object(Bucket=B, Key=key)["Body"].read()
-    return latest["release_id"], [json.loads(l) for l in body.splitlines() if l.strip()]
-
-
-def pm_rows(H, closes):
-    g = defaultdict(lambda: defaultdict(list))
-    for r in closes:
-        d = dt.datetime.fromisoformat(r["accounting_time_utc"].replace("Z", "+00:00")).astimezone(CT).date().isoformat()
-        g[d][pm_cat(r.get("strategy_id") or "unattributed", pm_metric(r.get("market_slug")))].append(float(r["net_trading_pnl_usd"]))
-    out = []
-    for day in H["polymarket"]:
-        if day["date"] not in g:
-            raise SystemExit(f"polymarket {day['date']} on the page but not in the release")
-        out += [row(day["date"], "p", c, a) for c, a in split(day["net"], g[day["date"]]).items()]
-    return out
+def pm():
+    """-> (H['polymarket'] day list, cat rows, psum, info) for fully settled CT days, from the PM ledger Bernard's dashboard
+    publishes to its Tokay repo (pub/pm_ledger.json, see pm_published.py). Meowth's R2 release stopped at 2026-10-13."""
+    import pm_published as P
+    doc, commit = P.fetch()
+    rows = [{"d": r["d"], "v": "p", "c": r["c"], "n": r["n"], "w": r["w"], "l": r["l"], "net": r["net"], "gw": r["gw"],
+             "gl": r["gl"]} for r in doc["rows"]]
+    info = dict(commit=commit[:8], pulled=doc["pulled_to_utc"], through=doc["complete_through"],
+                first=doc["days"][0]["date"] if doc["days"] else None, net=doc["totals"]["net"], settled=doc["totals"]["settled"])
+    return doc["days"], rows, doc["ticket_hist"], info
 
 
 def opensea():
@@ -223,8 +214,24 @@ def update(kalshi_jsonl=None):
         kalshi_jsonl = "/tmp/kalshi_settled_by_strategy.jsonl"; kalshi_ledger.fetch(kalshi_jsonl)
     H = json.loads(HIST.read_text())
     old = json.loads(CATS.read_text())["rows"] if CATS.exists() else []
-    rel, closes = pm_closes()
-    rows = kalshi_rows(H, kalshi_jsonl, old) + pm_rows(H, closes)
+    rows = kalshi_rows(H, kalshi_jsonl, old)
+    try:
+        pmd, pmr, psum, pi = pm()
+        H["polymarket"], H["psum"], H["pm_status"] = pmd, psum, ""
+        fmt = lambda d: dt.date.fromisoformat(d).strftime("%b %-d").lower()
+        nxt = (dt.date.fromisoformat(pi["through"]) + dt.timedelta(days=1)).isoformat()
+        rel = f"dashboard pub/pm_ledger.json at {pi['commit']} (pulled {pi['pulled']})"
+        H["note"] = (H["note"].split("polymarket:", 1)[0] + f"polymarket: {rel}, tickets by CT settle date, "
+                     f"through {pi['through']}.")
+        H["coverage"] = (H["coverage"].split(". polymarket", 1)[0] + f". polymarket from the settled ledger Bernard's "
+                         f"dashboard publishes, {fmt(pi['first'])} → {fmt(pi['through'])} ({fmt(nxt)} left out: CT settle "
+                         "day still open).")
+        print(f"polymarket: {rel}, {len(pmd)} days through {pi['through']}, {pi['settled']} settled, {pi['net']:+.2f}")
+    except Exception as e:  # noqa: BLE001 -- keep the last good Polymarket days rather than fail the nightly update
+        print(f"WARNING polymarket not refreshed ({type(e).__name__}: {str(e)[:160]}); keeping committed days", file=sys.stderr)
+        pmr = [r for r in old if r["v"] == "p"]
+        rel = "not refreshed this run"
+    rows += pmr
     try:
         osd, osr, info = opensea()
         H["opensea"] = osd
@@ -244,7 +251,7 @@ def update(kalshi_jsonl=None):
                             "fully settled CT days, net after OpenSea fees and gas incl. overhead gas")
     HIST.write_text(json.dumps(H, indent=1) + "\n")
     note = ("aggregates only: daily net, settled count, wins/losses, gross win/loss per CT day, venue and kind of trade. "
-            "pm release " + rel + ".")
+            "polymarket: " + rel + ".")
     CATS.write_text('{"note":' + json.dumps(note) + ',"rows":[\n' + ",\n".join(json.dumps(r, separators=(",", ":")) for r in rows) + "\n]}\n")
     tot = defaultdict(float)
     for r in rows: tot[r["v"]] += r["net"]
