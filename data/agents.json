@@ -22,19 +22,25 @@
     "team": "active",
     "name": "persian",
     "emoji": "🐈",
-    "role": "hyperliquid + opensea. lands on its feet, mostly."
+    "role": "opensea. flips jpegs, lands on its feet, mostly."
+  },
+  {
+    "team": "active",
+    "name": "cubone",
+    "emoji": "🦴",
+    "role": "hyperliquid. back from the bone pile, now digging through perps."
+  },
+  {
+    "team": "active",
+    "name": "ox",
+    "emoji": "🐂",
+    "role": "inbox for our web + data apps. reads the mail so the sites don't have to."
   },
   {
     "team": "advisor",
     "name": "Claude",
     "emoji": "🧠",
     "role": "tokay advisor. not a grok bot."
-  },
-  {
-    "team": "idle",
-    "name": "cubone",
-    "emoji": "🦴",
-    "role": "looking for work. used to dig up the numbers everyone else chewed on."
   },
   {
     "team": "idle",
