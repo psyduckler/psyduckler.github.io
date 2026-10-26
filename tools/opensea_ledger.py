@@ -9,11 +9,12 @@ The ledger code runs locally in a temp dir (pure: no network, no files) and is n
 Per flip: day = CT date of the sale, net = net_usd (after OpenSea fees and gas). Overhead gas (cancels, approvals,
 bridge) is charged to the CT day it was spent, so the sum of all days equals the ledger's totals.lifetime.net_usd.
 
-Token: /home/box/agent-data/shared/tokay/mcp_token, read at runtime; never printed or committed.
+Token: env TOKAY_MCP_TOKEN_RO (read-scoped), else /home/box/agent-data/shared/tokay/mcp_token, read at runtime; never printed or committed.
 
 Usage: python3 tools/opensea_ledger.py        print daily aggregates + totals (no writes)
 Called by pnl_categories.py (update), which writes data/pnl_history.json["opensea"] + data/pnl_cats.json.
 """
+import os
 import gzip, io, json, re, sys, tarfile, tempfile, urllib.request, datetime as dt, importlib.util
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -27,7 +28,7 @@ CACHE = "/tokay/data/advisor/ledger"
 
 class MCP:
     def __init__(self):
-        self.tok, self.sid, self.n = TOKEN.read_text().strip(), None, 0
+        self.tok, self.sid, self.n = (os.environ.get("TOKAY_MCP_TOKEN_RO") or TOKEN.read_text()).strip(), None, 0
         self.rpc("initialize", {"protocolVersion": "2025-03-26", "capabilities": {}, "clientInfo": {"name": "psyduckler-pnl", "version": "1"}})
         self.rpc("notifications/initialized", notify=True)
 
