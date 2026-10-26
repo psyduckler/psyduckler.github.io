@@ -1,5 +1,5 @@
 {
- "note": "aggregates only. kalshi: Tokay R2 kalshi-exec-reports 20261025T122500Z_tokay_ledger/settled_by_strategy.jsonl strategy_leg rows by CT settle date, through 2026-10-24. polymarket: dashboard pub/pm_ledger.json at 29f62e90 (pulled 2026-10-25T12:38:03+00:00), tickets by CT settle date, through 2026-10-24.",
+ "note": "aggregates only. kalshi: Tokay R2 kalshi-exec-reports 20261025T122500Z_tokay_ledger/settled_by_strategy.jsonl strategy_leg rows by CT settle date, through 2026-10-24. polymarket: dashboard pub/pm_ledger.json at 9ad5c230 (pulled 2026-10-25T23:07:25+00:00), tickets by CT settle date, through 2026-10-24.",
  "kalshi": [
   {
    "date": "2026-07-06",
@@ -1169,13 +1169,13 @@
   },
   {
    "date": "2026-10-24",
-   "n": 11,
+   "n": 13,
    "w": 6,
-   "l": 5,
-   "net": -39.16,
+   "l": 7,
+   "net": -58.2,
    "fees": 0.34,
    "gw": 9.82,
-   "gl": -48.98,
+   "gl": -68.02,
    "best": 3.22,
    "worst": -19.62
   }
@@ -1234,8 +1234,8 @@
  "psum": {
   "nw": 903,
   "sw": 6043.22,
-  "nl": 755,
-  "sl": -6648.44,
+  "nl": 757,
+  "sl": -6667.48,
   "hist": [
    0,
    0,
@@ -1255,7 +1255,7 @@
    0,
    47,
    9,
-   478,
+   480,
    218,
    671,
    57,
@@ -1302,10 +1302,10 @@
    "n": 12,
    "w": 11,
    "l": 1,
-   "net": 49.54,
-   "fees": 6.9,
+   "net": 49.55,
+   "fees": 6.89,
    "gw": 51.29,
-   "gl": -1.75,
+   "gl": -1.74,
    "best": 35.56,
    "worst": -0.67
   },
@@ -1315,10 +1315,10 @@
    "w": 1,
    "l": 3,
    "net": -0.77,
-   "fees": 3.69,
-   "gw": 0.4,
-   "gl": -1.17,
-   "best": 0.4,
+   "fees": 3.68,
+   "gw": 0.41,
+   "gl": -1.18,
+   "best": 0.41,
    "worst": -0.63
   },
   {
@@ -1350,11 +1350,11 @@
    "n": 12,
    "w": 7,
    "l": 5,
-   "net": 53.03,
-   "fees": 23.03,
-   "gw": 53.06,
-   "gl": -0.03,
-   "best": 42.84,
+   "net": 53.05,
+   "fees": 23.02,
+   "gw": 53.07,
+   "gl": -0.02,
+   "best": 42.85,
    "worst": 0.0
   },
   {
@@ -1362,23 +1362,23 @@
    "n": 20,
    "w": 15,
    "l": 5,
-   "net": -10.88,
-   "fees": 31.71,
+   "net": -10.87,
+   "fees": 31.69,
    "gw": 91.47,
-   "gl": -102.35,
+   "gl": -102.34,
    "best": 12.69,
-   "worst": -101.99
+   "worst": -101.98
   },
   {
    "date": "2026-10-20",
    "n": 44,
    "w": 43,
    "l": 1,
-   "net": 557.83,
-   "fees": 45.82,
-   "gw": 563.24,
-   "gl": -5.41,
-   "best": 135.92,
+   "net": 557.85,
+   "fees": 45.8,
+   "gw": 563.27,
+   "gl": -5.42,
+   "best": 135.94,
    "worst": -4.49
   },
   {
@@ -1386,9 +1386,9 @@
    "n": 35,
    "w": 28,
    "l": 7,
-   "net": 110.1,
-   "fees": 35.05,
-   "gw": 126.27,
+   "net": 110.12,
+   "fees": 35.04,
+   "gw": 126.29,
    "gl": -16.17,
    "best": 18.56,
    "worst": -11.02
@@ -1399,7 +1399,7 @@
    "w": 5,
    "l": 0,
    "net": 35.07,
-   "fees": 10.48,
+   "fees": 10.47,
    "gw": 35.83,
    "gl": -0.76,
    "best": 21.19,
@@ -1410,11 +1410,11 @@
    "n": 9,
    "w": 8,
    "l": 1,
-   "net": 143.21,
-   "fees": 39.46,
-   "gw": 144.47,
+   "net": 143.23,
+   "fees": 39.45,
+   "gw": 144.49,
    "gl": -1.26,
-   "best": 67.1,
+   "best": 67.11,
    "worst": -0.88
   },
   {
@@ -1426,7 +1426,7 @@
    "fees": 10.69,
    "gw": 13.22,
    "gl": -4.29,
-   "best": 3.92,
+   "best": 3.93,
    "worst": -3.51
   }
  ],
