@@ -1,4 +1,4 @@
-{"note":"aggregates only: daily net, settled count, wins/losses, gross win/loss per CT day, venue and kind of trade. polymarket: dashboard pub/pm_ledger.json at ac50c41a (pulled 2026-10-27T03:07:31+00:00).","rows":[
+{"note":"aggregates only: daily net, settled count, wins/losses, gross win/loss per CT day, venue and kind of trade. polymarket: dashboard pub/pm_ledger.json at 990cc529 (pulled 2026-10-27T12:47:51+00:00).","rows":[
 {"d":"2026-07-06","v":"k","c":"manual","n":3,"w":2,"l":1,"net":-109.33,"gw":240.67,"gl":-350.0},
 {"d":"2026-07-07","v":"k","c":"manual","n":1,"w":1,"l":0,"net":209.88,"gw":209.88,"gl":0.0},
 {"d":"2026-07-11","v":"k","c":"manual","n":7,"w":4,"l":3,"net":47.57,"gw":255.42,"gl":-207.85},
@@ -286,5 +286,13 @@
 {"d":"2026-10-25","v":"p","c":"wx_low","n":5,"w":3,"l":2,"net":35.0,"gw":46.37,"gl":-11.37},
 {"d":"2026-10-25","v":"p","c":"copy","n":14,"w":11,"l":3,"net":304.16,"gw":322.22,"gl":-18.06},
 {"d":"2026-10-25","v":"o","c":"nft","n":26,"w":16,"l":10,"net":-127.44,"gw":36.31,"gl":-163.75},
+{"d":"2026-10-26","v":"k","c":"wx_high","n":20,"w":11,"l":9,"net":-245.64,"gw":171.62,"gl":-417.26},
+{"d":"2026-10-26","v":"k","c":"wx_low","n":4,"w":4,"l":0,"net":9.8,"gw":9.8,"gl":0.0},
+{"d":"2026-10-26","v":"k","c":"mention","n":6,"w":3,"l":3,"net":8.62,"gw":31.8,"gl":-23.18},
+{"d":"2026-10-26","v":"k","c":"golf","n":18,"w":9,"l":9,"net":-341.52,"gw":356.99,"gl":-698.51},
+{"d":"2026-10-26","v":"k","c":"rt","n":5,"w":1,"l":4,"net":-95.31,"gw":4.35,"gl":-99.66},
+{"d":"2026-10-26","v":"p","c":"wx_high","n":26,"w":15,"l":11,"net":-41.5,"gw":58.7,"gl":-100.2},
+{"d":"2026-10-26","v":"p","c":"wx_low","n":4,"w":1,"l":3,"net":-0.7,"gw":14.62,"gl":-15.32},
+{"d":"2026-10-26","v":"p","c":"copy","n":34,"w":20,"l":14,"net":-3.58,"gw":190.3,"gl":-193.88},
 {"d":"2026-10-26","v":"o","c":"nft","n":15,"w":13,"l":2,"net":30.11,"gw":30.13,"gl":-0.02}
 ]}
