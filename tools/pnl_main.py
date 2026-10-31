@@ -211,7 +211,7 @@ def cat_table(cats, rl):
                  + num(None if empty else c["net"] / 100, spark(c["cum"], c["k"]) if not empty else "—") + "</tr>")
     th = lambda t, typ: f'<th scope="col" data-t="{typ}" tabindex="0" aria-sort="none">{t}</th>'
     return ('<div class="tw"><table class="ctab"><thead><tr>' + th("category", "txt") + th("venues", "txt") + th(f"net {rl}", "num")
-            + th("days", "num") + th("green %", "num") + th("sharpe", "num") + th(f"trend {rl}", "num") + f'</tr></thead><tbody>{body}</tbody></table></div>')
+            + th("days", "num") + th("winrate %", "num") + th("sharpe", "num") + th(f"trend {rl}", "num") + f'</tr></thead><tbody>{body}</tbody></table></div>')
 
 def cat_section(vkey, label, rl, start, end, days):
     dates, cats = cat_view(vkey, start, end, sum(C(d["net"]) for d in days))
@@ -223,7 +223,7 @@ def cat_section(vkey, label, rl, start, end, days):
     return (f'<div class="section"><h2>{label} · by kind of trade</h2>{charts}<p class="legend2">{legend}</p>'
             f'{cat_table(cats, rl)}<p class="small cnote">cumulative net per kind of trade inside the window, each line starting at $0. '
             'kinds of trade are the trading console\'s categories, one per book (weather highs / lows / rain, mentions, golf, copy, crypto, nft flips ...). '
-            'days = CT days with a settlement in that kind of trade; green % = share of those days with net &gt; 0. sharpe = mean daily net / its standard deviation × √365, over the settled days of that kind of trade in the window (same as the stat strip; — under 2 days). '
+            'days = CT days with a settlement in that kind of trade; winrate % = share of those days with net &gt; 0. sharpe = mean daily net / its standard deviation × √365, over the settled days of that kind of trade in the window (same as the stat strip; — under 2 days). '
             'click a column to sort.</p></div>')
 
 def panel(key, label, days, M, span, by, rng="all", cats=""):
