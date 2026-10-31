@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""P&L by kind of trade: tag every settled row with one of 14 categories, commit daily aggregates only.
+"""RETIRED 2026-10-31: /pnl/ now comes from the trading console. Run: python3 tools/console.py update && python3 tools/build.py
+
+P&L by kind of trade: tag every settled row with one of 14 categories, commit daily aggregates only.
 
 Writes data/pnl_cats.json: rows {d, v, c, n, w, l, net, gw, gl} = per CT day, per venue (k kalshi, p polymarket,
 o opensea), per category. Also writes data/pnl_history.json["opensea"] and ["polymarket"] (daily venue totals) and ["psum"].
@@ -208,7 +210,11 @@ def tokay_check(rows):
         print(f"categories: match Tokay's published rollup on {len(days)} kalshi days ({pub['run_id']})")
 
 
-def update(kalshi_jsonl=None):
+def update(*a, **k):
+    sys.exit("RETIRED 2026-10-31: /pnl/ now comes from the trading console. Run: python3 tools/console.py update && python3 tools/build.py")
+
+
+def _old_update(kalshi_jsonl=None):
     import kalshi_ledger
     if kalshi_jsonl is None:
         kalshi_jsonl = "/tmp/kalshi_settled_by_strategy.jsonl"; kalshi_ledger.fetch(kalshi_jsonl)
@@ -260,6 +266,6 @@ def update(kalshi_jsonl=None):
 
 if __name__ == "__main__":
     if sys.argv[1:2] == ["update"]:
-        update()
+        sys.exit("RETIRED 2026-10-31: /pnl/ now comes from the trading console. Run: python3 tools/console.py update && python3 tools/build.py")
     else:
         print(__doc__)

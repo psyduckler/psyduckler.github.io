@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Fetch the settled Kalshi ledger from Tokay's R2 bucket (read-only).
+"""RETIRED 2026-10-31: /pnl/ now comes from the trading console. Run: python3 tools/console.py update && python3 tools/build.py
+
+Fetch the settled Kalshi ledger from Tokay's R2 bucket (read-only).
 
 Source (since 2026-10-18; the old GitHub settled_ledger/settled_by_strategy.jsonl
 stopped updating 2026-10-16 when Kalshi moved to Tokay):
@@ -57,7 +59,11 @@ def day_agg(date, v, fees):
             "gl": r(sum(x for x in v if x < 0)), "best": r(max(v)), "worst": r(min(v))}
 
 
-def update(tmp="/tmp/kalshi_settled_by_strategy.jsonl"):
+def update(*a, **k):
+    sys.exit("RETIRED 2026-10-31: /pnl/ now comes from the trading console. Run: python3 tools/console.py update && python3 tools/build.py")
+
+
+def _old_update(tmp="/tmp/kalshi_settled_by_strategy.jsonl"):
     prefix, _ = fetch(tmp)
     legs = defaultdict(list)
     for line in open(tmp):
@@ -106,7 +112,7 @@ def update(tmp="/tmp/kalshi_settled_by_strategy.jsonl"):
 
 if __name__ == "__main__":
     if sys.argv[1:2] == ["update"]:
-        update()
+        sys.exit("RETIRED 2026-10-31: /pnl/ now comes from the trading console. Run: python3 tools/console.py update && python3 tools/build.py")
     else:
         args = [a for a in sys.argv[1:] if a != "fetch"]
         prefix, n = fetch(args[0] if args else "settled_by_strategy.jsonl")

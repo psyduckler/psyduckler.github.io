@@ -1,47 +1,34 @@
 # tools
 
 - `build.py` builds the site (incl. `/pnl/` via `pnl_main.py`) from `data/*.json`.
-- `kalshi_ledger.py update` appends fully settled Kalshi CT days to `data/pnl_history.json`, then refreshes
-  P&L by kind of trade and OpenSea (`pnl_categories.py update`); then run `build.py`.
+- `console.py update` refreshes `/pnl/` data from the trading console (every venue), then run `build.py`.
 
-## Refresh command (nightly routine, or by hand)
+## Refresh command (daily routine, or by hand) — since 2026-10-31
 
-    python3 tools/kalshi_ledger.py update && python3 tools/build.py
+    python3 tools/console.py update && python3 tools/build.py
 
-One command refreshes everything on /pnl/: Kalshi days, the 8 categories for Kalshi + Polymarket, and OpenSea
-(days + category). `python3 tools/pnl_categories.py update` alone re-tags categories and refreshes OpenSea without
-adding Kalshi days. If Tokay can't be reached, the last committed OpenSea days are kept (a WARNING is printed).
+`console.py` reads the trading console (Tokay), read-only: settled P&L after fees by CT day for kalshi, polymarket,
+hyperliquid and opensea, and per book category. It writes `data/pnl_history.json` (`{kalshi, polymarket, hyperliquid,
+opensea: [{date, net}]}`) and `data/pnl_cats.json` (rows `{d, v, c, net}`, v = k/p/h/o). Only CT days before today are
+written. Every run replaces the whole history, so late settles restate old days; the run prints a `restated ...` /
+`dropped ...` line for each day that changed. `python3 tools/console.py check` runs everything without writing.
 
-## P&L by kind of trade (since 2026-10-18)
+Checks (the update refuses to write if any fails):
+1. Σ of the per-venue daily series == the console overview's all-time tile (both incl. today), ±$0.05.
+2. the console's last-7-days by-day nets == the series, per venue, to the cent (days before today).
+3. Σ books per category == the overview's per-category all-time, ±$0.25 (books round per day).
+4. per venue-day, Σ books within $0.10 of the venue day; then the categories are split to the cent (largest remainder),
+   and `pnl_main.py` re-checks Σ categories == venue for every view and window.
 
-`pnl_categories.py` tags every settled row with one of 8 categories (wx_high, wx_low, wx_rain, mention, copy, crypto,
-nft, manual; rules + colors from Bernard's handoff) and writes `data/pnl_cats.json`: one row per CT day x venue x
-category with n, w, l, net, gw, gl. For every venue and day the categories' cents equal the day on the page exactly;
-the update and `pnl_main.py` (every venue x window) both refuse to build otherwise. Kalshi days before the settled
-ledger (jul hand trades) are manual. Polymarket categories come from the same release rows as the page.
+Token: env `TOKAY_MCP_TOKEN_RO` only; console URL: env `TOKAY_CONSOLE_URL` or a box file outside this repo. Never print
+or commit either. Never write the console's balances, open risk, positions, book or strategy names or params.
 
-## OpenSea source (since 2026-10-22)
+Categories are the console's (per book): Bernard's 14 (weather highs / lows / rain / snow, mentions, copy, crypto, nft,
+golf, rotten tomatoes, cpi, youtube, basketball, manual) plus commodities, liquidity rewards, football, netflix and
+deadlines. A new console category shows up gray-dashed with a warning until it gets a color in `console.py`.
 
-`opensea_published.py` reads, through the Tokay MCP (token `/home/box/agent-data/shared/tokay/mcp_token`, read at runtime,
-never printed or committed), THE OpenSea ledger as published by Tokay's `opensea-ledger` job (every 30 min, :23/:53 UTC):
-`/tokay/data/nft_ledger/published/{ledger.json, status.json}` on the `opensea-ledger` service. It checks `ledger.json`'s
-sha256 against `status.json` and refuses a pull more than 3 h old. Its trades/overhead rows go through
-`opensea_ledger.days()` unchanged: flips count on their CT sale day, overhead gas on the CT day it was spent, so all days
-sum to the ledger's `totals.net_usd`. Only fully settled CT days (before the pull's CT date) are written to
-`data/pnl_history.json["opensea"]`. The old source (opensea-bots `/tokay/data/research/nft_ledger/pull.json.gz`, read by
-`opensea_ledger.fetch()`) stopped updating 2026-10-19 19:11Z and is no longer used.
+## Retired 2026-10-31 (kept for history; their `update` entry points exit)
 
-## Kalshi PnL source (since 2026-10-18)
-
-Kalshi moved to Tokay on 2026-10-16 and the GitHub `settled_ledger/settled_by_strategy.jsonl`
-stopped updating. The settled ledger now lives in Cloudflare R2, bucket `kalshi-exec-reports`:
-`ledger/latest.json` -> `prefix` (newest good run) -> `settled_by_strategy.jsonl` (same schema).
-Tokay's ledger job publishes hourly 07:25–23:25 CT (the 07:25 CT run is the first with all of yesterday). `kalshi_ledger.py` reads it with the shared
-read-only R2 key on the box, sums `strategy_leg` rows by `settled_time_ct` date, leaves out the
-current CT day, and refuses to write if a day already on the page doesn't match.
-Only daily aggregates are committed; never commit keys, strategy names or positions. A day is only added once the
-ledger run itself happened after that CT day ended.
-
-Polymarket still comes from the pm-private R2 release (`closes.jsonl`), updated by hand.
-
-`data/pnl_history.json` `pm_status`: optional short note shown on the polymarket view and under recent days. Set it to "" once a new pm release lands.
+`kalshi_ledger.py` (R2 bucket kalshi-exec-reports, gone 2026-10-30), `pnl_categories.py` (ticker-based category rules),
+`pm_published.py` (dashboard pub/pm_ledger.json), `opensea_published.py` / `opensea_ledger.py` (Tokay MCP service files,
+old token dead 2026-10-30).

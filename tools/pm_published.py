@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Polymarket settled ledger as PUBLISHED by Bernard's dashboard (the numbers its /pm/ board and Overview show). Aggregates only.
+"""RETIRED 2026-10-31: /pnl/ now comes from the trading console. Run: python3 tools/console.py update && python3 tools/build.py
+
+Polymarket settled ledger as PUBLISHED by Bernard's dashboard (the numbers its /pm/ board and Overview show). Aggregates only.
 
 Meowth's R2 release (pm-private private/polymarket/psyslo/releases/latest.json) stopped at 2026-10-13 03:25Z. Since
 2026-10-22 every dashboard update (Bernard's Mac; slots 07:30, 10:30, 12:45, then hourly 14:00-22:00 CT) writes

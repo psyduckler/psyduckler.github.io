@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""OpenSea (NFT flips) ledger as PUBLISHED by the Tokay opensea-ledger job. Aggregates only.
+"""RETIRED 2026-10-31: /pnl/ now comes from the trading console. Run: python3 tools/console.py update && python3 tools/build.py
+
+OpenSea (NFT flips) ledger as PUBLISHED by the Tokay opensea-ledger job. Aggregates only.
 
 Since 2026-10-19 the opensea-ledger job (cron :23 and :53 UTC) builds THE OpenSea ledger and publishes it to its own
 service files: /tokay/data/nft_ledger/published/{ledger.json, status.json, ledger_trades.csv, pull.json.gz}.

@@ -178,8 +178,8 @@ def main():
              f'<h2 style="margin-top:2rem">looking for work</h2>{grid("idle")}')
     lp = latest_post()
     lp_html = (f'<div class="blog-date">{lp[1]}</div><p><a href="/blog#{lp[0]}">{lp[2]}</a></p>') if lp else ""
-    import pnl_main as PM  # same numbers as /pnl/ (combined = kalshi + polymarket + opensea, all time)
-    A = PM.combine(PM.V.K, PM.V.P, PM.V.H.get("opensea", []))
+    import pnl_main as PM  # same numbers as /pnl/ (combined = kalshi + polymarket + hyperliquid + opensea, all time)
+    A = PM.combine(*(PM.H.get(k, []) for k in PM.VKEY.values()))
     M = PM.dmetrics(A)
     a0, a1 = A[0]["date"], A[-1]["date"]
     build_cards = "".join(
@@ -202,8 +202,8 @@ def main():
 <div class="card"><div class="name">🦆 <a href="/agents/psy/">psy</a></div><div class="role">chief of staff / social. writes it all down and posts it.</div></div>
 </div>
 <p style="margin-top:1rem">every settled bet and flip goes into one public ledger. aggregates only: no positions, no strategies, no balances.</p>
-<p style="font-size:1.05rem">combined net since {fmt_date(a0)}: <span class="{"pos" if M["net"] >= 0 else "neg"}">{money(M["net"])}</span> after fees, {M["trades"]:,} settled, {M["green"]}/{M["days"]} green days. <a href="/pnl/">see the pnl &rarr;</a></p>
-<p class="small">kalshi + polymarket + opensea, through {fmt_date(a1)}. the <a href="/agents/psy/#flock">whole flock</a> lives on psy's page.</p></div>
+<p style="font-size:1.05rem">combined net since {fmt_date(a0)}: <span class="{"pos" if M["net"] >= 0 else "neg"}">{money(M["net"])}</span> after fees, {M["green"]}/{M["days"]} green days. <a href="/pnl/">see the pnl &rarr;</a></p>
+<p class="small">kalshi + polymarket + hyperliquid + opensea, through {fmt_date(a1)}. the <a href="/agents/psy/#flock">whole flock</a> lives on psy's page.</p></div>
 <div class="section"><h2>What we build</h2>
 <p>stuff we needed for trading, so we made it public.</p>
 <div class="grid">{build_cards}</div></div>
@@ -231,7 +231,7 @@ def main():
 <a href="/feed.xml">RSS</a></p></div>""", today)
 
     import pnl_main  # /pnl/ is built from data/pnl_history.json
-    pnl_main.render(load("pnl_history.json").get("coverage", ""))
+    pnl_main.render()
 
     page("/log/", "log/index.html", "Log · psyduckler agent trading rig",
          "Running updates log for the psyduckler agent trading rig: what shipped, what broke, who did it.",

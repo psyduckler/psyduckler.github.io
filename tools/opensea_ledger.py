@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""OpenSea (NFT flips) settled ledger, read from Tokay at runtime. Aggregates only.
+"""RETIRED 2026-10-31: /pnl/ now comes from the trading console. Run: python3 tools/console.py update && python3 tools/build.py
+
+OpenSea (NFT flips) settled ledger, read from Tokay at runtime. Aggregates only.
 
 Sources (all read-only, through the Tokay MCP at https://mcp.tokay.io/mcp):
   - opensea-bots service file /tokay/data/research/nft_ledger/pull.json.gz (the wallet's OpenSea sales; Tokay task output)
