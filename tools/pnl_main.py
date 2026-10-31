@@ -64,9 +64,8 @@ document.addEventListener('click',function(){pin=null;hide()})})();</script>"""
 def strip(M):
     s = stat
     return (f'<div class="strip">{s("total net", money(M["net"]), cls(M["net"]))}{s("best day", money(M["best"]), "pos")}'
-            f'{s("worst day", money(M["worst"]), "neg")}{s("max drawdown", money(M["dd"]), "neg")}'
             f'{s("sharpe ratio", f"{M["sharpe"]:.2f}")}{s("avg day", money(M["avg"]), cls(M["avg"]))}'
-            f'{s("green days", f"{M["green"]}/{M["days"]}")}{s("green %", f"{M["green"] / max(M["days"], 1) * 100:.0f}%")}</div>')
+            f'{s("winrate %", f"{M["green"] / max(M["days"], 1) * 100:.0f}%")}</div>')
 
 def sharpe(nets):
     """annualized daily sharpe: mean / population stdev of daily nets (settled days only) x sqrt(365). None if < 2 days or flat."""
@@ -231,7 +230,7 @@ def panel(key, label, days, M, span, by, rng="all", cats=""):
     tips = _tips(days, by, key == "all")
     return (f'<div class="view" data-view="{key}" data-range="{rng}"{"" if (key == "all" and rng == "90") else " hidden"}>'
             f'<div class="section"><h2>{label} · equity</h2>{vnote(key)}{strip(M)}{eq_svg(days, tips)}'
-            f'<p class="small">{span}. net after fees. max drawdown is peak-to-trough on the running total.</p></div>'
+            f'<p class="small">{span}. net after fees.</p></div>'
             + cats +
             f'<div class="section"><h2>{label} · daily net</h2>{bar_svg(days, tips)}'
             f'<p>{M["green"]} green days, {M["days"] - M["green"]} red. best {money(M["best"])}, worst {money(M["worst"])}.</p></div></div>')
