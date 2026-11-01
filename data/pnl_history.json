@@ -541,70 +541,50 @@
  ],
  "opensea": [
   {
-   "date": "2026-10-15",
-   "net": -0.49
-  },
-  {
-   "date": "2026-10-16",
-   "net": -3.24
-  },
-  {
-   "date": "2026-10-17",
-   "net": 1.29
-  },
-  {
-   "date": "2026-10-18",
-   "net": 53.33
-  },
-  {
    "date": "2026-10-19",
-   "net": -20.14
-  },
-  {
-   "date": "2026-10-20",
-   "net": 559.31
+   "net": 8.82
   },
   {
    "date": "2026-10-21",
-   "net": 102.7
+   "net": 10.27
   },
   {
    "date": "2026-10-22",
-   "net": 31.82
+   "net": 8.89
   },
   {
    "date": "2026-10-23",
-   "net": 67.49
+   "net": 18.01
   },
   {
    "date": "2026-10-24",
-   "net": 8.47
+   "net": 1.7
   },
   {
    "date": "2026-10-25",
-   "net": -127.11
+   "net": 25.53
   },
   {
    "date": "2026-10-26",
-   "net": 30.24
+   "net": 12.98
   },
   {
    "date": "2026-10-27",
-   "net": -14.57
+   "net": -16.45
   },
   {
    "date": "2026-10-28",
-   "net": 34.45
+   "net": 4.76
   },
   {
    "date": "2026-10-29",
-   "net": 30.44
+   "net": 33.29
   },
   {
    "date": "2026-10-30",
-   "net": 79.38
+   "net": 79.37
   }
  ],
- "coverage": "kalshi jul 6 \u2192 oct 30, polymarket oct 1 \u2192 oct 30, hyperliquid oct 6 \u2192 oct 30, opensea oct 15 \u2192 oct 30",
+ "coverage": "kalshi jul 6 \u2192 oct 30, polymarket oct 1 \u2192 oct 30, hyperliquid oct 6 \u2192 oct 30, opensea oct 19 \u2192 oct 30",
  "note": "aggregates only: settled net after fees per CT day and venue, from the trading console; restated 2026-10-31; days before 2026-10-31 only (today still settling)."
 }
