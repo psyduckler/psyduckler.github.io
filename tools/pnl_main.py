@@ -105,6 +105,7 @@ SHORT = {"wx_high": "Wx highs", "wx_low": "Wx lows", "wx_rain": "Wx rain", "ment
          "crypto": "Crypto", "nft": "NFT flips", "golf": "Golf", "rt": "RT", "cpi": "CPI", "youtube": "YouTube",
          "basketball": "Basketball", "wx_snow": "Wx snow", "manual": "Manual", "commodities": "Commodities",
          "lip": "Liq. rewards", "football": "Football", "netflix": "Netflix", "deadlines": "Deadlines"}
+SHORT |= {c[0]: c[1] for c in CATS if c[0] not in SHORT}  # new console categories fall back to their label
 DASH = SRC.DASH | {c[0] for c in CATS if c[0] not in SRC.COLORS}
 dot = lambda k: (f'<span class="dot ring" style="border-color:var(--c-{k})"></span>' if k in DASH
                  else f'<span class="dot" style="background:var(--c-{k})"></span>')
