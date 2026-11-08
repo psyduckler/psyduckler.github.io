@@ -1,4 +1,4 @@
-{"note":"aggregates only: settled net per CT day, venue (k kalshi, p polymarket, h hyperliquid, o opensea) and kind of trade; categories are per book, from the trading console.","cats":[{"k":"wx_high","label":"Weather \u00b7 highs","v":"kp"},{"k":"wx_low","label":"Weather \u00b7 lows","v":"kp"},{"k":"wx_rain","label":"Weather \u00b7 rain","v":"kp"},{"k":"mention","label":"Mentions","v":"k"},{"k":"copy","label":"Copy trading","v":"p"},{"k":"crypto","label":"Crypto","v":"ph"},{"k":"nft","label":"NFT flips","v":"o"},{"k":"golf","label":"Golf","v":"k"},{"k":"rt","label":"Rotten Tomatoes","v":"k"},{"k":"cpi","label":"CPI","v":""},{"k":"youtube","label":"YouTube views","v":"kp"},{"k":"basketball","label":"Basketball","v":"k"},{"k":"wx_snow","label":"Weather \u00b7 snow","v":""},{"k":"manual","label":"Manual / other","v":"kh"},{"k":"commodities","label":"Commodities","v":"k"},{"k":"lip","label":"Liquidity rewards","v":"k"},{"k":"football","label":"Football","v":"k"},{"k":"netflix","label":"Netflix","v":"k"},{"k":"deadlines","label":"Deadlines","v":""},{"k":"macro","label":"Macro \u00b7 Fed","v":""},{"k":"hockey","label":"Hockey","v":"k"},{"k":"soccer","label":"Soccer","v":"kph"},{"k":"mma","label":"MMA","v":"k"}],"rows":[
+{"note":"aggregates only: settled net per CT day, venue (k kalshi, p polymarket, h hyperliquid, o opensea) and kind of trade; categories are per book, from the trading console.","cats":[{"k":"wx_high","label":"Weather \u00b7 highs","v":"kp"},{"k":"wx_low","label":"Weather \u00b7 lows","v":"kp"},{"k":"wx_rain","label":"Weather \u00b7 rain","v":"kp"},{"k":"mention","label":"Mentions","v":"k"},{"k":"copy","label":"Copy trading","v":"p"},{"k":"crypto","label":"Crypto","v":"ph"},{"k":"nft","label":"NFT flips","v":"o"},{"k":"golf","label":"Golf","v":"k"},{"k":"rt","label":"Rotten Tomatoes","v":"k"},{"k":"cpi","label":"CPI","v":""},{"k":"youtube","label":"YouTube views","v":"kp"},{"k":"basketball","label":"Basketball","v":"k"},{"k":"wx_snow","label":"Weather \u00b7 snow","v":""},{"k":"manual","label":"Manual / other","v":"kh"},{"k":"commodities","label":"Commodities","v":"k"},{"k":"lip","label":"Liquidity rewards","v":"k"},{"k":"football","label":"Football","v":"k"},{"k":"netflix","label":"Netflix","v":"k"},{"k":"deadlines","label":"Deadlines","v":""},{"k":"hockey","label":"Hockey","v":"k"},{"k":"mma","label":"MMA","v":"k"},{"k":"soccer","label":"Soccer","v":"kph"},{"k":"macro","label":"Macro \u00b7 Fed","v":""}],"rows":[
 {"d":"2026-07-06","v":"k","c":"manual","net":-109.33},
 {"d":"2026-07-07","v":"k","c":"manual","net":209.88},
 {"d":"2026-07-11","v":"k","c":"manual","net":47.58},
@@ -374,9 +374,9 @@
 {"d":"2026-10-31","v":"k","c":"football","net":17.4},
 {"d":"2026-10-31","v":"k","c":"hockey","net":1.76},
 {"d":"2026-10-31","v":"k","c":"mma","net":6.4},
-{"d":"2026-10-31","v":"p","c":"wx_high","net":-128.24},
+{"d":"2026-10-31","v":"p","c":"wx_high","net":-128.25},
 {"d":"2026-10-31","v":"p","c":"wx_low","net":-13.0},
-{"d":"2026-10-31","v":"p","c":"copy","net":-17.17},
+{"d":"2026-10-31","v":"p","c":"copy","net":-17.16},
 {"d":"2026-10-31","v":"p","c":"crypto","net":21.67},
 {"d":"2026-10-31","v":"h","c":"crypto","net":0.02},
 {"d":"2026-10-31","v":"o","c":"nft","net":20.25},
@@ -462,5 +462,20 @@
 {"d":"2026-11-06","v":"p","c":"soccer","net":-4.41},
 {"d":"2026-11-06","v":"h","c":"crypto","net":0.5},
 {"d":"2026-11-06","v":"h","c":"soccer","net":-0.21},
-{"d":"2026-11-06","v":"o","c":"nft","net":22.58}
+{"d":"2026-11-06","v":"o","c":"nft","net":22.58},
+{"d":"2026-11-07","v":"k","c":"wx_high","net":296.86},
+{"d":"2026-11-07","v":"k","c":"wx_low","net":1.5},
+{"d":"2026-11-07","v":"k","c":"wx_rain","net":46.47},
+{"d":"2026-11-07","v":"k","c":"mention","net":2.57},
+{"d":"2026-11-07","v":"k","c":"golf","net":-53.87},
+{"d":"2026-11-07","v":"k","c":"basketball","net":16.1},
+{"d":"2026-11-07","v":"k","c":"commodities","net":22.32},
+{"d":"2026-11-07","v":"k","c":"football","net":114.53},
+{"d":"2026-11-07","v":"k","c":"mma","net":228.74},
+{"d":"2026-11-07","v":"k","c":"soccer","net":-24.58},
+{"d":"2026-11-07","v":"p","c":"wx_high","net":-33.32},
+{"d":"2026-11-07","v":"p","c":"copy","net":10.35},
+{"d":"2026-11-07","v":"h","c":"crypto","net":18.1},
+{"d":"2026-11-07","v":"h","c":"soccer","net":-1.1},
+{"d":"2026-11-07","v":"o","c":"nft","net":1.59}
 ]}
