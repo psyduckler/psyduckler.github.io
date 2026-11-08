@@ -147,22 +147,34 @@ def cat_view(vkey, start, end, days_net_c):
     return dates, out
 
 def line_svg(dates, cats, w=640, h=260, L=46, R=122, cls="lcd", xt=4):
-    T, B = 12, 24
-    pw, ph = w - L - R, h - T - B
+    T, B, gap = 12, 24, 13
     allv = [v for c in cats for v in c["cum"]] + [0]
     lo, hi = min(allv), max(allv)
     step = max(1, (hi - lo) / 4 / 100)
     mag = 10 ** len(str(int(step))) / 10; step = next(m * mag for m in (1, 2, 2.5, 5, 10) if m * mag >= step) * 100
     lo = (lo // step) * step; hi = -((-hi) // step) * step
     if hi == lo: hi = lo + step
+    ticks, t = [], lo
+    while t <= hi + 1e-9:
+        ticks.append(t); t += step
+    # ~0.60em is the advance of the monospace fallbacks. Axis text is end-anchored 6px
+    # left of the plot; endpoint text starts 6px to the right. The +8 leaves that offset plus 2px.
+    ink = lambda s, sz: len(s) * sz * 0.60
+    ceil = lambda v: int(v) if v == int(v) else int(v) + 1
+    ax = [short_money(tv / 100).lstrip("+") for tv in ticks]
+    el = [f"{SHORT[c['k']]} {short_money(c['cum'][-1] / 100)}" for c in cats]
+    if ax: L = max(L, ceil(max(ink(s, 10) for s in ax) + 8))
+    if el: R = max(R, ceil(max(ink(s, 10.5) for s in el) + 8))
+    # endpoint labels stack at `gap`; the plot has to be tall enough that the stack
+    # sits between the top inset and the x-axis instead of being pulled out of the viewBox
+    h = max(h, T + 4 + gap * max(len(cats) - 1, 0) + B)
+    pw, ph = w - L - R, h - T - B
     y = lambda v: T + (hi - v) / (hi - lo) * ph
     n = len(dates); x = lambda i: L + (i / (n - 1) * pw if n > 1 else pw / 2)
     g = []
-    t = lo
-    while t <= hi + 1e-9:
+    for t in ticks:
         g.append(f'<line x1="{L}" x2="{L + pw}" y1="{y(t):.1f}" y2="{y(t):.1f}" class="{"g0" if t == 0 else "g"}"/>'
                  f'<text x="{L - 6}" y="{y(t) + 4:.1f}" text-anchor="end" class="ax">{short_money(t / 100).lstrip("+")}</text>')
-        t += step
     for i in sorted({0, n - 1, *range(0, n, max(1, n // xt))}):
         if 0 < i < n - 1 and ((n - 1 - i) < n / (2 * xt) or i < n / (2 * xt)): continue
         g.append(f'<text x="{x(i):.1f}" y="{h - 6}" text-anchor="{"start" if i == 0 else ("end" if i == n - 1 else "middle")}" class="ax">'
@@ -174,7 +186,7 @@ def line_svg(dates, cats, w=640, h=260, L=46, R=122, cls="lcd", xt=4):
         lines.append(f'<polyline points="{pts}" fill="none" stroke="var(--c-{c["k"]})" stroke-width="2"{dash(c["k"])} stroke-linejoin="round" stroke-linecap="round"/>')
         ends.append([y(c["cum"][-1]), c])
     ends.sort(key=lambda e: e[0])
-    gap, top, bot = 13, T + 4, T + ph
+    top, bot = T + 4, T + ph
     for i in range(len(ends)):                  # push down to keep >= 13px apart ...
         if i and ends[i][0] < ends[i - 1][0] + gap: ends[i][0] = ends[i - 1][0] + gap
         ends[i][0] = max(ends[i][0], top)
