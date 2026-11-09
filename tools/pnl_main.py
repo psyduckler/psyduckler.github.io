@@ -283,7 +283,7 @@ PROFILES = (
     ("Kalshi", "https://kalshi.com/ideas/profiles/psyduckler",
      '<path d="M8 4v16"/><path d="M8 12.2 16.6 4.4"/><path d="M8 12.2 16.6 19.6"/>'),
     ("Polymarket", "https://polymarket.com/@psyduckler",
-     '<path d="M4.2 16.2 9.2 11l3.1 2.6L19.8 6"/><path d="M14.2 6H19.8v5.6"/>'),
+     '<path d="M5.2 17.4V10.6"/><path d="M12 17.4V6.8"/><path d="M18.8 17.4V3.6"/>'),
     ("Hyperliquid", "https://app.hyperliquid.xyz/explorer/address/0x3C398f9BC64448F2AB3AF5e9f46EDF2b6B26177B",
      '<path d="M12 3.1s5.2 6.3 5.2 9.6a5.2 5.2 0 0 1-10.4 0c0-3.3 5.2-9.6 5.2-9.6z"/>'),
 )
@@ -293,7 +293,7 @@ def profiles():
     for name, href, paths in PROFILES:
         links.append(
             f'<a href="{href}" target="_blank" rel="noopener noreferrer" aria-label="{name}" title="{name}">'
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" '
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" '
             'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">'
             f'{paths}</svg></a>')
     return '<nav class="profiles" aria-label="Public profiles">' + "".join(links) + "</nav>"
@@ -324,7 +324,7 @@ def render(H_meta=None):
            '.ctab th[aria-sort=ascending]::after{content:" ↑"}.ctab th[aria-sort=descending]::after{content:" ↓"}.ctab td{white-space:nowrap;vertical-align:middle}.ctab td:nth-child(2){text-align:left}.ctab th:nth-child(2){text-align:left}'
            '.profiles{display:flex;align-items:center;gap:1rem;margin:-.4rem 0 1.15rem}.profiles a{display:inline-flex;color:var(--muted);border-bottom:none;line-height:0}'
            '.profiles a:hover,.profiles a:focus-visible{color:var(--accent);border-bottom-color:transparent}.profiles a:focus-visible{outline:1px solid var(--accent);outline-offset:4px}'
-           '.profiles svg{width:1.2rem;height:1.2rem;display:block}'
+           '.profiles svg{width:1.35rem;height:1.35rem;display:block}'
            '.chip{display:inline-block;font-size:.6rem;letter-spacing:.05em;border:1px solid var(--border);color:var(--muted);padding:0 .3rem;margin-right:.2rem;line-height:1.5}'
            '.section p.cnote{font-size:.75rem;line-height:1.6}.spark{display:inline-block;vertical-align:middle}</style>')
     latest = _dt.date.fromisoformat(max(v for v in last.values() if v))
