@@ -64,7 +64,15 @@ th:first-child,td:first-child{text-align:left}
 .footer a{color:var(--muted)}
 .blink{animation:blink 1.2s step-end infinite}
 @keyframes blink{50%{opacity:0}}
-@media(max-width:480px){body{padding:1rem 1.1rem 3rem}nav{gap:.25rem .85rem;font-size:.8rem}h1.title{font-size:1.2rem}}
+.nav-tools{display:inline-flex;align-items:center;gap:1.1rem;flex-wrap:nowrap}
+.profiles{display:inline-flex;align-items:center;gap:.65rem;flex-wrap:nowrap}
+.profiles a{display:inline-flex;color:var(--muted);border-bottom:none;line-height:0}
+.profiles a:hover,.profiles a:focus-visible{color:var(--accent);border-bottom-color:transparent}
+.profiles a:focus-visible{outline:1px solid var(--accent);outline-offset:3px}
+.profiles svg{width:1.15rem;height:1.15rem;display:block}
+nav.profiles{display:flex;gap:1rem;margin:-.4rem 0 1.15rem}
+nav.profiles svg{width:1.35rem;height:1.35rem}
+@media(max-width:480px){body{padding:1rem 1.1rem 3rem}nav{gap:.25rem .85rem;font-size:.8rem}.nav-tools{gap:.85rem}h1.title{font-size:1.2rem}}
 """
 
 # "what we build" cards: (emoji, name, url or None while not live, one-liner from the site's own copy)
@@ -79,6 +87,34 @@ PRODUCTS = [
 
 NAV = [("/agents/psy/", "psy"), ("/log/", "log"), ("/pnl/", "pnl"),
        ("/blog", "blog"), (X, "x ↗")]
+
+# Public venue profiles. The OpenSea username is the real account "--__--__--__"; do not rewrite it.
+# profile_links() is the only markup for these four icons (site nav and the PnL title row).
+PROFILES = (
+    ("OpenSea", "https://opensea.io/--__--__--__/activity",
+     '<path d="M12 3.2v11.3"/><path d="M12 4.4 18.2 14.5H12"/><path d="M12 8.4 6.8 14.5H12"/>'
+     '<path d="M3.6 18.7c1.6 1.2 3.2 1.2 4.8 0s3.2-1.2 4.8 0 3.2 1.2 4.8 0"/>'),
+    ("Kalshi", "https://kalshi.com/ideas/profiles/psyduckler",
+     '<path d="M8 4v16"/><path d="M8 12.2 16.6 4.4"/><path d="M8 12.2 16.6 19.6"/>'),
+    ("Polymarket", "https://polymarket.com/@psyduckler",
+     '<path d="M5.2 17.4V10.6"/><path d="M12 17.4V6.8"/><path d="M18.8 17.4V3.6"/>'),
+    ("Hyperliquid", "https://app.hyperliquid.xyz/explorer/address/0x3C398f9BC64448F2AB3AF5e9f46EDF2b6B26177B",
+     '<path d="M12 3.1s5.2 6.3 5.2 9.6a5.2 5.2 0 0 1-10.4 0c0-3.3 5.2-9.6 5.2-9.6z"/>'),
+)
+
+def profile_links():
+    links = []
+    for name, href, paths in PROFILES:
+        links.append(
+            f'<a href="{href}" target="_blank" rel="noopener noreferrer" aria-label="{name}" title="{name}">'
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" '
+            'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">'
+            f'{paths}</svg></a>')
+    return "".join(links)
+
+def profiles():
+    """Icon row under the PnL title. The site nav embeds profile_links() itself."""
+    return '<nav class="profiles" aria-label="Public profiles">' + profile_links() + "</nav>"
 
 def head(title, desc, path):
     url = SITE + path
@@ -111,8 +147,11 @@ def head(title, desc, path):
 </head>"""
 
 def nav(active):
-    return "<nav>" + "".join(
-        f'<a href="{h}"{" class=\"active\"" if h == active else ""}>{t}</a>' for h, t in NAV) + theme.TOGGLE + "</nav>"
+    links = "".join(f'<a href="{h}"{" class=\"active\"" if h == active else ""}>{t}</a>' for h, t in NAV)
+    # icons and the theme toggle wrap together, so a narrow line never leaves the toggle alone
+    tools = (f'<span class="nav-tools"><span class="profiles" role="group" aria-label="Public profiles">'
+             f'{profile_links()}</span>{theme.TOGGLE}</span>')
+    return "<nav>" + links + tools + "</nav>"
 
 def footer(date):
     short = date.rsplit(",", 1)[0]  # "oct 14"
