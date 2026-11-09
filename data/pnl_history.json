@@ -1,6 +1,6 @@
 {
  "source": "trading console (Tokay), settled P&L after fees by CT day",
- "through": "2026-11-07",
+ "through": "2026-11-08",
  "kalshi": [
   {
    "date": "2026-07-06",
@@ -345,6 +345,10 @@
   {
    "date": "2026-11-07",
    "net": 650.64
+  },
+  {
+   "date": "2026-11-08",
+   "net": -39.39
   }
  ],
  "polymarket": [
@@ -499,6 +503,10 @@
   {
    "date": "2026-11-07",
    "net": -22.97
+  },
+  {
+   "date": "2026-11-08",
+   "net": 88.24
   }
  ],
  "hyperliquid": [
@@ -600,15 +608,15 @@
   },
   {
    "date": "2026-10-30",
-   "net": 14.74
+   "net": 14.79
   },
   {
    "date": "2026-10-31",
-   "net": 0.02
+   "net": 0.08
   },
   {
    "date": "2026-11-01",
-   "net": 0.1
+   "net": -0.02
   },
   {
    "date": "2026-11-02",
@@ -633,6 +641,10 @@
   {
    "date": "2026-11-07",
    "net": 17.0
+  },
+  {
+   "date": "2026-11-08",
+   "net": -2.74
   }
  ],
  "opensea": [
@@ -727,8 +739,12 @@
   {
    "date": "2026-11-07",
    "net": 1.59
+  },
+  {
+   "date": "2026-11-08",
+   "net": 20.16
   }
  ],
- "coverage": "kalshi jul 6 \u2192 nov 7, polymarket oct 1 \u2192 nov 7, hyperliquid oct 6 \u2192 nov 7, opensea oct 15 \u2192 nov 7",
- "note": "aggregates only: settled net after fees per CT day and venue, from the trading console; restated 2026-10-31; days before 2026-11-08 only (today still settling)."
+ "coverage": "kalshi jul 6 \u2192 nov 8, polymarket oct 1 \u2192 nov 8, hyperliquid oct 6 \u2192 nov 8, opensea oct 15 \u2192 nov 8",
+ "note": "aggregates only: settled net after fees per CT day and venue, from the trading console; restated 2026-10-31; days before 2026-11-09 only (today still settling)."
 }
