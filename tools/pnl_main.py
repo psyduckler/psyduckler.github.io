@@ -275,6 +275,29 @@ try{st?localStorage.setItem(K,JSON.stringify(st)):localStorage.removeItem(K)}cat
 document.querySelectorAll('table.ctab th').forEach(function(th){th.addEventListener('click',function(){click(th)});
 th.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();click(th)}})});apply()})();</script>"""
 
+# Public venue profiles. The OpenSea username is the real account "--__--__--__"; do not rewrite it.
+PROFILES = (
+    ("OpenSea", "https://opensea.io/--__--__--__/activity",
+     '<path d="M12 3.2v11.3"/><path d="M12 4.4 18.2 14.5H12"/><path d="M12 8.4 6.8 14.5H12"/>'
+     '<path d="M3.6 18.7c1.6 1.2 3.2 1.2 4.8 0s3.2-1.2 4.8 0 3.2 1.2 4.8 0"/>'),
+    ("Kalshi", "https://kalshi.com/ideas/profiles/psyduckler",
+     '<path d="M8 4v16"/><path d="M8 12.2 16.6 4.4"/><path d="M8 12.2 16.6 19.6"/>'),
+    ("Polymarket", "https://polymarket.com/@psyduckler",
+     '<path d="M4.2 16.2 9.2 11l3.1 2.6L19.8 6"/><path d="M14.2 6H19.8v5.6"/>'),
+    ("Hyperliquid", "https://app.hyperliquid.xyz/explorer/address/0x3C398f9BC64448F2AB3AF5e9f46EDF2b6B26177B",
+     '<path d="M12 3.1s5.2 6.3 5.2 9.6a5.2 5.2 0 0 1-10.4 0c0-3.3 5.2-9.6 5.2-9.6z"/>'),
+)
+
+def profiles():
+    links = []
+    for name, href, paths in PROFILES:
+        links.append(
+            f'<a href="{href}" target="_blank" rel="noopener noreferrer" aria-label="{name}" title="{name}">'
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" '
+            'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">'
+            f'{paths}</svg></a>')
+    return '<nav class="profiles" aria-label="Public profiles">' + "".join(links) + "</nav>"
+
 def render(H_meta=None):
     D = {k: H.get(VKEY[k], []) for k in VKEY}
     by = {k: {d["date"]: d for d in D[k]} for k in VKEY}
@@ -299,6 +322,9 @@ def render(H_meta=None):
            '.lcm{display:none}@media(max-width:600px){.lcd{display:none}.lcm{display:block}}.section .legend2{font-size:.72rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:.1rem .9rem;margin:.4rem 0 .8rem!important}.lg{white-space:nowrap}'
            '.ctab{min-width:520px}.ctab th{cursor:pointer;user-select:none;white-space:nowrap}.ctab th:hover,.ctab th:focus{color:var(--accent);outline:none}'
            '.ctab th[aria-sort=ascending]::after{content:" ↑"}.ctab th[aria-sort=descending]::after{content:" ↓"}.ctab td{white-space:nowrap;vertical-align:middle}.ctab td:nth-child(2){text-align:left}.ctab th:nth-child(2){text-align:left}'
+           '.profiles{display:flex;align-items:center;gap:1rem;margin:-.4rem 0 1.15rem}.profiles a{display:inline-flex;color:var(--muted);border-bottom:none;line-height:0}'
+           '.profiles a:hover,.profiles a:focus-visible{color:var(--accent);border-bottom-color:transparent}.profiles a:focus-visible{outline:1px solid var(--accent);outline-offset:4px}'
+           '.profiles svg{width:1.2rem;height:1.2rem;display:block}'
            '.chip{display:inline-block;font-size:.6rem;letter-spacing:.05em;border:1px solid var(--border);color:var(--muted);padding:0 .3rem;margin-right:.2rem;line-height:1.5}'
            '.section p.cnote{font-size:.75rem;line-height:1.6}.spark{display:inline-block;vertical-align:middle}</style>')
     latest = _dt.date.fromisoformat(max(v for v in last.values() if v))
@@ -318,7 +344,7 @@ def render(H_meta=None):
             panels += panel(key, f"{label} · {rl}", r, dmetrics(r), span, by, rng=rk, cats=cs)
     rtoggle = ('<div class="vt rt">' + "".join(
         f'<button type="button" class="rbtn vbtn2{" on" if k == "90" else ""}" data-r="{k}">{t}</button>' for k, t, _ in RANGES) + "</div>")
-    body = (css + '<p>receipts for every desk. settled bets, trades and flips only, net after fees, red days included. aggregates only: no positions, no strategies, no balances.</p>'
+    body = (css + profiles() + '<p>receipts for every desk. settled bets, trades and flips only, net after fees, red days included. aggregates only: no positions, no strategies, no balances.</p>'
             + '<div class="ctl">' + toggle + rtoggle + '</div>' + panels
             + f'<p class="small pmnote">source: our trading console\'s settled p&amp;l by CT day ({_h.escape(H.get("coverage", ""))}). '
             'restated oct 31, 2026 when the page moved to the console: every venue and day now comes from one ledger, and hyperliquid was added. '
