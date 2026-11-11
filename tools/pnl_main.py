@@ -1,8 +1,16 @@
 """The live /pnl/ page: stat strip (incl. sharpe), cumulative bars, daily bars, P&L by kind of
 trade (cumulative per-category lines + sortable category table), with a
 combined / kalshi / polymarket / hyperliquid / opensea toggle and all / 90d / 30d / 7d windows.
-Data: data/pnl_history.json + data/pnl_cats.json, written by tools/console.py from the trading console (settled net per
-CT day, venue and category; aggregates only). Called from tools/build.py."""
+
+The page publishes the precomputed aggregates in data/pnl_public.json (one block per
+window x venue). Headline net, winrate, sharpe, best/worst day, and the running
+total on each chart point are copied from that file. They are not recomputed from
+day nets: those sums can differ by cents. Today's CT day stays on the series when
+the file includes it, and the page says that day is today, not final.
+
+data/pnl_history.json and data/pnl_cats.json keep the same daily shape for the rest
+of the toolchain. Called from tools/build.py. Run this file directly to rebuild
+only /pnl/."""
 import build
 import html as _h, datetime as _dt, json as _json
 import console as SRC
@@ -23,15 +31,19 @@ EXTRA = """
 """
 def stat(label, val, c=""): return f'<div class="stat"><b class="{c}">{val}</b><span>{label}</span></div>'
 
-def _tips(days, by, split):
-    out = []; c = pk = 0
+def _tips(days, by, split, today=""):
+    """Tooltips use each point's published day net and running total. Drawdown is the
+    drop from the high of that published running series, not a new headline metric."""
+    out = []; pk = None
     for d in days:
-        c += d["net"]; pk = max(pk, c)
-        day = f'<b>{f(d["date"])}</b><br>net {money(d["net"])}'
+        run = d["run"]; pk = run if pk is None else max(pk, run)
+        mark = "<br>today, not final" if today and d["date"] == today else ""
+        day = f'<b>{f(d["date"])}</b><br>net {money(d["net"])}{mark}'
         if split:
-            day += "<br>" + " · ".join(f'{lab} {money(by[k][d["date"]]["net"]) if d["date"] in by[k] else "–"}' for k, lab in VENUES[1:])
-        eq = f'<b>{f(d["date"])}</b><br>running total {money(c)}<br>day {money(d["net"])}<br>drawdown {money(c - pk)}'
-        out.append((day, eq, c))
+            day += "<br>" + " · ".join(f'{lab} {money(by[k][d["date"]]) if d["date"] in by[k] else "–"}' for k, lab in VENUES[1:])
+        eq = (f'<b>{f(d["date"])}</b><br>running total {money(run)}<br>day {money(d["net"])}'
+              f'<br>drawdown {money(run - pk)}{mark}')
+        out.append((day, eq, run))
     return out
 
 def _a(t): return _h.escape(t, quote=True)
@@ -63,9 +75,12 @@ document.addEventListener('click',function(){pin=null;hide()})})();</script>"""
 
 def strip(M):
     s = stat
+    sh = M["sharpe"]
+    sh_txt = "—" if sh is None else f"{sh:.2f}"
+    wr = "—" if M.get("winrate") is None else f"{M['winrate']:.0f}%"
     return (f'<div class="strip">{s("total net", money(M["net"]), cls(M["net"]))}{s("best day", money(M["best"]), "pos")}'
-            f'{s("sharpe ratio", f"{M["sharpe"]:.2f}")}{s("avg day", money(M["avg"]), cls(M["avg"]))}'
-            f'{s("winrate %", f"{M["green"] / max(M["days"], 1) * 100:.0f}%")}</div>')
+            f'{s("sharpe ratio", sh_txt)}{s("avg day", money(M["avg"]), cls(M["avg"]))}'
+            f'{s("winrate %", wr)}</div>')
 
 def sharpe(nets):
     """annualized daily sharpe: mean / population stdev of daily nets (settled days only) x sqrt(365). None if < 2 days or flat."""
@@ -214,38 +229,88 @@ def cat_table(cats, rl):
     for i, c in enumerate(cats):
         empty = c["n"] == 0
         chips = "".join(f'<span class="chip">{CHIP[v]}</span>' for v in c["ven"])
-        sh = c["sharpe"]
+        sh, gp = c["sharpe"], c["gp"]
         body += (f'<tr data-i="{i}"><td data-v="{_a(c["label"].lower())}">{dot(c["k"])}{_h.escape(c["label"].lower())}</td>'
                  f'<td data-v="{" ".join(CHIP[v] for v in c["ven"])}" class="chips">{chips}</td>'
                  + num(None if empty else c["net"] / 100, "—" if empty else money(c["net"] / 100), "" if empty else cls(c["net"]))
                  + num(None if empty else c["n"], "—" if empty else f'{c["n"]:,}')
-                 + num(None if empty else round(c["gp"], 2), "—" if empty else f'{c["gp"]:.0f}%')
+                 + num(None if empty or gp is None else round(gp, 2), "—" if empty or gp is None else f'{gp:.0f}%')
                  + num(None if sh is None else round(sh, 4), "—" if sh is None else f"{sh:.2f}")
                  + num(None if empty else c["net"] / 100, spark(c["cum"], c["k"]) if not empty else "—") + "</tr>")
     th = lambda t, typ: f'<th scope="col" data-t="{typ}" tabindex="0" aria-sort="none">{t}</th>'
     return ('<div class="tw"><table class="ctab"><thead><tr>' + th("category", "txt") + th("venues", "txt") + th(f"net {rl}", "num")
             + th("days", "num") + th("winrate %", "num") + th("sharpe", "num") + th(f"trend {rl}", "num") + f'</tr></thead><tbody>{body}</tbody></table></div>')
 
-def cat_section(vkey, label, rl, start, end, days):
-    dates, cats = cat_view(vkey, start, end, sum(C(d["net"]) for d in days))
-    live = [c for c in cats if c["n"]] or cats[:1]   # lines only for categories with settled rows (the Overview's rule)
-    legend = "".join(f'<span class="lg">{dot(c["k"])}{_h.escape(c["label"].lower())}</span>' for c in live)
-    data = _a(_json.dumps({"d": dates, "s": [[c["label"], c["k"], c["cum"]] for c in live]}, separators=(",", ":")))
-    charts = (f'<div class="lcw" data-lc="{data}">{line_svg(dates, live)}'
-              f'{line_svg(dates, live, w=360, h=300, L=40, R=104, cls="lcm", xt=2)}</div>')
-    return (f'<div class="section"><h2>{label} · by kind of trade</h2>{charts}<p class="legend2">{legend}</p>'
-            f'{cat_table(cats, rl)}<p class="small cnote">cumulative net per kind of trade inside the window, each line starting at $0. '
-            'kinds of trade are the trading console\'s categories, one per book (weather highs / lows / rain, mentions, golf, copy, crypto, nft flips ...). '
-            'days = CT days with a settlement in that kind of trade; winrate % = share of those days with net &gt; 0. sharpe = mean daily net / its standard deviation × √365, over the settled days of that kind of trade in the window (same as the stat strip; — under 2 days). '
-            'click a column to sort.</p></div>')
+def _dates(start, end):
+    d0, d1 = _dt.date.fromisoformat(start), _dt.date.fromisoformat(end)
+    return [(d0 + _dt.timedelta(days=i)).isoformat() for i in range((d1 - d0).days + 1)]
 
-def panel(key, label, days, M, span, by, rng="all", cats=""):
-    tips = _tips(days, by, key == "all")
-    return (f'<div class="view" data-view="{key}" data-range="{rng}"{"" if (key == "all" and rng == "90") else " hidden"}>'
-            f'<div class="section"><h2>{label} · equity</h2>{vnote(key)}{strip(M)}{eq_svg(days, tips)}'
+def _cum_cents(series, dates):
+    """Carry each category's published running total across the window. Day nets are not summed."""
+    run = {d: C(r) for d, _n, r in series}
+    out, last, seen = [], 0, False
+    for d in dates:
+        if d in run:
+            last = run[d]; seen = True
+        out.append(last if seen else 0)
+    return out
+
+def _today_note(today, on):
+    if not (today and on): return ""
+    return (f'<p class="small today-note">{f(today)} is today (central time), not final. '
+            f'this headline, chart, and date range include it.</p>')
+
+def cat_section(vkey, label, rl, resp):
+    """Category table and lines for one published view. Metrics and running totals come from resp."""
+    dates = _dates(resp["from"], resp["to"])
+    supplied = {c["cat"]: c for c in resp["categories"]}
+    known = {c[0] for c in CATS}
+    rows = []
+    code = {"kalshi": "k", "pm": "p", "hl": "h", "os": "o"}
+    extra = []
+    for c in resp["categories"]:
+        if c["cat"] in known: continue
+        have = {code.get(v, "") for v in c["venues"]}
+        extra.append((c["cat"], c["label"], "".join(ch for ch in "kpho" if ch in have), "#898781", "#898781"))
+    ordered = list(CATS) + extra
+    for k, lab, ven, *_rest in ordered:
+        if not ven or (vkey != "all" and vkey not in ven): continue
+        src = supplied.get(k)
+        ven_list = [v for v in "kpho" if v in ven and (vkey == "all" or v == vkey)]
+        if src is None or not src.get("days"):
+            rows.append(dict(k=k, label=(src or {}).get("label", lab), ven=ven_list, net=0, n=0, gp=None, sharpe=None, cum=[]))
+            continue
+        if not src.get("series"):
+            raise SystemExit(f"category {src['label']} in {resp['window']}:{resp['venue']} has totals without a series")
+        rows.append(dict(k=k, label=src["label"], ven=ven_list, net=C(src["net"]), n=src["days"],
+                         gp=src.get("winrate"), sharpe=src.get("sharpe"), cum=_cum_cents(src["series"], dates)))
+    live = [c for c in rows if c["n"]]
+    legend = "".join(f'<span class="lg">{dot(c["k"])}{_h.escape(c["label"].lower())}</span>' for c in live)
+    charts = ""
+    if live:
+        data = _a(_json.dumps({"d": dates, "s": [[c["label"], c["k"], c["cum"]] for c in live]}, separators=(",", ":")))
+        charts = (f'<div class="lcw" data-lc="{data}">{line_svg(dates, live)}'
+                  f'{line_svg(dates, live, w=360, h=300, L=40, R=104, cls="lcm", xt=2)}</div>')
+    note = _today_note(resp.get("today"), resp.get("to") == resp.get("today"))
+    return (f'<div class="section"><h2>{label} · by kind of trade</h2>{charts}{note}<p class="legend2">{legend}</p>'
+            f'{cat_table(rows, rl)}<p class="small cnote">cumulative net per kind of trade inside the window, each line starting at $0. '
+            'kinds of trade are categories (weather highs / lows / rain, mentions, golf, copy, crypto, nft flips ...). '
+            'days = CT days with a settlement in that kind of trade; winrate % = share of those days with net &gt; 0. sharpe = the published figure for that kind of trade (— when the source leaves it blank, including under 2 days or a flat series). '
+            'a kind of trade with no settlement in the window is shown as —. click a column to sort.</p></div>')
+
+def empty_view(key, label, rl, rng):
+    return (f'<div class="view" data-view="{key}" data-range="{rng}" hidden><div class="section"><h2>{label} · {rl}</h2>'
+            f'<p>nothing settled in this window.</p>{vnote(key)}</div></div>')
+
+def panel(key, label, days, M, span, by, rng="all", cats="", today=""):
+    tips = _tips(days, by, key == "all", today)
+    note = _today_note(today, days and days[-1]["date"] == today)
+    hidden = "" if (key == "all" and rng == "90") else " hidden"
+    return (f'<div class="view" data-view="{key}" data-range="{rng}"{hidden}>'
+            f'<div class="section"><h2>{label} · equity</h2>{vnote(key)}{strip(M)}{note}{eq_svg(days, tips)}'
             f'<p class="small">{span}. net after fees.</p></div>'
             + cats +
-            f'<div class="section"><h2>{label} · daily net</h2>{bar_svg(days, tips)}'
+            f'<div class="section"><h2>{label} · daily net</h2>{bar_svg(days, tips)}{note}'
             f'<p>{M["green"]} green days, {M["days"] - M["green"]} red. best {money(M["best"])}, worst {money(M["worst"])}.</p></div></div>')
 
 LCJS = """<script>(function(){var t=document.getElementById('tip');
@@ -275,11 +340,53 @@ try{st?localStorage.setItem(K,JSON.stringify(st)):localStorage.removeItem(K)}cat
 document.querySelectorAll('table.ctab th').forEach(function(th){th.addEventListener('click',function(){click(th)});
 th.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();click(th)}})});apply()})();</script>"""
 
+PAY = {"all": "all", "k": "kalshi", "p": "pm", "h": "hl", "o": "os"}
+RANGE_KEY = {"all": "all", "90": "90d", "30": "30d", "7": "7d"}
+
+def load_public():
+    return _json.loads((build.ROOT / "data/pnl_public.json").read_text())
+
+def metrics_of(comb):
+    """Headline fields as published. Nothing here is derived from the series."""
+    return dict(net=comb["net"], best=comb["best_day"], worst=comb["worst_day"], sharpe=comb["sharpe"],
+                avg=comb["avg_day"], days=comb["days"], green=comb["day_wins"], winrate=comb["winrate"])
+
+def days_of(series):
+    return [dict(date=d, net=n, run=r) for d, n, r in series]
+
+def span_for(rl, resp):
+    text = f"{rl} · {f(resp['from'])} → {f(resp['to'])} (central)"
+    if resp.get("to") == resp.get("today"):
+        text += f". {f(resp['today'])} is today, not final"
+    return text
+
+def venue_day_nets(responses, window):
+    by = {}
+    for key, _label in VENUES[1:]:
+        series = responses[f"{window}:{PAY[key]}"]["combined"]["series"]
+        by[key] = {d: n for d, n, _r in series}
+    return by
+
+def view_html(key, label, rng, rl, resp, by):
+    """One window x venue. Refuses totals that no longer have their series, including today."""
+    comb = resp["combined"]
+    series = comb.get("series") or []
+    if not series:
+        if comb.get("days") or comb.get("net"):
+            raise SystemExit(f"pnl {rl}/{label}: refusing totals with no series")
+        return empty_view(key, label, rl, rng)
+    days = days_of(series)
+    if resp.get("to") and days[-1]["date"] != resp["to"]:
+        raise SystemExit(f"pnl {rl}/{label}: series ends {days[-1]['date']} but to is {resp['to']}")
+    if resp.get("today") and resp.get("to") == resp["today"] and days[-1]["date"] != resp["today"]:
+        raise SystemExit(f"pnl {rl}/{label}: refusing to drop today while keeping a today-inclusive total")
+    cats = cat_section(key, f"{label} · {rl}", rl, resp)
+    return panel(key, f"{label} · {rl}", days, metrics_of(comb), span_for(rl, resp), by, rng=rng, cats=cats,
+                 today=resp.get("today") or "")
+
 def render(H_meta=None):
-    D = {k: H.get(VKEY[k], []) for k in VKEY}
-    by = {k: {d["date"]: d for d in D[k]} for k in VKEY}
-    A = combine(*D.values())
-    last = {k: D[k][-1]["date"] if D[k] else "" for k in VKEY}
+    PUB = load_public()
+    responses = PUB["responses"]
     toggle = ('<div class="vt" role="tablist">' + "".join(
         f'<button type="button" class="vbtn{" on" if k == "all" else ""}" data-v="{k}">{t}</button>' for k, t in VENUES) + "</div>")
     js = ("<script>(function(){var v='all',r='90';function upd(){document.querySelectorAll('.view').forEach(function(p){p.hidden=!(p.dataset.view===v&&p.dataset.range===r)});"
@@ -289,7 +396,7 @@ def render(H_meta=None):
     css = ('<style>' + EXTRA + cat_css() + '.vt{margin:0 0 1.5rem}.vbtn{font:inherit;font-size:.8rem;background:none;color:var(--muted);border:1px solid var(--border);padding:.25rem .7rem;margin:0 .4rem .3rem 0;cursor:pointer}'
            '.vbtn.on,.rbtn.on{color:var(--accent);border-color:var(--accent)}.ctl{display:flex;flex-wrap:wrap;gap:.5rem 1.25rem;margin:0 0 1.5rem}.ctl .vt{margin:0}.rbtn{font:inherit;font-size:.8rem;background:none;color:var(--muted);border:1px solid var(--border);padding:.25rem .6rem;margin-right:.3rem;cursor:pointer}'
            '.strip{grid-template-columns:repeat(5,1fr);gap:.4rem}.strip .stat{padding:.55rem .5rem;min-width:0}.strip .stat b{font-size:.92rem;white-space:nowrap}.strip .stat span{font-size:.62rem;letter-spacing:.06em}@media(max-width:600px){.strip{grid-template-columns:repeat(2,1fr)}.vbtn{padding:.25rem .5rem;margin-right:.25rem}}'
-           '.pmnote{color:var(--muted);margin:.2rem 0 .8rem}.hit{fill:transparent;cursor:crosshair}'
+           '.pmnote{color:var(--muted);margin:.2rem 0 .8rem}.today-note{color:var(--accent)}.hit{fill:transparent;cursor:crosshair}'
            '#tip{position:absolute;z-index:9;background:var(--card);color:var(--fg);border:1px solid var(--accent);padding:.45rem .6rem;font-size:.75rem;line-height:1.5;pointer-events:none;max-width:280px}'
            '.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;margin-bottom:.8rem}'
            '.lc .g,.spark .g{stroke:var(--border);stroke-width:.5}.lc .g0{stroke:var(--muted);stroke-width:1}.lc .ax{fill:var(--muted);font-size:10px;font-family:inherit}'
@@ -301,29 +408,25 @@ def render(H_meta=None):
            '.ctab th[aria-sort=ascending]::after{content:" ↑"}.ctab th[aria-sort=descending]::after{content:" ↓"}.ctab td{white-space:nowrap;vertical-align:middle}.ctab td:nth-child(2){text-align:left}.ctab th:nth-child(2){text-align:left}'
            '.chip{display:inline-block;font-size:.6rem;letter-spacing:.05em;border:1px solid var(--border);color:var(--muted);padding:0 .3rem;margin-right:.2rem;line-height:1.5}'
            '.section p.cnote{font-size:.75rem;line-height:1.6}.spark{display:inline-block;vertical-align:middle}</style>')
-    latest = _dt.date.fromisoformat(max(v for v in last.values() if v))
     panels = ""
-    for rk, rl, n in RANGES:
-        cut = (latest - _dt.timedelta(days=n - 1)).isoformat() if n else ""
-        sub = lambda ds: [d for d in ds if d["date"] >= cut]
+    for rk, rl, _n in RANGES:
+        window = RANGE_KEY[rk]
+        by = venue_day_nets(responses, window)
         for key, label in VENUES:
-            ds = A if key == "all" else D[key]
-            r = sub(ds)
-            if not r:
-                panels += (f'<div class="view" data-view="{key}" data-range="{rk}" hidden><div class="section"><h2>{label} · {rl}</h2>'
-                           f'<p>nothing settled in this window.</p>{vnote(key)}</div></div>'); continue
-            span = f"{rl} · {f(r[0]['date'])} → {f(r[-1]['date'])}" + ("" if not n else f" (window counts back from {f(latest.isoformat())})")
-            start = cut if n else r[0]["date"]
-            cs = cat_section(key, f"{label} · {rl}", rl, start, latest.isoformat(), r)
-            panels += panel(key, f"{label} · {rl}", r, dmetrics(r), span, by, rng=rk, cats=cs)
+            resp = responses[f"{window}:{PAY[key]}"]
+            panels += view_html(key, label, rk, rl, resp, by)
     rtoggle = ('<div class="vt rt">' + "".join(
         f'<button type="button" class="rbtn vbtn2{" on" if k == "90" else ""}" data-r="{k}">{t}</button>' for k, t, _ in RANGES) + "</div>")
     body = (css + build.profiles() + '<p>receipts for every desk. settled bets, trades and flips only, net after fees, red days included. aggregates only: no positions, no strategies, no balances.</p>'
             + '<div class="ctl">' + toggle + rtoggle + '</div>' + panels
-            + f'<p class="small pmnote">source: our trading console\'s settled p&amp;l by CT day ({_h.escape(H.get("coverage", ""))}). '
+            + f'<p class="small pmnote">source: our trading console\'s settled p&amp;l by central-time day ({_h.escape(H.get("coverage", ""))}). '
             'restated oct 31, 2026 when the page moved to the console: every venue and day now comes from one ledger, and hyperliquid was added. '
-            'today is left out until its CT day is over.</p>'
+            f'{_h.escape(f(PUB["source_today"]))} is today (central time). it is included in every headline, chart, and date range. today, not final.</p>'
             + js + TIPJS + LCJS + SORTJS)
     build.page("/pnl/", "pnl/index.html", "PnL · psyduckler agent trading rig",
                "Daily PnL from the psyduckler agent trading rig (Kalshi, Polymarket, Hyperliquid, OpenSea) by kind of trade. Totals only, red days included.",
                "pnl", "the receipts", body)
+
+if __name__ == "__main__":
+    render()
+    print("built pnl/index.html")
