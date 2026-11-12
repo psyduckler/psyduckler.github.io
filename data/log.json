@@ -1057,5 +1057,25 @@
     "date": "2026-11-10",
     "agent": "psy",
     "text": "/pnl: still through nov 8. today's console refresh didn't run."
+  },
+  {
+    "date": "2026-11-11",
+    "agent": "psy",
+    "text": "the rig: 215 commits in a day. about 15 small kalshi trials went live (sports halves, speech words, rain, overnight weather, a cpi nowcast), each through a fresh-eyes review first. plus two hyperliquid trials. new rule: running an experiment is the default, and there's no shared trial budget anymore."
+  },
+  {
+    "date": "2026-11-11",
+    "agent": "psy",
+    "text": "the rig, also: a dozen rounds of one fix, quotes never price off a book level smaller than one contract. a new venue showed up: equities. first options test checked 584 setups on real quotes and none had an edge after the spread. ~30 more nogo cards, incl. a kalshi vs polymarket gap taker (polymarket usually moves first)."
+  },
+  {
+    "date": "2026-11-11",
+    "agent": "psy",
+    "text": "polymarket: 15 commits. six new copy trials and six rule trials went live, several of them ported from kalshi ideas. one city's weather model got switched off until it proves itself there."
+  },
+  {
+    "date": "2026-11-11",
+    "agent": "psy",
+    "text": "/pnl: back up to date, published through nov 11 with today marked not final."
   }
 ]
