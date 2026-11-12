@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """/pnl/ source since 2026-10-31: the Tokay trading console (read-only). Aggregates only.
 
-Every venue (kalshi, polymarket, hyperliquid, opensea) comes from one place: the console's settled P&L after fees,
+Every venue (kalshi, polymarket, hyperliquid, opensea, robinhood) comes from one place: the console's settled P&L after fees,
 by CT day, per venue, and per book category. Replaces kalshi_ledger.py (R2 bucket, gone 10/30), pm_published.py and
 opensea_published.py (Tokay MCP, token dead 10/30).
 
@@ -15,8 +15,8 @@ Token: env TOKAY_MCP_TOKEN_RO only (read-only console token). Console URL: env T
 /home/box/agent-data/shared/tokay/console_url (kept out of this public repo). Neither is ever printed or committed.
 
 Written (aggregates only; never balances, open risk, positions, book or strategy names, params):
-  data/pnl_history.json  {kalshi, polymarket, hyperliquid, opensea: [{date, net}], through, coverage, note}
-  data/pnl_cats.json     rows {d, v (k/p/h/o), c, net}: per CT day x venue x category; for every venue-day the
+  data/pnl_history.json  {kalshi, polymarket, hyperliquid, opensea, robinhood: [{date, net}], through, coverage, note}
+  data/pnl_cats.json     rows {d, v (k/p/h/o/e), c, net}: per CT day x venue x category; for every venue-day the
                          categories' cents sum to the venue's day net exactly (largest remainder on the last cent)
 Only CT days before today (and before the console's build day) are written: today is still settling.
 
@@ -37,7 +37,8 @@ URL_FILE = Path("/home/box/agent-data/shared/tokay/console_url")
 
 # console venue -> (page key in pnl_history.json, one-letter code in pnl_cats.json, label)
 VENUES = (("kalshi", "kalshi", "k", "kalshi"), ("pm", "polymarket", "p", "polymarket"),
-          ("hl", "hyperliquid", "h", "hyperliquid"), ("os", "opensea", "o", "opensea"))
+          ("hl", "hyperliquid", "h", "hyperliquid"), ("os", "opensea", "o", "opensea"),
+          ("eq", "robinhood", "e", "robinhood"))
 CODE = {v: c for v, _, c, _ in VENUES}
 
 # category key -> light, dark color. Bernard's 14 dashboard categories first (colors unchanged), then the console's
@@ -187,7 +188,7 @@ def fetch():
                    f"restated 2026-10-31; days before {cut} only (today still settling).")
     cmeta = []
     for c in sorted(cats_seen | set(labels), key=lambda c: ORDER.index(c) if c in ORDER else 99):
-        vs = sorted({r["v"] for r in rows if r["c"] == c}, key="kpho".index)
+        vs = sorted({r["v"] for r in rows if r["c"] == c}, key="kphoe".index)
         cmeta.append({"k": c, "label": labels.get(c, c), "v": "".join(vs)})
     unknown = [c["k"] for c in cmeta if c["k"] not in COLORS]
     if unknown:
@@ -221,10 +222,10 @@ def update(write=True):
     if not write:
         return out
     order = {c["k"]: i for i, c in enumerate(cmeta)}
-    rows.sort(key=lambda r: (r["d"], "kpho".index(r["v"]), order[r["c"]]))
+    rows.sort(key=lambda r: (r["d"], "kphoe".index(r["v"]), order[r["c"]]))
     HIST.write_text(json.dumps(out, indent=1) + "\n")
     CATS.write_text('{"note":' + json.dumps("aggregates only: settled net per CT day, venue (k kalshi, p polymarket, "
-                    "h hyperliquid, o opensea) and kind of trade; categories are per book, from the trading console.")
+                    "h hyperliquid, o opensea, e robinhood) and kind of trade; categories are per book, from the trading console.")
                     + ',"cats":' + json.dumps(cmeta, separators=(",", ":")) + ',"rows":[\n'
                     + ",\n".join(json.dumps(r, separators=(",", ":")) for r in rows) + "\n]}\n")
     print(f"wrote data/pnl_history.json + data/pnl_cats.json ({len(rows)} category rows) through {out['through']}")

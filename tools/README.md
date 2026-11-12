@@ -8,8 +8,8 @@
     python3 tools/console.py update && python3 tools/build.py
 
 `console.py` reads the trading console (Tokay), read-only: settled P&L after fees by CT day for kalshi, polymarket,
-hyperliquid and opensea, and per book category. It writes `data/pnl_history.json` (`{kalshi, polymarket, hyperliquid,
-opensea: [{date, net}]}`) and `data/pnl_cats.json` (rows `{d, v, c, net}`, v = k/p/h/o). Only CT days before today are
+hyperliquid, opensea and robinhood, and per book category. It writes `data/pnl_history.json` (`{kalshi, polymarket, hyperliquid,
+opensea, robinhood: [{date, net}]}`) and `data/pnl_cats.json` (rows `{d, v, c, net}`, v = k/p/h/o/e). Only CT days before today are
 written. Every run replaces the whole history, so late settles restate old days; the run prints a `restated ...` /
 `dropped ...` line for each day that changed. `python3 tools/console.py check` runs everything without writing.
 

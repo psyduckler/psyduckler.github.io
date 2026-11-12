@@ -1,6 +1,6 @@
 """The live /pnl/ page: stat strip (incl. sharpe), cumulative bars, daily bars, P&L by kind of
 trade (cumulative per-category lines + sortable category table), with a
-combined / kalshi / polymarket / hyperliquid / opensea toggle and all / 90d / 30d / 7d windows.
+combined / kalshi / polymarket / hyperliquid / opensea / robinhood toggle and all / 90d / 30d / 7d windows.
 
 The page publishes the precomputed aggregates in data/pnl_public.json (one block per
 window x venue). Headline net, winrate, sharpe, best/worst day, and the running
@@ -40,7 +40,7 @@ def _tips(days, by, split, today=""):
         mark = "<br>today, not final" if today and d["date"] == today else ""
         day = f'<b>{f(d["date"])}</b><br>net {money(d["net"])}{mark}'
         if split:
-            day += "<br>" + " · ".join(f'{lab} {money(by[k][d["date"]]) if d["date"] in by[k] else "–"}' for k, lab in VENUES[1:])
+            day += "<br>" + " · ".join(f'{lab} {money(by[k][d["date"]]) if d["date"] in by[k] else "–"}' for k, lab in VENUES[1:] if by.get(k))
         eq = (f'<b>{f(d["date"])}</b><br>running total {money(run)}<br>day {money(d["net"])}'
               f'<br>drawdown {money(run - pk)}{mark}')
         out.append((day, eq, run))
@@ -104,11 +104,12 @@ def combine(*venues):
     return [dict(date=k, net=out[k] / 100) for k in sorted(out)]
 
 RANGES = (("all", "all", None), ("90", "90d", 90), ("30", "30d", 30), ("7", "7d", 7))
-VENUES = (("all", "combined"), ("k", "kalshi"), ("p", "polymarket"), ("h", "hyperliquid"), ("o", "opensea"))
-VKEY = {"k": "kalshi", "p": "polymarket", "h": "hyperliquid", "o": "opensea"}
+VENUES = (("all", "combined"), ("k", "kalshi"), ("p", "polymarket"), ("h", "hyperliquid"), ("o", "opensea"), ("e", "robinhood"))
+VKEY = {"k": "kalshi", "p": "polymarket", "h": "hyperliquid", "o": "opensea", "e": "robinhood"}
 
 NOTES = {"o": "opensea: nft flips, fully settled CT days, net after opensea fees and gas (incl. cancels and approvals).",
-         "h": "hyperliquid: settled p&amp;l after fees as the trading console counts it, by CT day."}
+         "h": "hyperliquid: settled p&amp;l after fees as the trading console counts it, by CT day.",
+         "e": "robinhood: settled p&amp;l after fees as the trading console counts it, by CT day."}
 def vnote(key): return f'<p class="small pmnote">{NOTES[key]}</p>' if key in NOTES else ""
 
 # ---------------------------------------------------------------- P&L by kind of trade
@@ -125,7 +126,7 @@ DASH = SRC.DASH | {c[0] for c in CATS if c[0] not in SRC.COLORS}
 dot = lambda k: (f'<span class="dot ring" style="border-color:var(--c-{k})"></span>' if k in DASH
                  else f'<span class="dot" style="background:var(--c-{k})"></span>')
 dash = lambda k: ' stroke-dasharray="5 3"' if k in DASH else ""
-CHIP = {"k": "kalshi", "p": "pm", "h": "hl", "o": "opensea"}
+CHIP = {"k": "kalshi", "p": "pm", "h": "hl", "o": "opensea", "e": "robinhood"}
 C = SRC.C
 
 def short_money(v):
@@ -156,7 +157,7 @@ def cat_view(vkey, start, end, days_net_c):
         bd = {}
         for r in mine: bd[r["d"]] = bd.get(r["d"], 0) + C(r["net"])   # this category's daily nets (CT days with settled rows)
         n = len(bd); g = sum(v > 0 for v in bd.values())
-        out.append(dict(k=k, label=label, ven=[v for v in "kpho" if v in ven and (vkey == "all" or v == vkey)],
+        out.append(dict(k=k, label=label, ven=[v for v in "kphoe" if v in ven and (vkey == "all" or v == vkey)],
                         net=sum(daily), n=n, gp=(g / n * 100) if n else None,
                         sharpe=sharpe([bd[d] for d in sorted(bd)]) if n else None, cum=cum))
     return dates, out
@@ -266,17 +267,17 @@ def cat_section(vkey, label, rl, resp):
     supplied = {c["cat"]: c for c in resp["categories"]}
     known = {c[0] for c in CATS}
     rows = []
-    code = {"kalshi": "k", "pm": "p", "hl": "h", "os": "o"}
+    code = {"kalshi": "k", "pm": "p", "hl": "h", "os": "o", "eq": "e"}
     extra = []
     for c in resp["categories"]:
         if c["cat"] in known: continue
         have = {code.get(v, "") for v in c["venues"]}
-        extra.append((c["cat"], c["label"], "".join(ch for ch in "kpho" if ch in have), "#898781", "#898781"))
+        extra.append((c["cat"], c["label"], "".join(ch for ch in "kphoe" if ch in have), "#898781", "#898781"))
     ordered = list(CATS) + extra
     for k, lab, ven, *_rest in ordered:
         if not ven or (vkey != "all" and vkey not in ven): continue
         src = supplied.get(k)
-        ven_list = [v for v in "kpho" if v in ven and (vkey == "all" or v == vkey)]
+        ven_list = [v for v in "kphoe" if v in ven and (vkey == "all" or v == vkey)]
         if src is None or not src.get("days"):
             rows.append(dict(k=k, label=(src or {}).get("label", lab), ven=ven_list, net=0, n=0, gp=None, sharpe=None, cum=[]))
             continue
@@ -299,8 +300,9 @@ def cat_section(vkey, label, rl, resp):
             'a kind of trade with no settlement in the window is shown as —. click a column to sort.</p></div>')
 
 def empty_view(key, label, rl, rng):
+    msg = "no settled robinhood trades yet." if key == "e" else "nothing settled in this window."
     return (f'<div class="view" data-view="{key}" data-range="{rng}" hidden><div class="section"><h2>{label} · {rl}</h2>'
-            f'<p>nothing settled in this window.</p>{vnote(key)}</div></div>')
+            f'<p>{msg}</p>{vnote(key)}</div></div>')
 
 def panel(key, label, days, M, span, by, rng="all", cats="", today=""):
     tips = _tips(days, by, key == "all", today)
@@ -340,7 +342,7 @@ try{st?localStorage.setItem(K,JSON.stringify(st)):localStorage.removeItem(K)}cat
 document.querySelectorAll('table.ctab th').forEach(function(th){th.addEventListener('click',function(){click(th)});
 th.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();click(th)}})});apply()})();</script>"""
 
-PAY = {"all": "all", "k": "kalshi", "p": "pm", "h": "hl", "o": "os"}
+PAY = {"all": "all", "k": "kalshi", "p": "pm", "h": "hl", "o": "os", "e": "eq"}
 RANGE_KEY = {"all": "all", "90": "90d", "30": "30d", "7": "7d"}
 
 def load_public():
@@ -420,11 +422,11 @@ def render(H_meta=None):
     body = (css + build.profiles() + '<p>receipts for every desk. settled bets, trades and flips only, net after fees, red days included. aggregates only: no positions, no strategies, no balances.</p>'
             + '<div class="ctl">' + toggle + rtoggle + '</div>' + panels
             + f'<p class="small pmnote">source: our trading console\'s settled p&amp;l by central-time day ({_h.escape(H.get("coverage", ""))}). '
-            'restated oct 31, 2026 when the page moved to the console: every venue and day now comes from one ledger, and hyperliquid was added. '
+            'restated oct 31, 2026 when the page moved to the console: every venue and day now comes from one ledger, and hyperliquid was added. robinhood was added nov 12, 2026. '
             f'{_h.escape(f(PUB["source_today"]))} is today (central time). it is included in every headline, chart, and date range. today, not final.</p>'
             + js + TIPJS + LCJS + SORTJS)
     build.page("/pnl/", "pnl/index.html", "PnL · psyduckler agent trading rig",
-               "Daily PnL from the psyduckler agent trading rig (Kalshi, Polymarket, Hyperliquid, OpenSea) by kind of trade. Totals only, red days included.",
+               "Daily PnL from the psyduckler agent trading rig (Kalshi, Polymarket, Hyperliquid, OpenSea, Robinhood) by kind of trade. Totals only, red days included.",
                "pnl", "the receipts", body)
 
 if __name__ == "__main__":
