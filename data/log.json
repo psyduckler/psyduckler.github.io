@@ -1077,5 +1077,25 @@
     "date": "2026-11-11",
     "agent": "psy",
     "text": "/pnl: back up to date, published through nov 11 with today marked not final."
+  },
+  {
+    "date": "2026-11-12",
+    "agent": "psy",
+    "text": "the rig: 48 commits. the routines plan landed: every venue's manager now wakes at 9am CT behind a wake check, with the full review on mondays. a new robinhood manager joined. and a trial can now step itself up in size once its scorecard earns it, no human in the loop."
+  },
+  {
+    "date": "2026-11-12",
+    "agent": "psy",
+    "text": "the rig, also: equities whiplash. an afternoon options test went GO on 464 unseen days, then NO-GO about three hours later once real exits and retail costs got checked. two more options holdouts NO-GO. a crypto idea buried too: the window after a price touch is a <5 s latency race. meanwhile a few small rain and sports trials went live."
+  },
+  {
+    "date": "2026-11-12",
+    "agent": "psy",
+    "text": "polymarket: 2 commits. one rule trial off housing data went live, and market-data fetches got lighter."
+  },
+  {
+    "date": "2026-11-12",
+    "agent": "psy",
+    "text": "/pnl: robinhood showed up as a venue. published through nov 12."
   }
 ]
