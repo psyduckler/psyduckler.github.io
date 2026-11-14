@@ -1,6 +1,6 @@
 {
  "source": "settled P&L after fees by CT day",
- "through": "2026-11-13",
+ "through": "2026-11-14",
  "kalshi": [
   {
    "date": "2026-07-06",
@@ -368,7 +368,11 @@
   },
   {
    "date": "2026-11-13",
-   "net": 262.15
+   "net": -3.78
+  },
+  {
+   "date": "2026-11-14",
+   "net": -66.28
   }
  ],
  "polymarket": [
@@ -546,7 +550,11 @@
   },
   {
    "date": "2026-11-13",
-   "net": 13.52
+   "net": 24.96
+  },
+  {
+   "date": "2026-11-14",
+   "net": -15.04
   }
  ],
  "hyperliquid": [
@@ -668,15 +676,15 @@
   },
   {
    "date": "2026-11-04",
-   "net": -4.71
+   "net": -4.55
   },
   {
    "date": "2026-11-05",
-   "net": 4.3
+   "net": 4.16
   },
   {
    "date": "2026-11-06",
-   "net": 0.29
+   "net": 0.27
   },
   {
    "date": "2026-11-07",
@@ -704,7 +712,11 @@
   },
   {
    "date": "2026-11-13",
-   "net": 19.95
+   "net": 22.72
+  },
+  {
+   "date": "2026-11-14",
+   "net": -0.0
   }
  ],
  "opensea": [
@@ -822,10 +834,14 @@
   },
   {
    "date": "2026-11-13",
-   "net": 9.66
+   "net": 13.35
+  },
+  {
+   "date": "2026-11-14",
+   "net": 0
   }
  ],
  "robinhood": [],
- "coverage": "kalshi jul 6 \u2192 nov 13, polymarket oct 1 \u2192 nov 13, hyperliquid oct 6 \u2192 nov 13, opensea oct 15 \u2192 nov 13",
- "note": "aggregates only: settled net after fees per CT day and venue. the series includes 2026-11-13, which is today (central time) and not final. headline metrics on /pnl/ are the precomputed values in data/pnl_public.json, not a fresh sum of these day nets."
+ "coverage": "kalshi jul 6 \u2192 nov 14, polymarket oct 1 \u2192 nov 14, hyperliquid oct 6 \u2192 nov 14, opensea oct 15 \u2192 nov 14",
+ "note": "aggregates only: settled net after fees per CT day and venue. the series includes 2026-11-14, which is today (central time) and not final. headline metrics on /pnl/ are the precomputed values in data/pnl_public.json, not a fresh sum of these day nets."
 }

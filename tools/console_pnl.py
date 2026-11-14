@@ -16,6 +16,10 @@ Usage (from the repo root):
 Published (aggregates only, exactly the `pnl` tool's fields): per window x venue net, days, day_wins, winrate,
 avg_day, best/worst day, sharpe, series [CT date, day net, running net], and the same per category (label, venues).
 Today's CT day stays in, labeled "today, not final" on the page (the page's convention since Nov 11, 2026).
+If a non-empty view's console series ends before today, check/update appends a $0 today point (a quiet venue
+really is $0 today), sets `to` to today, increments `days`, and recomputes winrate, avg_day, sharpe, best_day
+and worst_day the same way the console does for views that already include today. Empty views (Robinhood/eq)
+are left empty. Snapshot files on disk are not rewritten.
 """
 import json, sys, datetime as dt
 from collections import defaultdict
@@ -92,6 +96,58 @@ def load(d):
     return R
 
 
+def combined_stats(series):
+    """Headline stats the console computes from a combined series, including today when present.
+
+    winrate is the percent of days with net > 0; avg_day is headline net / days; sharpe is
+    (mean daily net / population stdev) * sqrt(365), null with fewer than 2 days; best/worst
+    are the min/max day nets, today included.
+    """
+    nets = [n for _d, n, _r in series]
+    days = len(nets)
+    net = series[-1][2] if series else 0
+    day_wins = sum(1 for n in nets if n > 0)
+    sharpe = None
+    if days >= 2:
+        mean = sum(nets) / days
+        var = sum((x - mean) ** 2 for x in nets) / days
+        std = var ** 0.5
+        if std:
+            sharpe = round(mean / std * (365 ** 0.5), 2)
+    return {
+        "days": days,
+        "day_wins": day_wins,
+        "winrate": round(100 * day_wins / days) if days else None,
+        "avg_day": round(net / days, 2) if days else None,
+        "best_day": max(nets) if nets else None,
+        "worst_day": min(nets) if nets else None,
+        "sharpe": sharpe,
+    }
+
+
+def ensure_today(R, today):
+    """Append a $0 today point to any non-empty view whose series ends before today.
+
+    Empty views (Robinhood/eq) stay empty. Category series are left as the console
+    returned them: a kind with no settlement today has no today point, same as on
+    venues that already included today.
+    """
+    for k, r in R.items():
+        cb = r["combined"]
+        s = cb.get("series") or []
+        if not s:
+            continue
+        last = s[-1][0]
+        if last == today:
+            continue
+        if last > today:
+            die(f"{k}: series ends {last}, after today {today}")
+        s = s + [[today, 0, s[-1][2]]]
+        cb["series"] = s
+        r["to"] = today
+        cb.update(combined_stats(s))
+
+
 def checks(R, any_day):
     rep = []
     todays = {r["today"] for r in R.values()}
@@ -101,6 +157,7 @@ def checks(R, any_day):
     ct_today = dt.datetime.now(CT).date().isoformat()
     if today != ct_today and not any_day:
         die(f"snapshot today {today} != CT today {ct_today} (refetch, or pass --any-day for an old snapshot)")
+    ensure_today(R, today)
     for k, r in R.items():
         blob = json.dumps(r).lower()
         for bad in FORBIDDEN:

@@ -89,7 +89,8 @@ def main():
         series = comb["series"] or []
         block = view_block(window, venue)
         cat_sum = round(sum(c["net"] for c in resp["categories"]), 2)
-        if abs(cat_sum - comb["net"]) > 0.03:
+        # compare integer cents: 1307.37 vs 1307.4 is 3¢, but abs(float) can be just over 0.03
+        if abs(int(round(cat_sum * 100)) - int(round(comb["net"] * 100))) > 3:
             fail(f"{key} category sum {cat_sum} vs net {comb['net']}")
         if not series:
             if comb.get("days") or comb.get("net"):
