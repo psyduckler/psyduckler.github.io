@@ -32,3 +32,17 @@ deadlines. A new console category shows up gray-dashed with a warning until it g
 `kalshi_ledger.py` (R2 bucket kalshi-exec-reports, gone 2026-10-30), `pnl_categories.py` (ticker-based category rules),
 `pm_published.py` (dashboard pub/pm_ledger.json), `opensea_published.py` / `opensea_ledger.py` (Tokay MCP service files,
 old token dead 2026-10-30).
+
+## No-token refresh (scheduled run via the console connector) — since 2026-11-13
+
+When `TOKAY_MCP_TOKEN_RO` isn't on the box, call the "Tokay PnL console" connector's `pnl` tool 24 times
+(windows all/90d/30d/7d x venues all/kalshi/pm/hl/os/eq), save each result to a file, then:
+
+    python3 tools/console_pnl.py save /workspace/psy/pnl_refresh/YYYYMMDD <24 result files>
+    python3 tools/console_pnl.py update /workspace/psy/pnl_refresh/YYYYMMDD && python3 tools/build.py && python3 tools/test_pnl_public.py
+
+`console_pnl.py` never talks to the console; it only reads the saved tool output. It refuses to write if the 24
+responses disagree on `today`, a running total doesn't step by its day net, categories don't sum to the net, venues
+don't sum to combined (per window and per day), or a shorter window's day nets differ from the all-time window's.
+It prints `restated` / `dropped` lines against the current `data/pnl_history.json` and a suggested commit message.
+Full routine: /workspace/psy/pnl_refresh/ROUTINE_CONNECTOR.md (box only, not in this repo).

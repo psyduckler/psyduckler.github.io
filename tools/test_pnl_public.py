@@ -126,7 +126,7 @@ def main():
                 fail(f"{key} null sharpe not shown")
         elif f'{comb["sharpe"]:.2f}' not in block:
             fail(f"{key} sharpe {comb['sharpe']} not on the page")
-        if "today, not final" not in block or "nov 12, 2026" not in block:
+        if "today, not final" not in block or build.fmt_date(TODAY).lower() not in block.lower():
             fail(f"{key} missing today disclosure or central date")
         if "(central)" not in block:
             fail(f"{key} date range is not labeled central")
